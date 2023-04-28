@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\Classes\AppDelegate.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\main.cpp">
+      <Filter>Source Files\proj.win32</Filter>
+    </ClCompile>
+    <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\cocos2d\cocos\precheader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\AuctionedScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\AuctionScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\ExplanationScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\MyGalleryScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\PaintingSubmissionScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\PlayMenuScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\RankingResultScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\RoomListScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\TitleScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\WaitingRoomScene.cpp">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\PopupWindow.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Classes\AppDelegate.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\main.h">
+      <Filter>Source Files\proj.win32</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\resource.h">
+      <Filter>Source Files\proj.win32</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\CloseNormal.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\CloseSelected.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\HelloWorld.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\fonts\Marker Felt.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\fonts\arial.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\res\.gitkeep">
+      <Filter>Resources\res</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\AuctionedScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\AuctionScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\ExplanationScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\MyGalleryScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\PaintingSubmissionScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\PlayMenuScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\RankingResultScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\RoomListScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\TitleScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\WaitingRoomScene.h">
+      <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\PopupWindow.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="F:\workspace\tests\ArtAuction\ArtAuction\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\game.rc">
+      <Filter>Source Files\proj.win32</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{C3DC390B-D407-3487-B372-A27077E2430F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\fonts">
+      <UniqueIdentifier>{A220C3D4-55E1-3EF2-826A-69C6D6BADF0B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res">
+      <UniqueIdentifier>{720CD581-6CC9-33D2-A7CA-215430235A3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{49A023E1-CF0C-3EF2-A8C9-3230797E1CBB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes">
+      <UniqueIdentifier>{ADCF3880-909A-3724-85FA-59FD59C4D286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\proj.win32">
+      <UniqueIdentifier>{C24AA50A-DD48-35EF-8124-6281AACD7F9A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Scene">
+      <UniqueIdentifier>{3e50feff-5e12-495c-91db-6942faa702cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\backgrounds">
+      <UniqueIdentifier>{854a0cc8-0afc-4017-ac2a-dc78c592cfde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Widget">
+      <UniqueIdentifier>{299f589b-01ca-42e8-90b8-86a7d1cd0a93}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\backgrounds\1.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\2.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\3.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\4.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\5.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\6.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\7.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\8.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\9.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\10.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\11.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\12.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\13.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\14.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+    <Image Include="..\Resources\backgrounds\15.jpg">
+      <Filter>Resources\backgrounds</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
