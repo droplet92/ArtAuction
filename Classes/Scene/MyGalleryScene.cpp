@@ -93,6 +93,47 @@ bool MyGallery::init()
         this->addChild(board);
     }
 
+    auto sp = Sprite::create("Timer.png");
+    sp->setContentSize(sp->getContentSize() / 2);
+
+    if (sp != nullptr)
+    {
+        auto time = Label::createWithTTF("30", "fonts/Dovemayo_gothic.ttf", 60);
+        time->setTextColor(Color4B::BLACK);
+        time->setAnchorPoint(Vec2{ .5f, .4f });
+        time->setPosition(Vec2{ time->getContentSize().width * 1.5f, time->getContentSize().height });
+
+        auto timer = ProgressTimer::create(sp);
+        timer->setType(ProgressTimer::Type::RADIAL);
+        timer->setReverseDirection(true);
+        timer->setAnchorPoint(Vec2{ .5f, .5f });
+        timer->setPosition(Vec2{ origin.x + visibleSize.width * 0.85f, origin.y + visibleSize.height * 0.8f });
+
+        timer->addChild(time);
+        timer->runAction(ProgressTo::create(30, 100));
+        timer->schedule([time](float dt)
+            {
+                static int remainTime = 30;
+
+                if (!remainTime)
+                {
+                    auto scene = PaintingSubmission::createScene();
+
+                    Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+                    return;
+                }
+                time->setString(std::to_string(--remainTime));
+            }, 1.0f, 30, 0, "updateTime");
+
+        auto timerBase = Sprite::create("TimerBase.png");
+        timerBase->setAnchorPoint(timer->getAnchorPoint());
+        timerBase->setPosition(timer->getPosition());
+        timerBase->setContentSize(timerBase->getContentSize() / 2);
+
+        this->addChild(timerBase);
+        this->addChild(timer);
+    }
+
     auto startButton = Button::create("StartButton.png", "StartButtonPressed.png");
 
     startButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
