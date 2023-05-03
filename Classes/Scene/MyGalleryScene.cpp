@@ -1,8 +1,10 @@
+#include "ui/CocosGUI.h"
 
 #include "MyGalleryScene.h"
-#include "PlayMenuScene.h"
+#include "PaintingSubmissionScene.h"
 
 USING_NS_CC;
+using namespace ui;
 
 Scene* MyGallery::createScene()
 {
@@ -30,97 +32,80 @@ bool MyGallery::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(MyGallery::menuCloseCallback, this));
-
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
-    }
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
     // 3. add your codes below...
 
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Art Auction", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-
-    auto msg = Label::createWithTTF("Press to Start", "fonts/Marker Felt.ttf", 24);
-    if (msg == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        msg->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + msg->getContentSize().height * 2));
-
-        // add the label as a child to this layer
-        this->addChild(msg, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    auto sprite = Sprite::create("backgrounds/5.jpg");
     if (sprite == nullptr)
     {
-        problemLoading("'HelloWorld.png'");
+        problemLoading("'backgrounds/5.jpg'");
     }
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
         // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
+        this->addChild(sprite, -1);
     }
 
-    auto director = Director::getInstance();
-    auto listener = EventListenerMouse::create();
+    auto roomTitle = Sprite::create("RoomTitle.png");
+    if (roomTitle == nullptr)
+    {
+        problemLoading("'RoomTitle.png'");
+    }
+    else
+    {
+        // position the sprite on the center of the screen
+        {
+            roomTitle->setPosition(Vec2{ origin.x + visibleSize.width / 4,
+                                origin.y + visibleSize.height * 1.13f - roomTitle->getContentSize().height });
 
-    listener->onMouseDown = [](auto _) {
-        auto scene = PlayMenu::createScene();
-        Director::getInstance()->replaceScene(TransitionFadeUp::create(0.5, scene));
-        return true;
-    };
+            // add the sprite as a child to this layer
+            this->addChild(roomTitle, -1);
 
-    auto dispatcher = director->getEventDispatcher();
+            auto label = Label::createWithTTF("My Gallery", "fonts/Dovemayo_gothic.ttf", 40);
+            if (label == nullptr)
+            {
+                problemLoading("'fonts/Dovemayo_gothic.ttf'");
+            }
+            else
+            {
+                label->setAnchorPoint(Vec2{ 0.5, 0.5 });
+                label->setTextColor(Color4B::BLACK);
+                label->setPosition(Vec2{ roomTitle->getContentSize().width / 2, roomTitle->getContentSize().height / 2 - 15 });
+                roomTitle->addChild(label);
+            }
+        }
+    }
 
-    dispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    auto board = Sprite::create("GalleryBoard.png");
+    if (board == nullptr)
+    {
+        problemLoading("'GalleryBoard.png'");
+    }
+    else
+    {
+        // position the sprite on the center of the screen
+        board->setPosition(Vec2{ origin.x + visibleSize.width * 0.37f, origin.y + visibleSize.height * 0.4f });
+        board->setAnchorPoint(Vec2{ 0.5, 0.5 });
+
+        // add the sprite as a child to this layer
+        this->addChild(board);
+    }
+
+    auto startButton = Button::create("StartButton.png", "StartButtonPressed.png");
+
+    startButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
+        {
+            if (type != ui::Widget::TouchEventType::ENDED)
+                return;
+
+            auto scene = PaintingSubmission::createScene();
+
+            Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+        });
+    startButton->setPosition(Vec2{ origin.x + visibleSize.width * 0.85f, origin.y + visibleSize.height * 0.12f });
+    this->addChild(startButton);
 
     return true;
 }
