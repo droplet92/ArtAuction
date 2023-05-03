@@ -3,6 +3,8 @@
 #include "MyGalleryScene.h"
 #include "PaintingSubmissionScene.h"
 
+#include <filesystem>
+
 USING_NS_CC;
 using namespace ui;
 
@@ -91,6 +93,67 @@ bool MyGallery::init()
 
         // add the sprite as a child to this layer
         this->addChild(board);
+
+        class Painting : public Sprite
+        {
+        public:
+            bool initWithFile(const std::filesystem::path path)
+            {
+                auto res = Sprite::initWithFile(path.u8string());
+                title = path.stem().u8string();
+                author = u8"호쿠사이";
+
+                return res;
+            }
+
+            static Painting* create(const std::filesystem::path path)
+            {
+                auto ret = new (std::nothrow) Painting();
+                if (ret && ret->initWithFile(path))
+                {
+                    ret->autorelease();
+                    return ret;
+                }
+                CC_SAFE_DELETE(ret);
+                return nullptr;
+            }
+
+        private:
+            std::string title;
+            std::string author;
+        };
+
+        //auto painting1 = Painting::create("paintings/japan_1/FGO.jpg");
+        //auto painting2 = Painting::create("paintings/japan_1/Hokusai_portrait.jpg");
+
+        ////painting1->setScale(0.2f);
+        ////painting2->setScale(0.2f);
+        //painting1->setContentSize(Size{ 100, 100 });
+        //painting2->setContentSize(Size{ 100, 100 });
+
+        //painting1->setPosition(origin.x + painting1->getContentSize().width, origin.y);
+        //painting2->setPosition(origin.x + painting2->getContentSize().width * 2, origin.y);
+
+        //// TableView로 변경
+        //auto table = ListView::create();
+
+        //table->setContentSize(board->getContentSize());
+        //table->setAnchorPoint(Vec2{ .5f, .5f });
+        //table->setPosition(board->getPosition());
+        //table->setScrollBarEnabled(false);
+        //table->setItemsMargin(50.f);
+
+        //log("table size: %lf, %lf", table->getContentSize().width, table->getContentSize().height);
+        //log("table pos: %lf, %lf", table->getPositionX(), table->getPositionY());
+
+
+        //log("painting1: %lf, %lf", painting1->getPositionX(), painting1->getPositionY());
+        //log("painting2: %lf, %lf", painting2->getPositionX(), painting2->getPositionY());
+
+        ////table->addChild(painting1);
+        //table->addChild(painting2);
+        //table->addChild(painting1);
+        //board->addChild(table);
     }
 
     auto sp = Sprite::create("Timer.png");
