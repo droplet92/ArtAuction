@@ -1,4 +1,5 @@
 #include "AuctionScene.h"
+#include "AuctionedScene.h"
 
 USING_NS_CC;
 
@@ -28,95 +29,48 @@ bool Auction::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-        "CloseNormal.png",
-        "CloseSelected.png",
-        CC_CALLBACK_1(Auction::menuCloseCallback, this));
-
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-        float y = origin.y + closeItem->getContentSize().height / 2;
-        closeItem->setPosition(Vec2(x, y));
-    }
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
     // 3. add your codes below...
 
-    // add a label shows "Hello World"
-    // create and initialize a label
+    auto sp = Sprite::create("Timer.png");
+    sp->setContentSize(sp->getContentSize() / 3);
 
-    auto label = Label::createWithTTF("Single Play", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
+    if (sp != nullptr)
     {
-        problemLoading("'fonts/Marker Felt.ttf'");
+        auto time = Label::createWithTTF("30", "fonts/Dovemayo_gothic.ttf", 60);
+        time->setTextColor(Color4B::BLACK);
+        time->setAnchorPoint(Vec2{ .5f, .4f });
+        time->setPosition(Vec2{ time->getContentSize().width * 1.f, time->getContentSize().height * 0.8f });
+
+        auto timer = ProgressTimer::create(sp);
+        timer->setType(ProgressTimer::Type::RADIAL);
+        timer->setReverseDirection(true);
+        timer->setAnchorPoint(Vec2{ .5f, .5f });
+        timer->setPosition(Vec2{ origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.7f });
+
+        timer->addChild(time);
+        timer->runAction(ProgressTo::create(30, 100));
+        timer->schedule([time](float dt)
+            {
+                static int remainTime = 30;
+
+                if (!remainTime)
+                {
+                    auto scene = Auctioned::createScene();
+
+                    Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+                    return;
+                }
+                time->setString(std::to_string(--remainTime));
+            }, 1.0f, 30, 0, "updateTime");
+
+        auto timerBase = Sprite::create("TimerBase.png");
+        timerBase->setAnchorPoint(timer->getAnchorPoint());
+        timerBase->setPosition(timer->getPosition());
+        timerBase->setContentSize(timerBase->getContentSize() / 3);
+
+        this->addChild(timerBase);
+        this->addChild(timer);
     }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-
-    auto msg = Label::createWithTTF("Multiplay", "fonts/Marker Felt.ttf", 24);
-    if (msg == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        msg->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + msg->getContentSize().height * 2));
-
-        // add the label as a child to this layer
-        this->addChild(msg, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
-
-    auto director = Director::getInstance();
-    auto listener = EventListenerMouse::create();
-
-    listener->onMouseDown = [](auto _) {
-        return true;
-    };
-
-    auto dispatcher = director->getEventDispatcher();
-
-    dispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     return true;
 }
