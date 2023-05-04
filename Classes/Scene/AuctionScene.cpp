@@ -5,6 +5,8 @@
 
 USING_NS_CC;
 
+int Auction::nPlayer = 2;
+
 Scene* Auction::createScene()
 {
     return Auction::create();
@@ -33,10 +35,15 @@ bool Auction::init()
     /////////////////////////////
     // 2. add your codes below...
 
-    auto timer = ui::Timer::create(30.f);
+    auto timer = ui::Timer::create(3.f);
 
     timer->setPosition(Vec2{ visibleSize.width * .5f, visibleSize.height * .85f });
-    timer->setAlarm(ui::changeScene<Auctioned, TransitionSlideInB>);
+    timer->setAlarm([&](auto _)
+        {
+            auto scene = Auctioned::createScene(--nPlayer < 0);
+
+            Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
+        });
     this->addChild(timer);
 
     return true;

@@ -14,4 +14,7 @@ public:
 
     // implement the "static create()" method manually
     CREATE_FUNC(Auction);
+
+private:
+    static int nPlayer;
 };

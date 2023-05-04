@@ -5,13 +5,15 @@
 class Auctioned : public cocos2d::Scene
 {
 public:
-    static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene(bool isEnd);
 
-    virtual bool init();
+    static Auctioned* create(bool isEnd);
+
+    virtual bool init(bool isEnd);
 
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(Auctioned);
+private:
+    bool _isEnd;
 };

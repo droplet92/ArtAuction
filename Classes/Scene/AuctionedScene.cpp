@@ -1,10 +1,13 @@
 #include "AuctionedScene.h"
+#include "AuctionScene.h"
+#include "RankingResultScene.h"
 
 USING_NS_CC;
 
-Scene* Auctioned::createScene()
+Scene* Auctioned::createScene(bool isEnd)
 {
-    return Auctioned::create();
+    log("isEnd: %d", isEnd);
+    return Auctioned::create(isEnd);
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -14,8 +17,21 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+Auctioned* Auctioned::create(bool isEnd)
+{
+    Auctioned* pRet = new(std::nothrow) Auctioned;
+
+    if (pRet && pRet->init(isEnd))
+    {
+        pRet->autorelease();
+        return pRet;
+    }
+    CC_SAFE_DELETE(pRet);
+    return nullptr;
+}
+
 // on "init" you need to initialize your instance
-bool Auctioned::init()
+bool Auctioned::init(bool isEnd)
 {
     //////////////////////////////
     // 1. super init first
@@ -28,95 +44,80 @@ bool Auctioned::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+    // 2. 
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-        "CloseNormal.png",
-        "CloseSelected.png",
-        CC_CALLBACK_1(Auctioned::menuCloseCallback, this));
+    this->setColor(Color3B::BLACK);
 
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
+    auto title = Label::createWithTTF("Title", "fonts/Dovemayo_wild.ttf", 40);
+    if (title == nullptr)
     {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
+        problemLoading("'fonts/Dovemayo_wild.ttf'");
     }
     else
     {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-        float y = origin.y + closeItem->getContentSize().height / 2;
-        closeItem->setPosition(Vec2(x, y));
+        // position the title on the center of the screen
+        title->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + visibleSize.height * 0.8f - title->getContentSize().height));
+
+        // add the title as a child to this layer
+        this->addChild(title);
     }
 
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Single Play", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("Title", "fonts/Dovemayo_wild.ttf", 40);
     if (label == nullptr)
     {
-        problemLoading("'fonts/Marker Felt.ttf'");
+        problemLoading("'fonts/Dovemayo_wild.ttf'");
     }
     else
     {
         // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height - label->getContentSize().height));
+        label->setPosition(Vec2(origin.x + visibleSize.width *.75f,
+            origin.y + visibleSize.height * 0.5f + label->getContentSize().height));
 
         // add the label as a child to this layer
-        this->addChild(label, 1);
+        this->addChild(label);
     }
 
+    auto artistLabel = Label::createWithTTF("Artist", "fonts/Dovemayo_wild.ttf", 40);
+    if (artistLabel == nullptr)
+    {
+        problemLoading("'fonts/Dovemayo_wild.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        artistLabel->setPosition(Vec2(origin.x + visibleSize.width * .75f,
+            origin.y + visibleSize.height * 0.5f - artistLabel->getContentSize().height));
 
-    auto msg = Label::createWithTTF("Multiplay", "fonts/Marker Felt.ttf", 24);
+        // add the label as a child to this layer
+        this->addChild(artistLabel);
+    }
+
+    std::stringstream ss{};
+    ss << "droplet92" << ", Congrats!";
+
+    auto msg = Label::createWithTTF(ss.str(), "fonts/Dovemayo_wild.ttf", 40);
     if (msg == nullptr)
     {
-        problemLoading("'fonts/Marker Felt.ttf'");
+        problemLoading("'fonts/Dovemayo_wild.ttf'");
     }
     else
     {
         // position the label on the center of the screen
-        msg->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + msg->getContentSize().height * 2));
+        msg->setPosition(Vec2(origin.x + visibleSize.width /2,
+            origin.y + visibleSize.height * 0.25f + msg->getContentSize().height * 2));
 
         // add the label as a child to this layer
-        this->addChild(msg, 1);
+        this->addChild(msg);
     }
 
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
+    auto moveToNextScene = [=](float f)
     {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+        auto scene = isEnd ? RankingResult::createScene() : Auction::createScene();
 
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
-
-    auto director = Director::getInstance();
-    auto listener = EventListenerMouse::create();
-
-    listener->onMouseDown = [](auto _) {
-        return true;
+        Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
     };
-
-    auto dispatcher = director->getEventDispatcher();
-
-    dispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    this->scheduleOnce(moveToNextScene, 3.f, "asdf");
 
     return true;
 }
