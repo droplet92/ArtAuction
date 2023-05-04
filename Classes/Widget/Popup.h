@@ -12,17 +12,17 @@ NS_CC_BEGIN
 
 namespace ui
 {
-    class PopupWindow : public Widget
+    class Popup : public Widget
     {
         DECLARE_CLASS_GUI_INFO
 
     public:
-        PopupWindow();
+        Popup();
 
-        virtual ~PopupWindow();
+        virtual ~Popup();
 
         // implement the "static create()" method manually
-        CREATE_FUNC(PopupWindow);
+        CREATE_FUNC(Popup);
 
     CC_CONSTRUCTOR_ACCESS:
         bool init();

@@ -1,20 +1,20 @@
-#include "PopupWindow.h"
+#include "Popup.h"
 
 NS_CC_BEGIN
 
 namespace ui
 {
-	PopupWindow::PopupWindow()
+	Popup::Popup()
 		: _layout(nullptr)
 	{
 		setTouchEnabled(true);
 	}
 
-	PopupWindow::~PopupWindow()
+	Popup::~Popup()
 	{
 	}
 
-	void PopupWindow::initRenderer()
+	void Popup::initRenderer()
 	{
         //_layout = Layout::create();
         //_buttonNormalRenderer = Scale9Sprite::create();
@@ -23,7 +23,7 @@ namespace ui
         //addProtectedChild(_buttonNormalRenderer, NORMAL_RENDERER_Z, -1);
 	}
 
-    bool PopupWindow::init()
+    bool Popup::init()
     {
         if (!Widget::init()) {
             return false;

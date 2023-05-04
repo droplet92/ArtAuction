@@ -820,7 +820,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="..\Classes\Scene\RoomListScene.h" />
     <ClInclude Include="..\Classes\Scene\TitleScene.h" />
     <ClInclude Include="..\Classes\Scene\WaitingRoomScene.h" />
-    <ClInclude Include="..\Classes\Widget\PopupWindow.h" />
+    <ClInclude Include="..\Classes\Widget\Popup.h" />
+    <ClInclude Include="..\Classes\Widget\Timer.h" />
     <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Classes\AppDelegate.h" />
     <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\main.h" />
     <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\resource.h" />
@@ -834,7 +835,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="..\Classes\Scene\RoomListScene.cpp" />
     <ClCompile Include="..\Classes\Scene\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Scene\WaitingRoomScene.cpp" />
-    <ClCompile Include="..\Classes\Widget\PopupWindow.cpp" />
+    <ClCompile Include="..\Classes\Widget\Popup.cpp" />
+    <ClCompile Include="..\Classes\Widget\Timer.cpp" />
     <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\Classes\AppDelegate.cpp" />
     <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\main.cpp" />
     <ResourceCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\game.rc" />

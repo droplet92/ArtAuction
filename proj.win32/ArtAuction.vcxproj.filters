@@ -40,7 +40,10 @@
     <ClCompile Include="..\Classes\Scene\WaitingRoomScene.cpp">
       <Filter>Source Files\Classes\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Widget\PopupWindow.cpp">
+    <ClCompile Include="..\Classes\Widget\Timer.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\Popup.cpp">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClCompile>
   </ItemGroup>
@@ -102,7 +105,10 @@
     <ClInclude Include="..\Classes\Scene\WaitingRoomScene.h">
       <Filter>Source Files\Classes\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Widget\PopupWindow.h">
+    <ClInclude Include="..\Classes\Widget\Timer.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\Popup.h">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClInclude>
   </ItemGroup>
