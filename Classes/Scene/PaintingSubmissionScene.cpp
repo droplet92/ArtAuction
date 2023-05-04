@@ -70,7 +70,7 @@ bool PaintingSubmission::init()
 
         Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
     };
-    this->scheduleOnce(moveToNextScene, 5.f, "asdf");
+    this->scheduleOnce(moveToNextScene, 3.f, "asdf");
 
     return true;
 }
