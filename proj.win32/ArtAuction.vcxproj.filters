@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\Classes\AppDelegate.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\main.cpp">
-      <Filter>Source Files\proj.win32</Filter>
-    </ClCompile>
-    <ClCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\cocos2d\cocos\precheader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Scene\AuctionedScene.cpp">
       <Filter>Source Files\Classes\Scene</Filter>
     </ClCompile>
@@ -46,35 +37,11 @@
     <ClCompile Include="..\Classes\Widget\Popup.cpp">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClCompile>
+    <ClCompile Include="$(ProjectDir)..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="$(ProjectDir)\main.cpp" />
+    <ClCompile Include="$(ProjectDir)..\cocos2d\cocos\precheader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Classes\AppDelegate.h">
-      <Filter>Source Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\main.h">
-      <Filter>Source Files\proj.win32</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\resource.h">
-      <Filter>Source Files\proj.win32</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\CloseNormal.png">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\CloseSelected.png">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\HelloWorld.png">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\fonts\Marker Felt.ttf">
-      <Filter>Resources\fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\fonts\arial.ttf">
-      <Filter>Resources\fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\workspace\tests\ArtAuction\ArtAuction\Resources\res\.gitkeep">
-      <Filter>Resources\res</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Scene\AuctionedScene.h">
       <Filter>Source Files\Classes\Scene</Filter>
     </ClInclude>
@@ -111,14 +78,21 @@
     <ClInclude Include="..\Classes\Widget\Popup.h">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClInclude>
+    <ClInclude Include="$(ProjectDir)..\Classes\AppDelegate.h" />
+    <ClInclude Include="$(ProjectDir)\main.h" />
+    <ClInclude Include="$(ProjectDir)\resource.h" />
+    <ClInclude Include="$(ProjectDir)..\Resources\CloseNormal.png" />
+    <ClInclude Include="$(ProjectDir)..\Resources\CloseSelected.png" />
+    <ClInclude Include="$(ProjectDir)..\Resources\HelloWorld.png" />
+    <ClInclude Include="$(ProjectDir)..\Resources\fonts\Marker Felt.ttf" />
+    <ClInclude Include="$(ProjectDir)..\Resources\fonts\arial.ttf" />
+    <ClInclude Include="$(ProjectDir)..\Resources\res\.gitkeep" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\workspace\tests\ArtAuction\ArtAuction\CMakeLists.txt" />
+    <CustomBuild Include="$(ProjectDir)..\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="F:\workspace\tests\ArtAuction\ArtAuction\proj.win32\game.rc">
-      <Filter>Source Files\proj.win32</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="$(ProjectDir)\game.rc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">
