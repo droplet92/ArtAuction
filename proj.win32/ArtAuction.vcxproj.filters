@@ -40,6 +40,12 @@
     <ClCompile Include="$(ProjectDir)..\Classes\AppDelegate.cpp" />
     <ClCompile Include="$(ProjectDir)\main.cpp" />
     <ClCompile Include="$(ProjectDir)..\cocos2d\cocos\precheader.cpp" />
+    <ClCompile Include="..\Classes\Widget\Painting.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\PaintingView.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\Scene\AuctionedScene.h">
@@ -87,6 +93,12 @@
     <ClInclude Include="$(ProjectDir)..\Resources\fonts\Marker Felt.ttf" />
     <ClInclude Include="$(ProjectDir)..\Resources\fonts\arial.ttf" />
     <ClInclude Include="$(ProjectDir)..\Resources\res\.gitkeep" />
+    <ClInclude Include="..\Classes\Widget\Painting.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\PaintingView.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="$(ProjectDir)..\CMakeLists.txt" />

@@ -1,11 +1,17 @@
 #include "ui/CocosGUI.h"
+#include <extensions/cocos-ext.h>
 
 #include "MyGalleryScene.h"
 #include "PaintingSubmissionScene.h"
 
 #include "Widget/Timer.h"
+#include "Widget/Painting.h"
 
 #include <filesystem>
+#include <iostream>
+#include <vector>
+
+#include "Widget/PaintingView.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -82,102 +88,38 @@ bool MyGallery::init()
         }
     }
 
-    auto board = Sprite::create("GalleryBoard.png");
-    if (board == nullptr)
+    if (auto board = PaintingView::create())
     {
-        problemLoading("'GalleryBoard.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        board->setPosition(Vec2{ origin.x + visibleSize.width * 0.37f, origin.y + visibleSize.height * 0.4f });
-        board->setAnchorPoint(Vec2{ 0.5, 0.5 });
+        board->setBackGroundImage("GalleryBoard.png");
+        board->setBackGroundImageScale9Enabled(true);
+        board->setContentSize({ 800, 500 });
+        board->setAnchorPoint({ .5f, .5f });
+        board->setPosition({ visibleSize.width * .4f, visibleSize.height * .4f });
 
-        // add the sprite as a child to this layer
         this->addChild(board);
-
-        class Painting : public Sprite
-        {
-        public:
-            bool initWithFile(const std::filesystem::path path)
-            {
-                auto res = Sprite::initWithFile(path.u8string());
-                title = path.stem().u8string();
-                author = u8"호쿠사이";
-
-                return res;
-            }
-
-            static Painting* create(const std::filesystem::path path)
-            {
-                auto ret = new (std::nothrow) Painting();
-                if (ret && ret->initWithFile(path))
-                {
-                    ret->autorelease();
-                    return ret;
-                }
-                CC_SAFE_DELETE(ret);
-                return nullptr;
-            }
-
-        private:
-            std::string title;
-            std::string author;
-        };
-
-        //auto painting1 = Painting::create("paintings/japan_1/FGO.jpg");
-        //auto painting2 = Painting::create("paintings/japan_1/Hokusai_portrait.jpg");
-
-        ////painting1->setScale(0.2f);
-        ////painting2->setScale(0.2f);
-        //painting1->setContentSize(Size{ 100, 100 });
-        //painting2->setContentSize(Size{ 100, 100 });
-
-        //painting1->setPosition(origin.x + painting1->getContentSize().width, origin.y);
-        //painting2->setPosition(origin.x + painting2->getContentSize().width * 2, origin.y);
-
-        //// TableView로 변경
-        //auto table = ListView::create();
-
-        //table->setContentSize(board->getContentSize());
-        //table->setAnchorPoint(Vec2{ .5f, .5f });
-        //table->setPosition(board->getPosition());
-        //table->setScrollBarEnabled(false);
-        //table->setItemsMargin(50.f);
-
-        //log("table size: %lf, %lf", table->getContentSize().width, table->getContentSize().height);
-        //log("table pos: %lf, %lf", table->getPositionX(), table->getPositionY());
-
-
-        //log("painting1: %lf, %lf", painting1->getPositionX(), painting1->getPositionY());
-        //log("painting2: %lf, %lf", painting2->getPositionX(), painting2->getPositionY());
-
-        ////table->addChild(painting1);
-        //table->addChild(painting2);
-        //table->addChild(painting1);
-        //board->addChild(table);
     }
 
-    auto timer = ui::Timer::create(30.f);
+    if (auto timer = ui::Timer::create(30.f))
+    {
+        timer->setPosition({ visibleSize.width * .85f, visibleSize.height * .85f });
+        timer->setAlarm(ui::changeScene<PaintingSubmission, TransitionSlideInB>);
+        this->addChild(timer);
+    }
 
-    timer->setPosition(Vec2{ visibleSize.width * .85f, visibleSize.height * .85f });
-    timer->setAlarm(ui::changeScene<PaintingSubmission, TransitionSlideInB>);
-    this->addChild(timer);
+    if (auto startButton = Button::create("StartButton.png", "StartButtonPressed.png"))
+    {
+        startButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
+            {
+                if (type != ui::Widget::TouchEventType::ENDED)
+                    return;
 
-    auto startButton = Button::create("StartButton.png", "StartButtonPressed.png");
+                auto scene = PaintingSubmission::createScene();
 
-    startButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
-        {
-            if (type != ui::Widget::TouchEventType::ENDED)
-                return;
-
-            auto scene = PaintingSubmission::createScene();
-
-            Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
-        });
-    startButton->setPosition(Vec2{ origin.x + visibleSize.width * 0.85f, origin.y + visibleSize.height * 0.12f });
-    this->addChild(startButton);
-
+                Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+            });
+        startButton->setPosition(Vec2{ origin.x + visibleSize.width * 0.85f, origin.y + visibleSize.height * 0.12f });
+        this->addChild(startButton);
+    }
     return true;
 }
 
