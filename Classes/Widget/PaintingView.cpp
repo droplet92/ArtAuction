@@ -22,7 +22,7 @@ bool PaintingView::init()
 
 	try
 	{
-		std::filesystem::directory_iterator iter{ "../Resources/paintings/Francisco de Goya" };
+		std::filesystem::directory_iterator iter{ "../Resources/paintings/AI" };
 
 		for (const auto& entry : iter)
 		{

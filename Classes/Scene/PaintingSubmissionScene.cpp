@@ -1,5 +1,6 @@
 #include "PaintingSubmissionScene.h"
 #include "AuctionScene.h"
+#include "Widget/Painting.h"
 
 USING_NS_CC;
 
@@ -31,37 +32,50 @@ bool PaintingSubmission::init()
     /////////////////////////////
     // 3. add your codes below...
 
-    this->setColor(Color3B::BLACK);
+    setColor(Color3B::BLACK);
 
-    auto label = Label::createWithTTF("Title", "fonts/Dovemayo_wild.ttf", 40);
-    if (label == nullptr)
+    if (auto vbox = ui::VBox::create())
     {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height * 0.75f - label->getContentSize().height));
+        auto layout = ui::Layout::create();
+        layout->setContentSize({ 200, 100 });
 
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
+        if (auto title = ui::Text::create("Title", "fonts/Dovemayo_wild.ttf", 40))
+        {
+            title->setPosition({ 100,50 });
+            title->setAnchorPoint({ .5f, .5f });
 
+            auto _layout = layout->clone();
+            //_layout->setContentSize({ 200, title->getContentSize().height });
+            _layout->addChild(title);
+            vbox->addChild(_layout);
+        }
 
-    auto msg = Label::createWithTTF("Artist", "fonts/Dovemayo_wild.ttf", 40);
-    if (msg == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        msg->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height * 0.25f + msg->getContentSize().height * 2));
+        if (auto painting = ui::Painting::create("paintings/AI/Midjourney - Chaos (2022).png"))
+        {
+            painting->setPosition({ 100,50 });
+            painting->setAnchorPoint({ .5f, .5f });
 
-        // add the label as a child to this layer
-        this->addChild(msg, 1);
+            auto _layout = layout->clone();
+            _layout->addChild(painting);
+            vbox->addChild(_layout);
+        }
+
+        if (auto artist = ui::Text::create("Artist", "fonts/Dovemayo_wild.ttf", 40))
+        {
+            artist->setPosition({ 100,50 });
+            artist->setAnchorPoint({ .5f, .5f });
+
+            auto _layout = layout->clone();
+            //_layout->setContentSize({ 200, artist->getContentSize().height });
+            _layout->addChild(artist);
+            vbox->addChild(_layout);
+        }
+        vbox->setContentSize({ 200, 300 });
+        vbox->setPosition({ visibleSize.width / 2, visibleSize.height / 2 });
+        //vbox->setBackGroundColor(Color3B::BLUE);
+        //vbox->setBackGroundColorType(ui::Layout::BackGroundColorType::SOLID);
+        vbox->setAnchorPoint({ .5f, .5f });
+        addChild(vbox);
     }
 
     auto moveToNextScene = [](float f)

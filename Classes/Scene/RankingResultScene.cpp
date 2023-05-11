@@ -86,96 +86,6 @@ bool RankingResult::init()
         auto btn3 = Button::create("Namecard.png", "NamecardPressed.png");
         auto btn4 = Button::create("Namecard.png", "NamecardPressed.png");
 
-        class PopupStatus
-        {
-        public:
-            bool isOpen() const
-            {
-                return _isOpen;
-            }
-
-            void setOpen(bool doOpen)
-            {
-                _isOpen = doOpen;
-            }
-
-        private:
-            bool _isOpen = false;
-        };
-
-        auto stat = new PopupStatus{};
-
-        auto func = [=](Ref* sender, Widget::TouchEventType type)
-        {
-            if (type != Widget::TouchEventType::ENDED)
-                return;
-
-            if (stat->isOpen())
-                return;
-
-            stat->setOpen(true);
-
-            std::stringstream messagefmt{};
-            Button* caller = (Button*)sender;
-
-            messagefmt << "Kick this player [" << caller->getTitleText() << "]?";
-
-            auto text = Text::create();
-            text->setFontName("fonts/Dovemayo_gothic.ttf");
-            text->setFontSize(24);
-            text->setTextColor(Color4B::BLACK);
-            text->setString(messagefmt.str());
-
-            auto popupOk = Button::create("PopupOk.png");
-            auto popupCancel = Button::create("PopupCancel.png");
-
-            popupOk->setTitleFontName("fonts/Dovemayo_gothic.ttf");
-            popupOk->setTitleFontSize(24);
-            popupOk->setTitleText("Yes");
-            popupOk->addTouchEventListener([=](auto sender, auto type)
-                {
-                    this->removeChildByTag(0xDEADBEEF);
-                    stat->setOpen(false);
-                });
-            popupCancel->addTouchEventListener([=](auto sender, auto type)
-                {
-                    this->removeChildByTag(0xDEADBEEF);
-                    stat->setOpen(false);
-                });
-
-            auto popup = ListView::create();
-            popup->setBackGroundImage("Popup.png");
-            popup->setBackGroundImageScale9Enabled(true);
-            popup->setPosition(Vec2{ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
-            popup->setAnchorPoint(Vec2{ .5f, .5f });
-
-            popup->setContentSize(Size{ popup->getBackGroundImageTextureSize().width,
-                                        popup->getBackGroundImageTextureSize().height / 2 });
-            popup->setScrollBarEnabled(false);
-            popup->setItemsMargin(10.f);
-            popup->setPadding(20.f, 40.f, 20.f, 40.f);
-
-            popup->addChild(text);
-
-            popupOk->setAnchorPoint(Vec2{ .5f, 0 });
-            popupCancel->setAnchorPoint(Vec2{ .5f, .5f });
-            popupOk->setPosition(Vec2{ popup->getPosition().x,
-                                        popup->getPosition().y - popup->getInnerContainerSize().height / 2 + 10.f });
-            popupCancel->setPosition(Vec2{ popup->getPosition().x + popup->getInnerContainerSize().width / 2 - 20.f,
-                                            popup->getPosition().y + popup->getInnerContainerSize().height / 2 - 20.f });
-
-            auto layout = Layout::create();
-            layout->addChild(popup);
-            layout->addChild(popupOk);
-            layout->addChild(popupCancel);
-
-            this->addChild(layout, 0, 0xDEADBEEF);
-        };
-        btn1->addTouchEventListener(func);
-        btn2->addTouchEventListener(func);
-        btn3->addTouchEventListener(func);
-        btn4->addTouchEventListener(func);
-
         btn1->setTitleFontName("fonts/Dovemayo_gothic.ttf");
         btn2->setTitleFontName("fonts/Dovemayo_gothic.ttf");
         btn3->setTitleFontName("fonts/Dovemayo_gothic.ttf");
@@ -202,10 +112,9 @@ bool RankingResult::init()
         this->addChild(list);
     }
 
-    auto readyButton = Button::create("ReadyButton.png", "ReadyButtonPressed.png");
-    auto startButton = Button::create("StartButton.png", "StartButtonPressed.png");
+    auto okButton = Button::create("StartButton.png", "StartButtonPressed.png");
 
-    startButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
+    okButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
         {
             if (type != ui::Widget::TouchEventType::ENDED)
                 return;
@@ -221,8 +130,7 @@ bool RankingResult::init()
                                 origin.y + visibleSize.height * 0.12f });
     buttons->setContentSize(Size{ 500, 500 });
     buttons->setAnchorPoint(Vec2{ 0.4f, 0.5f });
-    buttons->addChild(readyButton);
-    buttons->addChild(startButton);
+    buttons->addChild(okButton);
     buttons->setItemsMargin(30.f);
 
     this->addChild(buttons, 1);

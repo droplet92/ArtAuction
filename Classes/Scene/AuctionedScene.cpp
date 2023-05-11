@@ -2,6 +2,8 @@
 #include "AuctionScene.h"
 #include "RankingResultScene.h"
 
+#include "Widget/Painting.h"
+
 USING_NS_CC;
 
 Scene* Auctioned::createScene(bool isEnd)
@@ -48,67 +50,62 @@ bool Auctioned::init(bool isEnd)
 
     this->setColor(Color3B::BLACK);
 
-    auto title = Label::createWithTTF("Title", "fonts/Dovemayo_wild.ttf", 40);
-    if (title == nullptr)
+    if (auto vbox = ui::VBox::create())
     {
-        problemLoading("'fonts/Dovemayo_wild.ttf'");
-    }
-    else
-    {
-        // position the title on the center of the screen
-        title->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height * 0.8f - title->getContentSize().height));
+        auto layout = ui::Layout::create();
+        layout->setContentSize({ 200, 100 });
 
-        // add the title as a child to this layer
-        this->addChild(title);
-    }
+        if (auto title = ui::Text::create("Title", "fonts/Dovemayo_wild.ttf", 40))
+        {
+            title->setPosition({ 100,50 });
+            title->setAnchorPoint({ .5f, .5f });
 
-    auto label = Label::createWithTTF("Title", "fonts/Dovemayo_wild.ttf", 40);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Dovemayo_wild.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width *.75f,
-            origin.y + visibleSize.height * 0.5f + label->getContentSize().height));
+            auto _layout = layout->clone();
+            //_layout->setContentSize({ 200, title->getContentSize().height });
+            _layout->addChild(title);
+            vbox->addChild(_layout);
+        }
 
-        // add the label as a child to this layer
-        this->addChild(label);
-    }
+        if (auto painting = ui::Painting::create(R"(F:\workspace\tests\ArtAuction\ArtAuction\Resources\paintings\AI\Midjourney - Chaos (2022).png)"))
+        {
+            painting->setPosition({ 100,50 });
+            painting->setAnchorPoint({ .5f, .5f });
 
-    auto artistLabel = Label::createWithTTF("Artist", "fonts/Dovemayo_wild.ttf", 40);
-    if (artistLabel == nullptr)
-    {
-        problemLoading("'fonts/Dovemayo_wild.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        artistLabel->setPosition(Vec2(origin.x + visibleSize.width * .75f,
-            origin.y + visibleSize.height * 0.5f - artistLabel->getContentSize().height));
+            auto _layout = layout->clone();
+            _layout->addChild(painting);
+            vbox->addChild(_layout);
+        }
 
-        // add the label as a child to this layer
-        this->addChild(artistLabel);
-    }
+        if (auto artist = ui::Text::create("Artist", "fonts/Dovemayo_wild.ttf", 40))
+        {
+            artist->setPosition({ 100,50 });
+            artist->setAnchorPoint({ .5f, .5f });
 
-    std::stringstream ss{};
-    ss << "droplet92" << ", Congrats!";
+            auto _layout = layout->clone();
+            //_layout->setContentSize({ 200, artist->getContentSize().height });
+            _layout->addChild(artist);
+            vbox->addChild(_layout);
+        }
 
-    auto msg = Label::createWithTTF(ss.str(), "fonts/Dovemayo_wild.ttf", 40);
-    if (msg == nullptr)
-    {
-        problemLoading("'fonts/Dovemayo_wild.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        msg->setPosition(Vec2(origin.x + visibleSize.width /2,
-            origin.y + visibleSize.height * 0.25f + msg->getContentSize().height * 2));
+        std::stringstream ss{};
+        ss << "droplet92" << ", Congrats!";
 
-        // add the label as a child to this layer
-        this->addChild(msg);
+        if (auto message = ui::Text::create(ss.str(), "fonts/Dovemayo_wild.ttf", 40))
+        {
+            message->setPosition({ 100,50 });
+            message->setAnchorPoint({ .5f, .5f });
+
+            auto _layout = layout->clone();
+            //_layout->setContentSize({ 200, artist->getContentSize().height });
+            _layout->addChild(message);
+            vbox->addChild(_layout);
+        }
+        vbox->setContentSize({ 200, 300 });
+        vbox->setPosition({ visibleSize.width / 2, visibleSize.height / 2 });
+        //vbox->setBackGroundColor(Color3B::BLUE);
+        //vbox->setBackGroundColorType(ui::Layout::BackGroundColorType::SOLID);
+        vbox->setAnchorPoint({ .5f, .5f });
+        addChild(vbox);
     }
 
     auto moveToNextScene = [=](float f)
