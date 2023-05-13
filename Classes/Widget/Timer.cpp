@@ -19,7 +19,7 @@ namespace ui
     Timer* Timer::create(float time)
     {
         auto timer = new (std::nothrow) Timer{ static_cast<int>(time) };
-        if (timer && timer->init(time))
+        if (timer && timer->init())
         {
             timer->autorelease();
             return timer;
@@ -28,33 +28,10 @@ namespace ui
         return nullptr;
     }
 
-    void Timer::setAlarm(const TimerAlarm& alarm)
-    {
-        _alarm = alarm;
-    }
-
-    std::string Timer::getDescription() const
-    {
-        return "Timer";
-    }
-
-    void Timer::scheduler(float dt)
-    {
-        if (!_remainTime)
-        {
-            _alarm(.3f);
-            return;
-        }
-        _time->setString(std::to_string(--_remainTime));
-    }
-
-    bool Timer::init(float time)
+    bool Timer::init()
     {
         if (!Widget::init())
             return false;
-
-        auto visibleSize = Director::getInstance()->getVisibleSize();
-        Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
         auto timerSprite = Sprite::create("Timer.png");
 
@@ -66,25 +43,44 @@ namespace ui
         _time = Label::createWithTTF(std::to_string(_remainTime), "fonts/Dovemayo_gothic.ttf", 60);
         _timer = ProgressTimer::create(timerSprite);
 
-        if (!_time || !_timer)
-            return false;
-
         _time->setTextColor(Color4B::BLACK);
-
         _timer->setType(ProgressTimer::Type::RADIAL);
         _timer->setReverseDirection(true);
-
-        _timer->runAction(ProgressTo::create(time, 100));
-        _timer->schedule([&](float dt) { return this->scheduler(dt); }, 1.f, time, 0, "updateTime");
 
         auto timerBaseSprite = Sprite::create("TimerBase.png");
         timerBaseSprite->setContentSize(timerBaseSprite->getContentSize() / 2);
 
-        this->addChild(timerBaseSprite);
-        this->addChild(_timer);
-        this->addChild(_time);
+        addChild(timerBaseSprite);
+        addChild(_timer);
+        addChild(_time);
 
         return true;
+    }
+
+    void Timer::setAlarm(const TimerAlarm& alarm)
+    {
+        _alarm = alarm;
+    }
+
+    void Timer::play()
+    {
+        _timer->runAction(ProgressTo::create(_remainTime, 100));
+        _timer->schedule([&](float dt) { return this->scheduler(dt); }, 1.f, _remainTime, 0, "updateTime");
+    }
+
+    std::string Timer::getDescription() const
+    {
+        return "Timer";
+    }
+
+    void Timer::scheduler(float dt)
+    {
+        if (!_remainTime)
+        {
+            _alarm();
+            return;
+        }
+        _time->setString(std::to_string(--_remainTime));
     }
 }
 

@@ -1,5 +1,8 @@
 #include "ui/CocosGUI.h"
 
+#include <Manager/PlayerManager.h>
+#include <Manager/SingleGameManager.h>
+
 #include "WaitingRoomScene.h"
 #include "ExplanationScene.h"
 
@@ -212,6 +215,12 @@ bool WaitingRoom::init()
         list->addChild(btn2);
         list->addChild(btn3);
         list->addChild(btn4);
+
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "droplet9250" });
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "loremipsum" });
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "pdi0409" });
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "hi" });
+        lhs::Manager::SingleGameManager::Instance().SetNumberOfPlayers(4);
 
         this->addChild(list);
     }

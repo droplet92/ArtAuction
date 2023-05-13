@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\Classes\Scene\AuctionedScene.cpp">
-      <Filter>Source Files\Classes\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Scene\AuctionScene.cpp">
       <Filter>Source Files\Classes\Scene</Filter>
     </ClCompile>
@@ -46,11 +43,20 @@
     <ClCompile Include="..\Classes\Widget\PaintingView.cpp">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Manager\SingleGameManager.cpp">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Manager\NetworkGameManager.cpp">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Player\Player.cpp">
+      <Filter>Source Files\Classes\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Manager\PlayerManager.cpp">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Classes\Scene\AuctionedScene.h">
-      <Filter>Source Files\Classes\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Scene\AuctionScene.h">
       <Filter>Source Files\Classes\Scene</Filter>
     </ClInclude>
@@ -98,6 +104,24 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Widget\PaintingView.h">
       <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Manager\GameManager.h">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Manager\NetworkGameManager.h">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Manager\SingleGameManager.h">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Player\Player.h">
+      <Filter>Source Files\Classes\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Manager\PlayerManager.h">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Model\Painting.h">
+      <Filter>Source Files\Classes\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +175,15 @@
     </Filter>
     <Filter Include="Resources\paintings\Wassily Kandinsky">
       <UniqueIdentifier>{755827dc-5d1b-4483-90f1-7341d6059bab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Manager">
+      <UniqueIdentifier>{080dd82c-273e-4f31-a5ba-b0f0a2aee78f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Player">
+      <UniqueIdentifier>{0fe1d210-12e2-410a-b97a-30c9dd266894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Model">
+      <UniqueIdentifier>{158d2b77-d067-4252-a318-645796dae4e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

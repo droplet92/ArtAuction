@@ -10,8 +10,15 @@
 #include <filesystem>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <ranges>
 
 #include "Widget/PaintingView.h"
+
+#include <Manager/SingleGameManager.h>
+#include <Manager/PlayerManager.h>
+
+
 
 USING_NS_CC;
 using namespace ui;
@@ -88,8 +95,23 @@ bool MyGallery::init()
         }
     }
 
+    auto roomPlayers = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
+    lhs::Manager::SingleGameManager::Instance().SubmitPainting(roomPlayers[1]->GetPainting(1));
+    lhs::Manager::SingleGameManager::Instance().SubmitPainting(roomPlayers[2]->GetPainting(2));
+    lhs::Manager::SingleGameManager::Instance().SubmitPainting(roomPlayers[3]->GetPainting(3));
+
     if (auto board = PaintingView::create())
     {
+        auto view = roomPlayers[0]->GetPaintings()
+            | std::views::transform([](auto data)
+                {
+                    return ui::Painting::create(data);
+                });
+        std::vector<ui::Painting*> paintings;
+        std::ranges::copy(view, std::back_inserter(paintings));
+
+        board->AddPaintings(paintings);
+
         board->setBackGroundImage("GalleryBoard.png");
         board->setBackGroundImageScale9Enabled(true);
         board->setContentSize({ 800, 500 });
@@ -97,29 +119,39 @@ bool MyGallery::init()
         board->setPosition({ visibleSize.width * .4f, visibleSize.height * .4f });
 
         this->addChild(board);
+
+        if (auto timer = ui::Timer::create(30.f))
+        {
+            timer->setPosition({ visibleSize.width * .85f, visibleSize.height * .85f });
+            timer->setAlarm([=]()
+                {
+                    lhs::Manager::SingleGameManager::Instance().SubmitPainting(board->getSelected());
+
+                    auto scene = PaintingSubmission::createScene();
+
+                    Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
+                });
+            this->addChild(timer);
+        }
+
+        if (auto startButton = Button::create("StartButton.png", "StartButtonPressed.png"))
+        {
+            startButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type)
+                {
+                    if (type != ui::Widget::TouchEventType::ENDED)
+                        return;
+
+                    lhs::Manager::SingleGameManager::Instance().SubmitPainting(board->getSelected());
+
+                    auto scene = PaintingSubmission::createScene();
+
+                    Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+                });
+            startButton->setPosition(Vec2{ origin.x + visibleSize.width * 0.85f, origin.y + visibleSize.height * 0.12f });
+            this->addChild(startButton);
+        }
     }
 
-    if (auto timer = ui::Timer::create(30.f))
-    {
-        timer->setPosition({ visibleSize.width * .85f, visibleSize.height * .85f });
-        timer->setAlarm(ui::changeScene<PaintingSubmission, TransitionSlideInB>);
-        this->addChild(timer);
-    }
-
-    if (auto startButton = Button::create("StartButton.png", "StartButtonPressed.png"))
-    {
-        startButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
-            {
-                if (type != ui::Widget::TouchEventType::ENDED)
-                    return;
-
-                auto scene = PaintingSubmission::createScene();
-
-                Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
-            });
-        startButton->setPosition(Vec2{ origin.x + visibleSize.width * 0.85f, origin.y + visibleSize.height * 0.12f });
-        this->addChild(startButton);
-    }
     return true;
 }
 

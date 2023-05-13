@@ -13,15 +13,15 @@ NS_CC_BEGIN
 
 namespace ui
 {
-    template <class Scene, class Transition>
-    void changeScene(float transitionTime)
-    {
-        auto scene = Scene::createScene();
+    //template <class Scene, class Transition>
+    //void changeScene(float transitionTime)
+    //{
+    //    auto scene = Scene::createScene();
 
-        Director::getInstance()->replaceScene(Transition::create(transitionTime, scene));
-    };
+    //    Director::getInstance()->replaceScene(Transition::create(transitionTime, scene));
+    //};
 
-    using TimerAlarm = std::function<void(float)>;
+    using TimerAlarm = std::function<void()>;
 
     class Timer : public Layout
     {
@@ -34,9 +34,11 @@ namespace ui
 
         static Timer* create(float time);
 
-        bool init(float time);
+        bool init();
 
         void setAlarm(const TimerAlarm& alarm);
+
+        void play();
 
         std::string getDescription() const override;
 

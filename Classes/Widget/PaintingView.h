@@ -19,9 +19,14 @@ namespace ui
 
         bool init() override;
 
+        void AddPaintings(std::vector<ui::Painting*> paintings);
+
+        lhs::Model::Painting const* getSelected() const;
+
     private:
         std::vector<HBox*> _children;
-        std::vector<ui::Painting*> _data;
+        std::vector<lhs::Model::Painting const*> _data;
+        lhs::Model::Painting const* _selected;
     };
 }
 NS_CC_END

@@ -1,6 +1,7 @@
 #include "PaintingSubmissionScene.h"
 #include "AuctionScene.h"
 #include "Widget/Painting.h"
+#include <Manager/SingleGameManager.h>
 
 USING_NS_CC;
 
@@ -14,6 +15,22 @@ static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+}
+
+PaintingSubmission* PaintingSubmission::create()
+{
+    PaintingSubmission* pRet = new(std::nothrow) PaintingSubmission;
+
+    if (pRet && pRet->init())
+    {
+        pRet->autorelease();
+        return pRet;
+    }
+    else
+    {
+        CC_SAFE_DELETE(pRet);
+        return nullptr;
+    }
 }
 
 // on "init" you need to initialize your instance
@@ -34,57 +51,67 @@ bool PaintingSubmission::init()
 
     setColor(Color3B::BLACK);
 
+    auto data = const_cast<lhs::Model::Painting*>(lhs::Manager::SingleGameManager::Instance().GetSubmission());
+    auto painting = ui::Painting::create(data);
+
     if (auto vbox = ui::VBox::create())
     {
         auto layout = ui::Layout::create();
-        layout->setContentSize({ 200, 100 });
 
-        if (auto title = ui::Text::create("Title", "fonts/Dovemayo_wild.ttf", 40))
+        auto title = ui::Text::create(painting->getData()->title, "fonts/Dovemayo_wild.ttf", 40);
+        auto _painting = painting;
+        auto artist = ui::Text::create(painting->getData()->author, "fonts/Dovemayo_wild.ttf", 40);
+
+        _painting->setScale(3.f);
+
+        float width = _painting->getContentSize().width;
+
         {
-            title->setPosition({ 100,50 });
+            title->setPosition({ width / 2, title->getContentSize().height / 2 });
             title->setAnchorPoint({ .5f, .5f });
-
+            
             auto _layout = layout->clone();
-            //_layout->setContentSize({ 200, title->getContentSize().height });
+            _layout->setContentSize({ width, title->getContentSize().height });
             _layout->addChild(title);
             vbox->addChild(_layout);
         }
 
-        if (auto painting = ui::Painting::create("paintings/AI/Midjourney - Chaos (2022).png"))
         {
-            painting->setPosition({ 100,50 });
-            painting->setAnchorPoint({ .5f, .5f });
+            _painting->setPosition({ width / 2, _painting->getContentSize().height / 2 });
+            _painting->setAnchorPoint({ .5f, .5f });
 
             auto _layout = layout->clone();
-            _layout->addChild(painting);
+            _layout->setContentSize({ width, _painting->getContentSize().height });
+            _layout->addChild(_painting);
             vbox->addChild(_layout);
         }
 
-        if (auto artist = ui::Text::create("Artist", "fonts/Dovemayo_wild.ttf", 40))
         {
-            artist->setPosition({ 100,50 });
+            artist->setPosition({ width / 2, artist->getContentSize().height / 2 });
             artist->setAnchorPoint({ .5f, .5f });
 
             auto _layout = layout->clone();
-            //_layout->setContentSize({ 200, artist->getContentSize().height });
+            _layout->setContentSize({ width, artist->getContentSize().height });
             _layout->addChild(artist);
             vbox->addChild(_layout);
         }
-        vbox->setContentSize({ 200, 300 });
+        vbox->setContentSize({ width, visibleSize.height });
         vbox->setPosition({ visibleSize.width / 2, visibleSize.height / 2 });
-        //vbox->setBackGroundColor(Color3B::BLUE);
-        //vbox->setBackGroundColorType(ui::Layout::BackGroundColorType::SOLID);
         vbox->setAnchorPoint({ .5f, .5f });
+
         addChild(vbox);
     }
 
     auto moveToNextScene = [](float f)
     {
-        auto scene = Auction::createScene();
+        if (lhs::Manager::SingleGameManager::Instance().HasAllUserSubmitted())
+        {
+            auto scene = Auction::createScene();
 
-        Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+            Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+        }
     };
-    this->scheduleOnce(moveToNextScene, 3.f, "asdf");
+    schedule(moveToNextScene, 1.f, 30, 0, "key");
 
     return true;
 }

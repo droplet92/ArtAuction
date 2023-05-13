@@ -1,11 +1,13 @@
 #include "Painting.h"
 #include "PaintingView.h"
 #include <iostream>
+#include <ccRandom.h>
 
 USING_NS_CC;
 using namespace cocos2d::ui;
 
 PaintingView::PaintingView()
+	: _selected(nullptr)
 {
 }
 
@@ -18,29 +20,26 @@ bool PaintingView::init()
 	if (!VBox::init())
 		return false;
 
+	return true;
+}
+
+void PaintingView::AddPaintings(std::vector<ui::Painting*> paintings)
+{
 	_children.push_back(HBox::create({ 800, 160 }));
 
-	try
+	for (auto& painting : paintings)
 	{
-		std::filesystem::directory_iterator iter{ "../Resources/paintings/AI" };
-
-		for (const auto& entry : iter)
-		{
-			std::cout << entry.path().u8string() << std::endl;
-
-			auto painting = ui::Painting::create(entry.path().u8string());
-
-			if (_children.back()->getChildrenCount() == 5)
+		painting->addTouchEventListener([&](Ref* ref, Widget::TouchEventType t)
 			{
-				_children.push_back(HBox::create({ 800, 160 }));
-			}
-			_children.back()->addChild(painting);
-			_data.push_back(painting);
+				_selected = dynamic_cast<ui::Painting*>(ref)->getData();
+			});
+
+		if (_children.back()->getChildrenCount() == 5)
+		{
+			_children.push_back(HBox::create({ 800, 160 }));
 		}
-	}
-	catch (std::exception e)
-	{
-		std::cout << e.what() << std::endl;
+		_children.back()->addChild(painting);
+		_data.push_back(painting->getData());
 	}
 
 	for (const auto& row : _children)
@@ -48,5 +47,12 @@ bool PaintingView::init()
 		addChild(row);
 	}
 
-	return true;
+}
+
+lhs::Model::Painting const* ui::PaintingView::getSelected() const
+{
+	if (_selected)
+		return _selected;
+
+	return _data.at(RandomHelper::random_int<int>(0, _data.size() - 1));
 }

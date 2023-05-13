@@ -1,5 +1,5 @@
 #include "AuctionScene.h"
-#include "AuctionedScene.h"
+#include "RankingResultScene.h"
 
 #include "Widget/Timer.h"
 
@@ -35,16 +35,59 @@ bool Auction::init()
     /////////////////////////////
     // 2. add your codes below...
 
+    if (auto background = Sprite::create("backgrounds/AuctionBackground.png"))
+    {
+        background->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
+        background->setAnchorPoint({ .5f, .5f });
+
+        addChild(background);
+    }
+
+    if (auto sprite = Sprite::create("test.png"))
+    {
+        sprite->setPosition({ origin.x + visibleSize.width / 2, origin.y });
+        sprite->setAnchorPoint({ .5f, 0 });
+
+        addChild(sprite);
+    }
+
+    if (auto sprite = Sprite::create("easel.png"))
+    {
+        sprite->setPosition({ origin.x + visibleSize.width / 4, origin.y + visibleSize.height / 3 });
+        sprite->setAnchorPoint({ .5f, .5f });
+        sprite->setScale(0.02f);
+
+        addChild(sprite);
+    }
+
+    if (auto sprite = Sprite::create("dealer.png"))
+    {
+        sprite->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4 });
+        sprite->setAnchorPoint({ .5f, .5f });
+
+        addChild(sprite);
+    }
+
     auto timer = ui::Timer::create(3.f);
 
-    timer->setPosition(Vec2{ visibleSize.width * .5f, visibleSize.height * .85f });
-    timer->setAlarm([&](auto _)
+    timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
+    timer->setAlarm([&]()
         {
-            auto scene = Auctioned::createScene(--nPlayer < 0);
+            if (--nPlayer < 0)
+            {
+                auto scene = RankingResult::createScene();
 
-            Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
+                Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
+            }
+            else
+            {
+                // ÆË¾÷ Ç¥½Ã
+                removeChildByTag(0xDEADBEEF);
+            }
+
         });
-    this->addChild(timer);
+    timer->play();
+    addChild(timer, 0, 0xDEADBEEF);
 
     return true;
 }

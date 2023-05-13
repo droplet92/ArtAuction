@@ -3,22 +3,40 @@
 NS_CC_BEGIN
 namespace ui
 {
+    Painting::Painting()
+        : image(nullptr)
+        , data(nullptr)
+    {
+        setTouchEnabled(true);
+    }
+
     Painting::~Painting()
     {
     }
 
-    bool Painting::init(const std::filesystem::path path)
+    Painting* Painting::create(lhs::Model::Painting const* data)
+    {
+        auto ret = new (std::nothrow) Painting();
+        if (ret && ret->init(data))
+        {
+            ret->autorelease();
+            return ret;
+        }
+        CC_SAFE_DELETE(ret);
+        return nullptr;
+    }
+
+    bool Painting::init(lhs::Model::Painting const* data)
     {
         if (!Layout::init())
             return false;
 
+        this->data = data;
+
         setContentSize({ 160, 160 });
 
-        if (image = ImageView::create(path.u8string()))
+        if (image = ImageView::create(data->path.string()))
         {
-            title = path.stem().u8string();
-            author = title;
-
             image->setScale(.05f, .05f);
             image->setPosition({ 75, 75 });
             image->setAnchorPoint({ .5f, .5f });
@@ -29,16 +47,22 @@ namespace ui
         return false;
     }
 
-    Painting* Painting::create(const std::filesystem::path path)
+    Widget* Painting::createCloneInstance()
     {
-        auto ret = new (std::nothrow) Painting();
-        if (ret && ret->init(path))
-        {
-            ret->autorelease();
-            return ret;
-        }
-        CC_SAFE_DELETE(ret);
-        return nullptr;
+        return Painting::create(data);
+    }
+
+    void Painting::copyClonedWidgetChildren(Widget* model)
+    {
+        // image 2번 복사 방지
+    }
+
+    void Painting::setScale(float scale)
+    {
+        setContentSize(getContentSize() * scale);
+
+        image->setScale(image->getScale() * scale);
+        image->setPosition(image->getPosition() * scale);
     }
 }
 NS_CC_END

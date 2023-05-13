@@ -4,6 +4,7 @@
 #include <cocos/ui/CocosGUI.h>
 
 #include <filesystem>
+#include <Model/Painting.h>
 
 NS_CC_BEGIN
 namespace ui
@@ -11,19 +12,23 @@ namespace ui
     class Painting : public Layout
     {
     public:
+        Painting();
         ~Painting() override;
 
-        bool init(const std::filesystem::path path);
+        static Painting* create(lhs::Model::Painting const* data);
 
-        static Painting* create(const std::filesystem::path path);
+        bool init(lhs::Model::Painting const* data);
 
-        inline std::string getTitle() const { return title; }
-        inline std::string getAuthor() const { return author; }
+        Widget* createCloneInstance() override;
+        void copyClonedWidgetChildren(Widget* model) override;
+
+        void setScale(float scale) override;
+
+        inline lhs::Model::Painting const* getData() const { return data; }
 
     private:
         ImageView* image;
-        std::string title;
-        std::string author;
+        lhs::Model::Painting const* data;
     };
 }
 NS_CC_END

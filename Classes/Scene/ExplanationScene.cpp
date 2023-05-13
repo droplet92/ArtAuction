@@ -1,6 +1,21 @@
 #include "ExplanationScene.h"
 #include "MyGalleryScene.h"
 
+#include <sstream>
+#include <locale>
+#include <codecvt>
+#include <string>
+#include <Manager/SingleGameManager.h>
+#include <Manager/PlayerManager.h>
+
+
+std::string convertToUtf8(const std::u8string& u8str) {
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+    std::u32string u32str = converter.from_bytes(reinterpret_cast<const char*>(u8str.data()), reinterpret_cast<const char*>(u8str.data() + u8str.size()));
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf8_converter;
+    return utf8_converter.to_bytes(u32str);
+}
+
 USING_NS_CC;
 
 Scene* Explanation::createScene()
@@ -40,19 +55,14 @@ bool Explanation::init()
     }
     else
     {
-        // position the label on the center of the screen
         label->setPosition(Vec2(origin.x + visibleSize.width / 2,
                                 origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        log("position: %lf, %lf", label->getPositionX(), label->getPositionY());
         this->addChild(label);
 
-
-        std::stringstream mm{};
+        std::basic_stringstream<char8_t> mm{};
         mm << u8"이번 경매는 " << u8"비공개 " << u8"경매입니다.";
 
-        auto msg = Label::createWithTTF(mm.str(), "fonts/Dovemayo_gothic.ttf", 24);
+        auto msg = Label::createWithTTF(convertToUtf8(mm.str()), "fonts/Dovemayo_gothic.ttf", 24);
         if (msg == nullptr)
         {
             problemLoading("'fonts/Dovemayo_gothic.ttf'");
@@ -67,6 +77,15 @@ bool Explanation::init()
             log("position: %lf, %lf", msg->getPositionX(), msg->getPositionY());
             this->addChild(msg);
         }
+    }
+
+    auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
+    auto paintings = lhs::Manager::SingleGameManager::Instance().GetPaintings(4);
+
+    for (auto player : players)
+    {
+        player->SetPaintings(paintings.back());
+        paintings.pop_back();
     }
 
     auto moveToNextScene = [](float f)
