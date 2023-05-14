@@ -232,36 +232,6 @@
     <Image Include="..\Resources\backgrounds\15.jpg">
       <Filter>Resources\backgrounds</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\Stable Diffusion - A Game Character (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Stable Diffusion - Gotoh Hitori (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Stable Diffusion - Karina (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Stable Diffusion - Mars (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Dream - Haerin (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Midjourney - A Woman (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Midjourney - Chaos (2022).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Midjourney - Frozen Clover (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Midjourney - Pope Francis Wears BALENCIAGA (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\Midjourney - Space Opera Theator (2022).jpg">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
     <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - The Parasol (1777).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
@@ -381,6 +351,36 @@
     </Image>
     <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Several Circles (1926).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Karina (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Mars (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Pope Francis Wears BALENCIAGA (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Space Opera Theator (2022).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - A Game Character (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - A Woman (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Chaos (2022).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Frozen Clover (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Gotoh Hitori (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\AI - Haerin (2023).png">
+      <Filter>Resources\paintings\AI</Filter>
     </Image>
   </ItemGroup>
 </Project>

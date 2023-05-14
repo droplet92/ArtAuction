@@ -11,6 +11,8 @@ namespace lhs::Manager
 
 		static SingleGameManager& Instance();
 
+		void Init() final;
+
 		void SetNumberOfPlayers(size_t nPlayers) final;
 
 		std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const final;
@@ -20,6 +22,10 @@ namespace lhs::Manager
 		Model::Painting const* GetSubmission() const final;
 
 		Model::Painting const* GetSelectionForAuction() final;
+
+		std::set<std::string> GetPainters() const final;
+
+		std::unordered_map<std::string, size_t> GetReputation() const final;
 
 		bool HasAllUserSubmitted() const final;
 
@@ -33,5 +39,11 @@ namespace lhs::Manager
 		std::vector<Model::Painting const*> selections;
 
 		Model::Painting const* submission;
+
+		std::vector<Model::Painting*> paintings;
+
+		std::set<std::string> painters;
+
+		std::unordered_map<std::string, size_t> reputation;
 	};
 }

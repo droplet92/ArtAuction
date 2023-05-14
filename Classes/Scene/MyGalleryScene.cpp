@@ -125,7 +125,10 @@ bool MyGallery::init()
             timer->setPosition({ visibleSize.width * .85f, visibleSize.height * .85f });
             timer->setAlarm([=]()
                 {
-                    lhs::Manager::SingleGameManager::Instance().SubmitPainting(board->getSelected());
+                    auto submission = board->getSelected();
+
+                    lhs::Manager::SingleGameManager::Instance().SubmitPainting(submission);
+                    roomPlayers[0]->RemovePainting(submission);
 
                     auto scene = PaintingSubmission::createScene();
 
@@ -142,7 +145,10 @@ bool MyGallery::init()
                     if (type != ui::Widget::TouchEventType::ENDED)
                         return;
 
-                    lhs::Manager::SingleGameManager::Instance().SubmitPainting(board->getSelected());
+                    auto submission = board->getSelected();
+
+                    lhs::Manager::SingleGameManager::Instance().SubmitPainting(submission);
+                    roomPlayers[0]->RemovePainting(submission);
 
                     auto scene = PaintingSubmission::createScene();
 

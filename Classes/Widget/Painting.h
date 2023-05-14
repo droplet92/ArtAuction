@@ -19,10 +19,12 @@ namespace ui
 
         bool init(lhs::Model::Painting const* data);
 
-        Widget* createCloneInstance() override;
-        void copyClonedWidgetChildren(Widget* model) override;
+        //Widget* createCloneInstance() override;
+        //void copyClonedWidgetChildren(Widget* model) override;
 
         void setScale(float scale) override;
+
+        float getBottomPadding() const;
 
         inline lhs::Model::Painting const* getData() const { return data; }
 

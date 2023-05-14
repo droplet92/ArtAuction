@@ -1,6 +1,7 @@
 #include "Painting.h"
 #include "PaintingView.h"
 #include <iostream>
+#include <algorithm>
 #include <ccRandom.h>
 
 USING_NS_CC;

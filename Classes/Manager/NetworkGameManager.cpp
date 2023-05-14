@@ -21,6 +21,10 @@ namespace lhs::Manager
 		return *manager;
 	}
 
+	void NetworkGameManager::Init()
+	{
+	}
+
 	void NetworkGameManager::SetNumberOfPlayers(size_t nPlayers)
 	{
 	}
@@ -42,6 +46,16 @@ namespace lhs::Manager
 	Model::Painting const* NetworkGameManager::GetSelectionForAuction()
 	{
 		return nullptr;
+	}
+
+	std::set<std::string> NetworkGameManager::GetPainters() const
+	{
+		return std::set<std::string>();
+	}
+
+	std::unordered_map<std::string, size_t> NetworkGameManager::GetReputation() const
+	{
+		return std::unordered_map<std::string, size_t>();
 	}
 
 	bool NetworkGameManager::HasAllUserSubmitted() const

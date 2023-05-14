@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <Model/Painting.h>
 
 namespace lhs
@@ -23,12 +24,22 @@ namespace lhs
 
 		Model::Painting* GetPainting(size_t idx) const;
 
+		std::map<std::string, size_t> GetInformations() const;
+
+		void AddPainting(Model::Painting* painting);
+
+		void RemovePainting(Model::Painting const* target);
+
+		inline size_t GetGold() const { return gold; }
+
+		inline void UpdateGold(size_t amount) { gold += amount; }
+
 	protected:
 		size_t id;
 
 		std::string name;
 
-		size_t money;
+		size_t gold;
 
 		std::vector<Model::Painting*> paintings;
 	};

@@ -6,6 +6,7 @@
 #include <Widget/Timer.h>
 #include <Widget/Painting.h>
 #include <Manager/SingleGameManager.h>
+#include <Manager/PlayerManager.h>
 
 USING_NS_CC;
 
@@ -69,22 +70,23 @@ bool Auction::init()
     addChild(MakeCharacter(4, origin, visibleSize.width));
     addChild(MakeCharacter(5, origin, visibleSize.width));
 
+    auto selection = lhs::Manager::SingleGameManager::Instance().GetSelectionForAuction();
+
     if (auto sprite = Sprite::create("easel.png"))
     {
-        sprite->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 3 });
-        sprite->setAnchorPoint({ .5f, .5f });
+        sprite->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 6 });
+        sprite->setAnchorPoint({ .5f, 0 });
 
-        addChild(sprite);
-
-        auto selection = lhs::Manager::SingleGameManager::Instance().GetSelectionForAuction();
         if (auto painting = ui::Painting::create(selection))
         {
-            painting->setPosition({ sprite->getPositionX(), sprite->getPositionY() });
+            painting->setScale(2.5f);
             painting->setAnchorPoint({ .5f, 0 });
-            painting->setScale(1.5f);
+            painting->setPosition({ sprite->getPositionX() + 10, sprite->getPositionY() + sprite->getContentSize().height - painting->getBottomPadding() + 10 });
 
             addChild(painting);
         }
+
+        addChild(sprite);
     }
 
     if (auto sprite = Sprite::create("dealer.png"))
@@ -103,30 +105,75 @@ bool Auction::init()
         addChild(sprite);
     }
 
-    if (auto sprite = Sprite::create("ScoreBoardRow.png"))
-    {
-        sprite->setPosition({ origin.x + visibleSize.width / 8, origin.y + visibleSize.height - sprite->getContentSize().height });
-        sprite->setAnchorPoint({ .5f, .1f });
+    auto player = lhs::Manager::PlayerManager::Instance().GetPlayer(0);
 
-        addChild(sprite);
+    if (auto gallery = ui::ListView::create())
+    {
+        gallery->setBackGroundImage("PaintersInfoBoard.png");
+        gallery->setContentSize(gallery->getBackGroundImageTextureSize());
+        gallery->setAnchorPoint({ .5f, .1f });
+        gallery->setPosition({ origin.x + visibleSize.width / 8, origin.y + visibleSize.height - gallery->getContentSize().height });
+        gallery->setPadding(10, 10, 10, 10);
+
+        auto info = player->GetInformations();
+        auto title = ui::Text::create("My Gallery", "fonts/Dovemayo_gothic.ttf", 24);
+        
+        title->setTextColor({ 0x58, 0xcd, 0xf8, 0xFF });
+        gallery->addChild(title);
+
+        for (const auto& datum : info)
+        {
+            std::stringstream ss;
+            ss << datum.first << ": " << datum.second;
+
+            auto text = ui::Text::create(ss.str(), "fonts/Dovemayo_gothic.ttf", 16);
+
+            gallery->addChild(text);
+        }
+        addChild(gallery);
     }
 
-    if (auto sprite = Sprite::create("ScoreBoardRow.png"))
+    if (auto reputation = ui::ListView::create())
     {
-        sprite->setPosition({ origin.x + visibleSize.width * 3 / 10, origin.y + visibleSize.height - sprite->getContentSize().height });
-        sprite->setAnchorPoint({ .5f, .1f });
+        reputation->setBackGroundImage("PaintersInfoBoard.png");
+        reputation->setContentSize(reputation->getBackGroundImageTextureSize());
+        reputation->setAnchorPoint({ .5f, .1f });
+        reputation->setPosition({ origin.x + visibleSize.width * 3 / 10, origin.y + visibleSize.height - reputation->getContentSize().height });
+        reputation->setPadding(10, 10, 10, 10);
 
-        addChild(sprite);
+        auto data = lhs::Manager::SingleGameManager::Instance().GetReputation();
+        auto title = ui::Text::create("Reputation", "fonts/Dovemayo_gothic.ttf", 24);
+
+        title->setTextColor({ 0x58, 0xcd, 0xf8, 0xFF });
+        reputation->addChild(title);
+
+        for (const auto& datum : data)
+        {
+            std::stringstream ss;
+            ss << datum.first << ": $" << datum.second;
+
+            auto text = ui::Text::create(ss.str(), "fonts/Dovemayo_gothic.ttf", 16);
+
+            reputation->addChild(text);
+        }
+        addChild(reputation);
     }
 
-    if (auto sprite = Sprite::create("ScoreBoardColumn.png"))
+    if (auto artInfo = ui::ListView::create())
     {
-        sprite->setPosition({ origin.x + visibleSize.width * 6 / 7, origin.y + visibleSize.height - sprite->getContentSize().height });
-        sprite->setAnchorPoint({ .5f, .1f });
+        artInfo->setBackGroundImage("ArtInfoBoard.png");
+        artInfo->setContentSize(artInfo->getBackGroundImageTextureSize());
+        artInfo->setAnchorPoint({ .5f, .1f });
+        artInfo->setPosition({ origin.x + visibleSize.width * 6 / 7, origin.y + visibleSize.height - artInfo->getContentSize().height });
+        artInfo->setPadding(20, 20, 20, 20);
+        artInfo->setItemsMargin(10);
 
-        addChild(sprite);
+        artInfo->addChild(ui::Text::create(selection->painter, "fonts/Dovemayo_gothic.ttf", 24));
+        artInfo->addChild(ui::Text::create(selection->title, "fonts/Dovemayo_gothic.ttf", 16));
+
+        addChild(artInfo);
     }
-
+    
     auto timer = ui::Timer::create(30.f);
 
     timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
@@ -168,7 +215,10 @@ bool Auction::init()
                                 layout->getBackGroundImageTextureSize().height / 3 });
     layout->setPosition({ visibleSize.width * 6 / 7, visibleSize.height / 2 });
 
-    auto chatfield = ui::TextField::create("Bid yourself", "fonts/Dovemayo_gothic.ttf", 24);
+    std::stringstream ss;
+    ss << "Gold: " << player->GetGold();
+
+    auto chatfield = ui::TextField::create(ss.str(), "fonts/Dovemayo_gothic.ttf", 24);
     chatfield->setPosition({ 10.f, layout->getContentSize().height / 2 });
     chatfield->setAnchorPoint({ 0, .5f });
     chatfield->setCursorEnabled(true);
@@ -196,7 +246,16 @@ bool Auction::init()
         {
             if (type == ui::Widget::TouchEventType::BEGAN)
             {
-                log("%s", chatfield->getString().c_str());
+                auto offer = chatfield->getString();
+
+                log("%s", offer.c_str());
+
+                if (player->GetGold() < std::stoul(offer))
+                {
+                    // ÆË¾÷ ¶ç¿ì±â
+                    return;
+                }
+                chatfield->setPlaceHolder("Offer: " + offer);
                 chatfield->setString("");
             }
         });

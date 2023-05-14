@@ -47,22 +47,20 @@ namespace ui
         return false;
     }
 
-    Widget* Painting::createCloneInstance()
-    {
-        return Painting::create(data);
-    }
-
-    void Painting::copyClonedWidgetChildren(Widget* model)
-    {
-        // image 2번 복사 방지
-    }
-
     void Painting::setScale(float scale)
     {
         setContentSize(getContentSize() * scale);
 
         image->setScale(image->getScale() * scale);
         image->setPosition(image->getPosition() * scale);
+    }
+
+    float Painting::getBottomPadding() const
+    {
+        auto contentHeight = getContentSize().height;
+        auto imageHeight = (image->getContentSize() * image->getScale()).height;
+
+        return (contentHeight - imageHeight) / 2;
     }
 }
 NS_CC_END

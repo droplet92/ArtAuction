@@ -10,6 +10,6 @@ namespace lhs::Model
 	public:
 		std::filesystem::path path;
 		std::string title;
-		std::string author;
+		std::string painter;
 	};
 }

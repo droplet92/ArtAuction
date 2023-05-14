@@ -52,47 +52,46 @@ bool PaintingSubmission::init()
     setColor(Color3B::BLACK);
 
     auto data = const_cast<lhs::Model::Painting*>(lhs::Manager::SingleGameManager::Instance().GetSubmission());
-    auto painting = ui::Painting::create(data);
 
     if (auto vbox = ui::VBox::create())
     {
         auto layout = ui::Layout::create();
 
+        auto painting = ui::Painting::create(data);
+        auto painter = ui::Text::create(painting->getData()->painter, "fonts/Dovemayo_wild.ttf", 40);
         auto title = ui::Text::create(painting->getData()->title, "fonts/Dovemayo_wild.ttf", 40);
-        auto _painting = painting;
-        auto artist = ui::Text::create(painting->getData()->author, "fonts/Dovemayo_wild.ttf", 40);
 
-        _painting->setScale(3.f);
+        painting->setScale(3.f);
 
-        float width = _painting->getContentSize().width;
+        float width = painting->getContentSize().width;
+
+        {
+            painter->setPosition({ width / 2, painter->getContentSize().height / 2 });
+            painter->setAnchorPoint({ .5f, .5f });
+            
+            auto _layout = layout->clone();
+            _layout->setContentSize({ width, painter->getContentSize().height });
+            _layout->addChild(painter);
+            vbox->addChild(_layout);
+        }
+
+        {
+            painting->setPosition({ width / 2, painting->getContentSize().height / 2 });
+            painting->setAnchorPoint({ .5f, .5f });
+
+            auto _layout = layout->clone();
+            _layout->setContentSize({ width, painting->getContentSize().height });
+            _layout->addChild(painting);
+            vbox->addChild(_layout);
+        }
 
         {
             title->setPosition({ width / 2, title->getContentSize().height / 2 });
             title->setAnchorPoint({ .5f, .5f });
-            
+
             auto _layout = layout->clone();
             _layout->setContentSize({ width, title->getContentSize().height });
             _layout->addChild(title);
-            vbox->addChild(_layout);
-        }
-
-        {
-            _painting->setPosition({ width / 2, _painting->getContentSize().height / 2 });
-            _painting->setAnchorPoint({ .5f, .5f });
-
-            auto _layout = layout->clone();
-            _layout->setContentSize({ width, _painting->getContentSize().height });
-            _layout->addChild(_painting);
-            vbox->addChild(_layout);
-        }
-
-        {
-            artist->setPosition({ width / 2, artist->getContentSize().height / 2 });
-            artist->setAnchorPoint({ .5f, .5f });
-
-            auto _layout = layout->clone();
-            _layout->setContentSize({ width, artist->getContentSize().height });
-            _layout->addChild(artist);
             vbox->addChild(_layout);
         }
         vbox->setContentSize({ width, visibleSize.height });

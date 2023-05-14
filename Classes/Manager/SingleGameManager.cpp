@@ -1,6 +1,9 @@
 #include <Manager/SingleGameManager.h>
 
 #include <iostream>
+#include <list>
+
+#include <ccRandom.h>
 
 namespace lhs::Manager
 {
@@ -26,16 +29,9 @@ namespace lhs::Manager
 		return *manager;
 	}
 
-	void SingleGameManager::SetNumberOfPlayers(size_t nPlayers)
+	// sqlite 연동
+	void SingleGameManager::Init()
 	{
-		this->nPlayers = nPlayers;
-	}
-
-	std::vector<std::vector<Model::Painting*>> SingleGameManager::GetPaintings(size_t nPlayers) const
-	{
-		// sqlite 연동
-		std::vector<std::vector<Model::Painting*>> res;
-
 		try
 		{
 			std::filesystem::directory_iterator root{ "../Resources/paintings" };
@@ -43,7 +39,6 @@ namespace lhs::Manager
 			for (const auto& directory : root)
 			{
 				std::filesystem::directory_iterator iter{ directory.path() };
-				std::vector<Model::Painting*> paintings;
 				std::cout << directory.path().string() << std::endl;
 
 				for (const auto& entry : iter)
@@ -53,18 +48,50 @@ namespace lhs::Manager
 					auto painting = new Model::Painting;
 
 					std::stringstream ss{ entry.path().stem().string() };
-					painting->path = entry.path();
+
+					std::getline(ss, painting->painter, '-');
 					std::getline(ss, painting->title, '-');
-					std::getline(ss, painting->author, '-');
+					painting->painter.pop_back();
+
+					painting->path = entry.path();
+					painting->title = painting->title.substr(1);
 
 					paintings.push_back(painting);
+					painters.insert(painting->painter);
 				}
-				res.push_back(paintings);
 			}
+
+			for (const auto& painter : painters)
+				reputation.emplace(painter, 0);
 		}
 		catch (std::exception e)
 		{
 			std::cout << e.what() << std::endl;
+		}
+	}
+
+	void SingleGameManager::SetNumberOfPlayers(size_t nPlayers)
+	{
+		this->nPlayers = nPlayers;
+	}
+
+	std::vector<std::vector<Model::Painting*>> SingleGameManager::GetPaintings(size_t nPlayers) const
+	{
+		std::vector<std::vector<Model::Painting*>> res;
+		auto copy = paintings;
+
+		for (size_t i = 0; i < nPlayers; i++)
+		{
+			std::vector<Model::Painting*> forGallery;
+
+			for (int i = 0; i < 10; i++)
+			{
+				auto select = copy.at(cocos2d::RandomHelper::random_int<int>(0, copy.size() - 1));
+
+				std::erase(copy, select);
+				forGallery.push_back(select);
+			}
+			res.push_back(forGallery);
 		}
 		return res;
 	}
@@ -84,6 +111,16 @@ namespace lhs::Manager
 		auto selection = selections.back();
 		selections.pop_back();
 		return selection;
+	}
+
+	std::set<std::string> SingleGameManager::GetPainters() const
+	{
+		return painters;
+	}
+
+	std::unordered_map<std::string, size_t> SingleGameManager::GetReputation() const
+	{
+		return reputation;
 	}
 
 	bool SingleGameManager::HasAllUserSubmitted() const

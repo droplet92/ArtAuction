@@ -293,8 +293,8 @@ bool WaitingRoom::init()
 
             if (sentinel)
             {
-                chatlog->setInnerContainerSize(Size{ chatlog->getContentSize().width,
-                                            chatlog->getInnerContainerSize().height + chat->getContentSize().height });
+                chatlog->setInnerContainerSize({ chatlog->getContentSize().width,
+                                                    chatlog->getInnerContainerSize().height + chat->getContentSize().height });
             }
             chatlog->addChild(chat);
             if (sentinel)
