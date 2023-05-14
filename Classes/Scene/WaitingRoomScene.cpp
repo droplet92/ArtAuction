@@ -237,7 +237,6 @@ bool WaitingRoom::init()
     chatfield->setPosition(Vec2{ origin.x + chatlog->getPosition().x, origin.y + chatlog->getPosition().y - 240});
     chatfield->setAnchorPoint(Vec2{ 0, 0.5 });
     chatfield->setCursorEnabled(true);
-    chatfield->setColor(Color3B::WHITE);
     chatfield->setPlaceHolderColor(Color4B::WHITE);
     chatfield->setTextHorizontalAlignment(TextHAlignment::LEFT);
     chatfield->addEventListener([](Ref* ref, TextField::EventType type) {
