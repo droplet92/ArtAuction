@@ -2,6 +2,7 @@
 #include "RankingResultScene.h"
 
 #include "Widget/Timer.h"
+#include <cocos/ui/CocosGUI.h>
 
 USING_NS_CC;
 
@@ -18,6 +19,22 @@ static void problemLoading(const char* filename)
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
+Sprite* MakeCharacter(int n, const Vec2& origin, float visibleWidth)
+{
+    std::stringstream ss;
+    ss << "characters/character" << n << ".png";
+
+    if (auto character = Sprite::create(ss.str()))
+    {
+        character->setPosition({ origin.x + visibleWidth / 10 * (n * 2 - 1), origin.y });
+        character->setAnchorPoint({ .5f, 0 });
+
+        return character;
+    }
+    return nullptr;
+}
+
 
 // on "init" you need to initialize your instance
 bool Auction::init()
@@ -43,17 +60,15 @@ bool Auction::init()
         addChild(background);
     }
 
-    if (auto sprite = Sprite::create("test.png"))
-    {
-        sprite->setPosition({ origin.x + visibleSize.width / 2, origin.y });
-        sprite->setAnchorPoint({ .5f, 0 });
-
-        addChild(sprite);
-    }
+    addChild(MakeCharacter(1, origin, visibleSize.width));
+    addChild(MakeCharacter(2, origin, visibleSize.width));
+    addChild(MakeCharacter(3, origin, visibleSize.width));
+    addChild(MakeCharacter(4, origin, visibleSize.width));
+    addChild(MakeCharacter(5, origin, visibleSize.width));
 
     if (auto sprite = Sprite::create("easel.png"))
     {
-        sprite->setPosition({ origin.x + visibleSize.width / 4, origin.y + visibleSize.height / 3 });
+        sprite->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 3 });
         sprite->setAnchorPoint({ .5f, .5f });
         sprite->setScale(0.02f);
 
@@ -68,7 +83,50 @@ bool Auction::init()
         addChild(sprite);
     }
 
-    auto timer = ui::Timer::create(3.f);
+    if (auto sprite = Sprite::create("bubble.png"))
+    {
+        sprite->setPosition({ origin.x + visibleSize.width * .6f, origin.y + visibleSize.height / 3 });
+        sprite->setAnchorPoint({ .5f, 0 });
+
+        addChild(sprite);
+    }
+
+    if (auto sprite = Sprite::create("ScoreBoardRow.png"))
+    {
+        sprite->setPosition({ origin.x + visibleSize.width / 8, origin.y + visibleSize.height - sprite->getContentSize().height });
+        sprite->setAnchorPoint({ .5f, .1f });
+
+        addChild(sprite);
+    }
+
+    if (auto sprite = Sprite::create("ScoreBoardRow.png"))
+    {
+        sprite->setPosition({ origin.x + visibleSize.width * 3 / 10, origin.y + visibleSize.height - sprite->getContentSize().height });
+        sprite->setAnchorPoint({ .5f, .1f });
+
+        addChild(sprite);
+    }
+
+    if (auto sprite = Sprite::create("ScoreBoardColumn.png"))
+    {
+        sprite->setPosition({ origin.x + visibleSize.width * 6 / 7, origin.y + visibleSize.height - sprite->getContentSize().height });
+        sprite->setAnchorPoint({ .5f, .1f });
+
+        addChild(sprite);
+    }
+
+    for (auto n : { 1,2,3,4,5 })
+    {
+        if (auto board = Sprite::create("BidBoard.png"))
+        {
+            board->setPosition({ origin.x + visibleSize.width / 10 * (n * 2 - 1), origin.y + visibleSize.height / 6 });
+            board->setAnchorPoint({ .5f, 0 });
+
+            addChild(board);
+        }
+    }
+
+    auto timer = ui::Timer::create(30.f);
 
     timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
     timer->setAlarm([&]()
@@ -88,6 +146,55 @@ bool Auction::init()
         });
     timer->play();
     addChild(timer, 0, 0xDEADBEEF);
+
+    // Bid board
+    auto layout = ui::Layout::create();
+    layout->setBackGroundImage("Popup.png");
+    layout->setBackGroundImageScale9Enabled(true);
+    layout->setAnchorPoint({ .5f, .5f });
+    layout->setContentSize({ layout->getBackGroundImageTextureSize().width * .6f,
+                                layout->getBackGroundImageTextureSize().height / 3 });
+    layout->setPosition({ visibleSize.width * 6 / 7, visibleSize.height / 2 });
+
+    auto chatfield = ui::TextField::create("Bid yourself", "fonts/Dovemayo_gothic.ttf", 24);
+    chatfield->setPosition({ 10.f, layout->getContentSize().height / 2 });
+    chatfield->setAnchorPoint({ 0, .5f });
+    chatfield->setCursorEnabled(true);
+    chatfield->setTextColor(Color4B::BLACK);
+    chatfield->setTextHorizontalAlignment(TextHAlignment::LEFT);
+    chatfield->addEventListener([](Ref* ref, ui::TextField::EventType type) {
+        auto field = (ui::TextField*)ref;
+        switch (type)
+        {
+        case ui::TextField::EventType::ATTACH_WITH_IME: [[fallthrough]];
+        case ui::TextField::EventType::DETACH_WITH_IME:
+            field->setString("");
+            break;
+        case ui::TextField::EventType::INSERT_TEXT: [[fallthrough]];
+        case ui::TextField::EventType::DELETE_BACKWARD:
+            break;
+        }
+        });
+
+    auto popupOk = ui::Button::create("PopupOk.png");
+    popupOk->setTitleFontName("fonts/Dovemayo_gothic.ttf");
+    popupOk->setTitleFontSize(24);
+    popupOk->setTitleText("Bid");
+    popupOk->addTouchEventListener([=](auto _, ui::Widget::TouchEventType type)
+        {
+            if (type == ui::Widget::TouchEventType::BEGAN)
+            {
+                log("%s", chatfield->getString().c_str());
+                chatfield->setString("");
+            }
+        });
+    popupOk->setAnchorPoint({ .1f, .5f });
+    popupOk->setPosition({ layout->getContentSize().width - popupOk->getContentSize().width,
+                            layout->getContentSize().height / 2 });
+
+    layout->addChild(chatfield);
+    layout->addChild(popupOk);
+    addChild(layout);
 
     return true;
 }
