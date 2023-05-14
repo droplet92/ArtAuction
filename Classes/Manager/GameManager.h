@@ -18,6 +18,8 @@ namespace lhs::Manager
 
 		virtual Model::Painting const* GetSubmission() const = 0;
 
+		virtual Model::Painting const* GetSelectionForAuction() = 0;
+
 		virtual bool HasAllUserSubmitted() const = 0;
 	};
 }

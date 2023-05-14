@@ -1,8 +1,11 @@
 #include "AuctionScene.h"
 #include "RankingResultScene.h"
 
-#include "Widget/Timer.h"
 #include <cocos/ui/CocosGUI.h>
+
+#include <Widget/Timer.h>
+#include <Widget/Painting.h>
+#include <Manager/SingleGameManager.h>
 
 USING_NS_CC;
 
@@ -70,9 +73,18 @@ bool Auction::init()
     {
         sprite->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 3 });
         sprite->setAnchorPoint({ .5f, .5f });
-        sprite->setScale(0.02f);
 
         addChild(sprite);
+
+        auto selection = lhs::Manager::SingleGameManager::Instance().GetSelectionForAuction();
+        if (auto painting = ui::Painting::create(selection))
+        {
+            painting->setPosition({ sprite->getPositionX(), sprite->getPositionY() });
+            painting->setAnchorPoint({ .5f, 0 });
+            painting->setScale(1.5f);
+
+            addChild(painting);
+        }
     }
 
     if (auto sprite = Sprite::create("dealer.png"))
@@ -115,17 +127,6 @@ bool Auction::init()
         addChild(sprite);
     }
 
-    for (auto n : { 1,2,3,4,5 })
-    {
-        if (auto board = Sprite::create("BidBoard.png"))
-        {
-            board->setPosition({ origin.x + visibleSize.width / 10 * (n * 2 - 1), origin.y + visibleSize.height / 6 });
-            board->setAnchorPoint({ .5f, 0 });
-
-            addChild(board);
-        }
-    }
-
     auto timer = ui::Timer::create(30.f);
 
     timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
@@ -146,6 +147,17 @@ bool Auction::init()
         });
     timer->play();
     addChild(timer, 0, 0xDEADBEEF);
+
+    for (auto n : { 1,2,3,4,5 })
+    {
+        if (auto board = Sprite::create("BidBoard.png"))
+        {
+            board->setPosition({ origin.x + visibleSize.width / 10 * (n * 2 - 1), origin.y + visibleSize.height / 6 });
+            board->setAnchorPoint({ .5f, 0 });
+
+            //addChild(board);
+        }
+    }
 
     // Bid board
     auto layout = ui::Layout::create();

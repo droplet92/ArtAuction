@@ -39,6 +39,11 @@ namespace lhs::Manager
 		return nullptr;
 	}
 
+	Model::Painting const* NetworkGameManager::GetSelectionForAuction()
+	{
+		return nullptr;
+	}
+
 	bool NetworkGameManager::HasAllUserSubmitted() const
 	{
 		return false;

@@ -79,6 +79,13 @@ namespace lhs::Manager
 		return submission;
 	}
 
+	Model::Painting const* SingleGameManager::GetSelectionForAuction()
+	{
+		auto selection = selections.back();
+		selections.pop_back();
+		return selection;
+	}
+
 	bool SingleGameManager::HasAllUserSubmitted() const
 	{
 		return (selections.size() == nPlayers);

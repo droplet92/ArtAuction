@@ -19,6 +19,8 @@ namespace lhs::Manager
 
 		Model::Painting const* GetSubmission() const final;
 
+		Model::Painting const* GetSelectionForAuction() final;
+
 		bool HasAllUserSubmitted() const final;
 
 	private:
