@@ -1,6 +1,8 @@
 #include "TitleScene.h"
 #include "PlayMenuScene.h"
 
+#include <Manager/SingleGameManager.h>
+
 USING_NS_CC;
 
 Scene* Title::createScene()
@@ -29,34 +31,6 @@ bool Title::init()
     /////////////////////////////
     // 2. add your codes below...
 
-    auto title = Sprite::create("backgrounds/GameTitle.png");
-    if (title == nullptr)
-    {
-        problemLoading("'backgrounds/GameTitle.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        title->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-
-        this->addChild(title);
-    }
-
-
-    auto msg = Label::createWithTTF("- Press to Start -", "fonts/Dovemayo_gothic.ttf", 40);
-    if (msg == nullptr)
-    {
-        problemLoading("'fonts/Dovemayo_gothic.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        msg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + msg->getContentSize().height * 2));
-
-        this->addChild(msg);
-    }
-
-    // add "HelloWorld" splash screen"
     auto sprite = Sprite::create("backgrounds/1.jpg");
     if (sprite == nullptr)
     {
@@ -65,21 +39,50 @@ bool Title::init()
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+        sprite->setPosition({ visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y });
 
-        this->addChild(sprite, -1);
+        addChild(sprite);
+    }
+
+    auto title = Sprite::create("backgrounds/GameTitle.png");
+    if (title == nullptr)
+    {
+        problemLoading("'backgrounds/GameTitle.png'");
+    }
+    else
+    {
+        title->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
+
+        addChild(title);
+    }
+
+
+    auto message = Label::createWithTTF("Press to Start", "fonts/Dovemayo_gothic.ttf", 40);
+    if (message == nullptr)
+    {
+        problemLoading("'fonts/Dovemayo_gothic.ttf'");
+    }
+    else
+    {
+        message->setPosition({ origin.x + visibleSize.width / 2, origin.y + message->getContentSize().height * 2 });
+        //message->enableShadow();
+        message->enableOutline(Color4B::BLACK, 3);
+
+        addChild(message);
     }
 
     auto director = Director::getInstance();
     auto mouse_listener = EventListenerMouse::create();
     auto keyboard_listener = EventListenerKeyboard::create();
 
-    mouse_listener->onMouseDown = [](auto _) {
+    mouse_listener->onMouseDown = [](auto _)
+    {
         auto scene = PlayMenu::createScene();
         Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
         return true;
     };
-    keyboard_listener->onKeyReleased = [](auto _, auto c) {
+    keyboard_listener->onKeyReleased = [](auto _, auto c)
+    {
         auto scene = PlayMenu::createScene();
         Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
         return true;
@@ -89,6 +92,8 @@ bool Title::init()
 
     dispatcher->addEventListenerWithSceneGraphPriority(mouse_listener, this);
     dispatcher->addEventListenerWithSceneGraphPriority(keyboard_listener, this);
+
+    lhs::Manager::SingleGameManager::Instance().Init();
 
     return true;
 }
