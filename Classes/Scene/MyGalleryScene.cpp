@@ -131,7 +131,8 @@ bool MyGallery::init()
 
                     Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
                 });
-            this->addChild(timer);
+            timer->play();
+            addChild(timer);
         }
 
         if (auto startButton = Button::create("StartButton.png", "StartButtonPressed.png"))
