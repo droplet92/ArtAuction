@@ -106,11 +106,9 @@ namespace lhs::Manager
 		return submission;
 	}
 
-	Model::Painting const* SingleGameManager::GetSelectionForAuction()
+	std::vector<Model::Painting const*> SingleGameManager::GetSelectionsForAuction()
 	{
-		auto selection = selections.back();
-		selections.pop_back();
-		return selection;
+		return selections;
 	}
 
 	std::set<std::string> SingleGameManager::GetPainters() const

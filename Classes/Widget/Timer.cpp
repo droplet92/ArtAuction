@@ -62,7 +62,7 @@ namespace ui
         _alarm = alarm;
     }
 
-    void Timer::play()
+    void Timer::start()
     {
         _timer->runAction(ProgressTo::create(_remainTime, 100));
         _timer->schedule([&](float dt) { return this->scheduler(dt); }, 1.f, _remainTime, 0, "updateTime");

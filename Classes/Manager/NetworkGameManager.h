@@ -21,7 +21,7 @@ namespace lhs::Manager
 
 		Model::Painting const* GetSubmission() const final;
 
-		Model::Painting const* GetSelectionForAuction() final;
+		std::vector<Model::Painting const*> GetSelectionsForAuction() final;
 
 		std::set<std::string> GetPainters() const;
 

@@ -43,9 +43,9 @@ namespace lhs::Manager
 		return nullptr;
 	}
 
-	Model::Painting const* NetworkGameManager::GetSelectionForAuction()
+	std::vector<Model::Painting const*> NetworkGameManager::GetSelectionsForAuction()
 	{
-		return nullptr;
+		return {};
 	}
 
 	std::set<std::string> NetworkGameManager::GetPainters() const

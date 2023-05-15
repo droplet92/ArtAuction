@@ -134,7 +134,7 @@ bool MyGallery::init()
 
                     Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
                 });
-            timer->play();
+            timer->start();
             addChild(timer);
         }
 

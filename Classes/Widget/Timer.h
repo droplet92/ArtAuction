@@ -38,7 +38,7 @@ namespace ui
 
         void setAlarm(const TimerAlarm& alarm);
 
-        void play();
+        void start();
 
         std::string getDescription() const override;
 

@@ -7,6 +7,8 @@
 #include <Widget/Painting.h>
 #include <Manager/SingleGameManager.h>
 #include <Manager/PlayerManager.h>
+#include "../Utility.h"
+
 
 USING_NS_CC;
 
@@ -56,7 +58,7 @@ bool Auction::init()
     /////////////////////////////
     // 2. add your codes below...
 
-    if (auto background = Sprite::create("backgrounds/AuctionBackground.png"))
+    if (auto background = Sprite::create("backgrounds/AuctionBackground.jpg"))
     {
         background->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
         background->setAnchorPoint({ .5f, .5f });
@@ -70,24 +72,13 @@ bool Auction::init()
     addChild(MakeCharacter(4, origin, visibleSize.width));
     addChild(MakeCharacter(5, origin, visibleSize.width));
 
-    auto selection = lhs::Manager::SingleGameManager::Instance().GetSelectionForAuction();
+    auto selections = lhs::Manager::SingleGameManager::Instance().GetSelectionsForAuction();
 
-    if (auto sprite = Sprite::create("easel.png"))
-    {
-        sprite->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 6 });
-        sprite->setAnchorPoint({ .5f, 0 });
+    auto easel = Sprite::create("easel.png");
+    easel->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 6 });
+    easel->setAnchorPoint({ .5f, 0 });
 
-        if (auto painting = ui::Painting::create(selection))
-        {
-            painting->setScale(2.5f);
-            painting->setAnchorPoint({ .5f, 0 });
-            painting->setPosition({ sprite->getPositionX() + 10, sprite->getPositionY() + sprite->getContentSize().height - painting->getBottomPadding() + 10 });
-
-            addChild(painting);
-        }
-
-        addChild(sprite);
-    }
+    addChild(easel);
 
     if (auto sprite = Sprite::create("dealer.png"))
     {
@@ -97,12 +88,66 @@ bool Auction::init()
         addChild(sprite);
     }
 
-    if (auto sprite = Sprite::create("bubble.png"))
+    for (const auto& selection : selections)
     {
-        sprite->setPosition({ origin.x + visibleSize.width * .6f, origin.y + visibleSize.height / 3 });
-        sprite->setAnchorPoint({ .5f, 0 });
+        if (auto painting = ui::Painting::create(selection))
+        {
+            painting->setScale(2.5f);
+            painting->setAnchorPoint({ .5f, 0 });
+            painting->setPosition({ easel->getPositionX() + 10, easel->getPositionY() + easel->getContentSize().height - painting->getBottomPadding() + 10 });
 
-        addChild(sprite);
+            addChild(painting);
+        }
+
+        if (auto artInfo = ui::ListView::create())
+        {
+            artInfo->setBackGroundImage("ArtInfoBoard.png");
+            artInfo->setContentSize(artInfo->getBackGroundImageTextureSize());
+            artInfo->setAnchorPoint({ .5f, .1f });
+            artInfo->setPosition({ origin.x + visibleSize.width * 6 / 7, origin.y + visibleSize.height - artInfo->getContentSize().height });
+            artInfo->setPadding(20, 20, 20, 20);
+            artInfo->setItemsMargin(10);
+
+            artInfo->addChild(ui::Text::create(selection->painter, "fonts/Dovemayo_gothic.ttf", 24));
+            artInfo->addChild(ui::Text::create(selection->title, "fonts/Dovemayo_gothic.ttf", 16));
+
+            addChild(artInfo);
+        }
+
+        if (auto sprite = Sprite::create("bubble.png"))
+        {
+            sprite->setPosition({ origin.x + visibleSize.width * .6f, origin.y + visibleSize.height / 3 });
+            sprite->setAnchorPoint({ .5f, 0 });
+
+            addChild(sprite);
+
+            auto msg = selection->painter + lhs::Utility::ConvertToAscii(u8"의 작품입니다.");
+            auto text = ui::Text::create(msg, "fonts/Dovemayo_gothic.ttf", 24);
+
+            text->setTextColor(Color4B::BLACK);
+            sprite->addChild(text);
+        }
+
+        auto timer = ui::Timer::create(30.f);
+
+        timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
+        timer->setAlarm([&]()
+            {
+                if (--nPlayer < 0)
+                {
+                    auto scene = RankingResult::createScene();
+
+                    Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
+                }
+                else
+                {
+                    // 팝업 표시
+                    removeChildByTag(0xDEADBEEF);
+                }
+            });
+        timer->start();
+        addChild(timer, 0, 0xDEADBEEF);
+
     }
 
     auto player = lhs::Manager::PlayerManager::Instance().GetPlayer(0);
@@ -159,42 +204,6 @@ bool Auction::init()
         addChild(reputation);
     }
 
-    if (auto artInfo = ui::ListView::create())
-    {
-        artInfo->setBackGroundImage("ArtInfoBoard.png");
-        artInfo->setContentSize(artInfo->getBackGroundImageTextureSize());
-        artInfo->setAnchorPoint({ .5f, .1f });
-        artInfo->setPosition({ origin.x + visibleSize.width * 6 / 7, origin.y + visibleSize.height - artInfo->getContentSize().height });
-        artInfo->setPadding(20, 20, 20, 20);
-        artInfo->setItemsMargin(10);
-
-        artInfo->addChild(ui::Text::create(selection->painter, "fonts/Dovemayo_gothic.ttf", 24));
-        artInfo->addChild(ui::Text::create(selection->title, "fonts/Dovemayo_gothic.ttf", 16));
-
-        addChild(artInfo);
-    }
-    
-    auto timer = ui::Timer::create(30.f);
-
-    timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
-    timer->setAlarm([&]()
-        {
-            if (--nPlayer < 0)
-            {
-                auto scene = RankingResult::createScene();
-
-                Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
-            }
-            else
-            {
-                // 팝업 표시
-                removeChildByTag(0xDEADBEEF);
-            }
-
-        });
-    timer->play();
-    addChild(timer, 0, 0xDEADBEEF);
-
     for (auto n : { 1,2,3,4,5 })
     {
         if (auto board = Sprite::create("BidBoard.png"))
@@ -248,7 +257,7 @@ bool Auction::init()
             {
                 auto offer = chatfield->getString();
 
-                log("%s", offer.c_str());
+                cocos2d::log("%s", offer.c_str());
 
                 if (player->GetGold() < std::stoul(offer))
                 {

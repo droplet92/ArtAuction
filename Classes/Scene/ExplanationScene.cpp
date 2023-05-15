@@ -2,19 +2,11 @@
 #include "MyGalleryScene.h"
 
 #include <sstream>
-#include <locale>
-#include <codecvt>
 #include <string>
 #include <Manager/SingleGameManager.h>
 #include <Manager/PlayerManager.h>
+#include "../Utility.h"
 
-
-std::string convertToUtf8(const std::u8string& u8str) {
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
-    std::u32string u32str = converter.from_bytes(reinterpret_cast<const char*>(u8str.data()), reinterpret_cast<const char*>(u8str.data() + u8str.size()));
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf8_converter;
-    return utf8_converter.to_bytes(u32str);
-}
 
 USING_NS_CC;
 
@@ -59,10 +51,10 @@ bool Explanation::init()
                                 origin.y + visibleSize.height - label->getContentSize().height));
         this->addChild(label);
 
-        std::basic_stringstream<char8_t> mm{};
+        lhs::u8stringstream mm{};
         mm << u8"이번 경매는 " << u8"비공개 " << u8"경매입니다.";
 
-        auto msg = Label::createWithTTF(convertToUtf8(mm.str()), "fonts/Dovemayo_gothic.ttf", 24);
+        auto msg = Label::createWithTTF(lhs::Utility::ConvertToAscii(mm.str()), "fonts/Dovemayo_gothic.ttf", 24);
         if (msg == nullptr)
         {
             problemLoading("'fonts/Dovemayo_gothic.ttf'");

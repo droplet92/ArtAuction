@@ -826,6 +826,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="..\Classes\Scene\RoomListScene.h" />
     <ClInclude Include="..\Classes\Scene\TitleScene.h" />
     <ClInclude Include="..\Classes\Scene\WaitingRoomScene.h" />
+    <ClInclude Include="..\Classes\Utility.h" />
     <ClInclude Include="..\Classes\Widget\Painting.h" />
     <ClInclude Include="..\Classes\Widget\PaintingView.h" />
     <ClInclude Include="..\Classes\Widget\Popup.h" />
@@ -846,6 +847,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="..\Classes\Scene\RoomListScene.cpp" />
     <ClCompile Include="..\Classes\Scene\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Scene\WaitingRoomScene.cpp" />
+    <ClCompile Include="..\Classes\Utility.cpp" />
     <ClCompile Include="..\Classes\Widget\Painting.cpp" />
     <ClCompile Include="..\Classes\Widget\PaintingView.cpp" />
     <ClCompile Include="..\Classes\Widget\Popup.cpp" />

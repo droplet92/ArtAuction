@@ -34,9 +34,6 @@
     <ClCompile Include="..\Classes\Widget\Popup.cpp">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="$(ProjectDir)..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="$(ProjectDir)\main.cpp" />
-    <ClCompile Include="$(ProjectDir)..\cocos2d\cocos\precheader.cpp" />
     <ClCompile Include="..\Classes\Widget\Painting.cpp">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClCompile>
@@ -54,6 +51,18 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Manager\PlayerManager.cpp">
       <Filter>Source Files\Classes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(ProjectDir)..\Classes\AppDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(ProjectDir)\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(ProjectDir)..\cocos2d\cocos\precheader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +99,6 @@
     <ClInclude Include="..\Classes\Widget\Popup.h">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClInclude>
-    <ClInclude Include="$(ProjectDir)..\Classes\AppDelegate.h" />
-    <ClInclude Include="$(ProjectDir)\main.h" />
-    <ClInclude Include="$(ProjectDir)\resource.h" />
     <ClInclude Include="$(ProjectDir)..\Resources\CloseNormal.png" />
     <ClInclude Include="$(ProjectDir)..\Resources\CloseSelected.png" />
     <ClInclude Include="$(ProjectDir)..\Resources\HelloWorld.png" />
@@ -122,6 +128,18 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Model\Painting.h">
       <Filter>Source Files\Classes\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Utility.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(ProjectDir)..\Classes\AppDelegate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(ProjectDir)\main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(ProjectDir)\resource.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
