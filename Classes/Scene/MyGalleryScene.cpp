@@ -120,7 +120,7 @@ bool MyGallery::init()
 
         this->addChild(board);
 
-        if (auto timer = ui::Timer::create(30.f))
+        if (auto timer = ui::Timer::create(30))
         {
             timer->setPosition({ visibleSize.width * .85f, visibleSize.height * .85f });
             timer->setAlarm([=]()

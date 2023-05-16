@@ -51,8 +51,12 @@ bool Explanation::init()
                                 origin.y + visibleSize.height - label->getContentSize().height));
         this->addChild(label);
 
+        std::vector<std::u8string> auctionType
+        {
+            u8"비공개", u8"정찰제", u8"실시간", u8"NTF"
+        };
         lhs::u8stringstream mm{};
-        mm << u8"이번 경매는 " << u8"비공개 " << u8"경매입니다.";
+        mm << u8"이번 경매는 " << auctionType[0] << u8"경매입니다.";
 
         auto msg = Label::createWithTTF(lhs::Utility::ConvertToAscii(mm.str()), "fonts/Dovemayo_gothic.ttf", 24);
         if (msg == nullptr)
@@ -70,6 +74,36 @@ bool Explanation::init()
             this->addChild(msg);
         }
     }
+    //auto label = Label::createWithTTF("", "fonts/Dovemayo_gothic.ttf", 24);
+    //label->setPosition(Vec2(200, 200));
+    //label->setTextColor(Color4B::BLACK);
+    //this->addChild(label);
+
+    //std::string text = "Line 1\nLine 2\nLine 3";
+
+    //std::vector<std::string> lines;
+    //std::stringstream ss(text);
+    //std::string line;
+
+    //while (std::getline(ss, line, '\n')) {
+    //    lines.push_back(line);
+    //}
+
+    //float delay = 1.0f;  // Delay between each line display
+    //float fadeInDuration = 0.5f;  // Duration of the fade-in effect
+
+    //for (int i = 0; i < lines.size(); ++i) {
+    //    auto delayAction = DelayTime::create(delay * i);
+    //    auto updateTextAction = CallFunc::create([=]() {
+    //        label->setString(lines[i]);
+    //        });
+
+    //    label->setOpacity(0);  // Set initial opacity to 0
+
+    //    auto fadeInAction = FadeIn::create(fadeInDuration);
+    //    auto sequence = Sequence::create(delayAction, updateTextAction, fadeInAction, nullptr);
+    //    label->runAction(sequence);
+    //}
 
     auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
     auto paintings = lhs::Manager::SingleGameManager::Instance().GetPaintings(4);

@@ -4,13 +4,13 @@ NS_CC_BEGIN
 
 namespace ui
 {
-	Timer::Timer(int remainTime)
-		: _time(nullptr)
+    Timer::Timer(int remainTime)
+        : _time(nullptr)
         , _timer(nullptr)
         , _remainTime(remainTime)
-	{
-		setTouchEnabled(true);
-	}
+    {
+        setTouchEnabled(true);
+    }
 
 	Timer::~Timer()
 	{
@@ -75,11 +75,6 @@ namespace ui
         _time->setString(std::to_string(time));
         _timer->setPercentage(0);
         _timer->runAction(ProgressTo::create(_remainTime, 0));
-    }
-
-    std::string Timer::getDescription() const
-    {
-        return "Timer";
     }
 
     void Timer::scheduler(float dt)
