@@ -32,13 +32,15 @@ namespace ui
 
         virtual ~Timer();
 
-        static Timer* create(float time);
+        static Timer* create(int time);
 
         bool init();
 
         void setAlarm(const TimerAlarm& alarm);
 
         void start();
+
+        void reset(int time);
 
         std::string getDescription() const override;
 
@@ -51,6 +53,7 @@ namespace ui
         TimerAlarm _alarm;
 
         int _remainTime;
+        int _setTime;
     };
 }
 

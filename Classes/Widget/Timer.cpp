@@ -16,7 +16,7 @@ namespace ui
 	{
 	}
 
-    Timer* Timer::create(float time)
+    Timer* Timer::create(int time)
     {
         auto timer = new (std::nothrow) Timer{ static_cast<int>(time) };
         if (timer && timer->init())
@@ -66,6 +66,15 @@ namespace ui
     {
         _timer->runAction(ProgressTo::create(_remainTime, 100));
         _timer->schedule([&](float dt) { return this->scheduler(dt); }, 1.f, _remainTime, 0, "updateTime");
+    }
+
+    void Timer::reset(int time)
+    {
+        _remainTime = time;
+
+        _time->setString(std::to_string(time));
+        _timer->setPercentage(0);
+        _timer->runAction(ProgressTo::create(_remainTime, 0));
     }
 
     std::string Timer::getDescription() const
