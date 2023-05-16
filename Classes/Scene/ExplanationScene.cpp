@@ -68,10 +68,7 @@ bool Explanation::init()
             // position the label on the center of the screen
             msg->setPosition(Vec2(origin.x + visibleSize.width / 2, label->getPosition().y / 2));
 
-            // add the label as a child to this layer
-            log(msg->getString().c_str());
-            log("position: %lf, %lf", msg->getPositionX(), msg->getPositionY());
-            this->addChild(msg);
+            addChild(msg);
         }
     }
     //auto label = Label::createWithTTF("", "fonts/Dovemayo_gothic.ttf", 24);
