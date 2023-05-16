@@ -1,7 +1,7 @@
 #include <Manager/SingleGameManager.h>
 
 #include <iostream>
-#include <list>
+#include <algorithm>
 
 #include <ccRandom.h>
 
@@ -106,9 +106,13 @@ namespace lhs::Manager
 		return submission;
 	}
 
-	std::vector<Model::Painting const*> SingleGameManager::GetSelectionsForAuction()
+	Model::Painting const* SingleGameManager::GetSelectionForAuction()
 	{
-		return selections;
+		auto idx = cocos2d::RandomHelper::random_int<int>(0, selections.size() - 1);
+		auto selection = selections.at(idx);
+
+		selections.erase(selections.begin() + idx);
+		return selection;
 	}
 
 	std::set<std::string> SingleGameManager::GetPainters() const
@@ -119,6 +123,32 @@ namespace lhs::Manager
 	std::unordered_map<std::string, size_t> SingleGameManager::GetReputation() const
 	{
 		return reputation;
+	}
+
+	void SingleGameManager::Bid(const std::pair<int, int>& bid)
+	{
+		bids.push_back(bid);
+	}
+
+	std::pair<int, int> SingleGameManager::GetWinningBid()
+	{
+		auto winningBid = std::make_pair(0, 0);
+
+		do
+		{
+			auto bid = bids.back();
+
+			std::erase_if(bids, [=](auto pair)
+				{
+					return (pair.first == bid.first);
+				});
+
+			if (bid.second > winningBid.second)
+				winningBid = bid;
+		}
+		while (!bids.empty());
+
+		return winningBid;
 	}
 
 	bool SingleGameManager::HasAllUserSubmitted() const

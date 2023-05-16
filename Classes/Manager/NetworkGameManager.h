@@ -21,11 +21,15 @@ namespace lhs::Manager
 
 		Model::Painting const* GetSubmission() const final;
 
-		std::vector<Model::Painting const*> GetSelectionsForAuction() final;
+		Model::Painting const* GetSelectionForAuction() final;
 
 		std::set<std::string> GetPainters() const;
 
 		std::unordered_map<std::string, size_t> GetReputation() const;
+
+		void Bid(const std::pair<int, int>& bid) final;
+
+		std::pair<int, int> GetWinningBid() final;
 
 		bool HasAllUserSubmitted() const final;
 

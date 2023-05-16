@@ -43,7 +43,7 @@ namespace lhs::Manager
 		return nullptr;
 	}
 
-	std::vector<Model::Painting const*> NetworkGameManager::GetSelectionsForAuction()
+	Model::Painting const* NetworkGameManager::GetSelectionForAuction()
 	{
 		return {};
 	}
@@ -56,6 +56,15 @@ namespace lhs::Manager
 	std::unordered_map<std::string, size_t> NetworkGameManager::GetReputation() const
 	{
 		return std::unordered_map<std::string, size_t>();
+	}
+
+	void NetworkGameManager::Bid(const std::pair<int, int>& bid)
+	{
+	}
+
+	std::pair<int, int> NetworkGameManager::GetWinningBid()
+	{
+		return std::pair<int, int>();
 	}
 
 	bool NetworkGameManager::HasAllUserSubmitted() const

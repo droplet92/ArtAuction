@@ -30,6 +30,8 @@ namespace lhs
 
 		void RemovePainting(Model::Painting const* target);
 
+		inline std::string GetName() const { return name; }
+
 		inline size_t GetGold() const { return gold; }
 
 		inline void UpdateGold(size_t amount) { gold += amount; }

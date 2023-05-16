@@ -22,11 +22,15 @@ namespace lhs::Manager
 
 		virtual Model::Painting const* GetSubmission() const = 0;
 
-		virtual std::vector<Model::Painting const*> GetSelectionsForAuction() = 0;
+		virtual Model::Painting const* GetSelectionForAuction() = 0;
 
 		virtual std::set<std::string> GetPainters() const = 0;
 
 		virtual std::unordered_map<std::string, size_t> GetReputation() const = 0;
+
+		virtual void Bid(const std::pair<int, int>& bid) = 0;
+
+		virtual std::pair<int, int> GetWinningBid() = 0;
 
 		virtual bool HasAllUserSubmitted() const = 0;
 	};
