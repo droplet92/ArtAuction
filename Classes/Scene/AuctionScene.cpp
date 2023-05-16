@@ -88,6 +88,10 @@ bool Auction::init()
         addChild(sprite);
     }
 
+    selections.pop_back();
+    selections.pop_back();
+    selections.pop_back();
+
     for (const auto& selection : selections)
     {
         if (auto painting = ui::Painting::create(selection))
@@ -114,21 +118,7 @@ bool Auction::init()
             addChild(artInfo);
         }
 
-        if (auto sprite = Sprite::create("bubble.png"))
-        {
-            sprite->setPosition({ origin.x + visibleSize.width * .6f, origin.y + visibleSize.height / 3 });
-            sprite->setAnchorPoint({ .5f, 0 });
-
-            addChild(sprite);
-
-            auto msg = selection->painter + lhs::Utility::ConvertToAscii(u8"의 작품입니다.");
-            auto text = ui::Text::create(msg, "fonts/Dovemayo_gothic.ttf", 24);
-
-            text->setTextColor(Color4B::BLACK);
-            sprite->addChild(text);
-        }
-
-        auto timer = ui::Timer::create(30.f);
+        auto timer = ui::Timer::create(30);
 
         timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
         timer->setAlarm([&]()
@@ -142,12 +132,72 @@ bool Auction::init()
                 else
                 {
                     // 팝업 표시
-                    removeChildByTag(0xDEADBEEF);
                 }
             });
-        timer->start();
-        addChild(timer, 0, 0xDEADBEEF);
+        addChild(timer);
 
+        auto bubble = ui::Scale9Sprite::create("bubble.png");
+        bubble->setPosition({ origin.x + visibleSize.width * .6f, origin.y + visibleSize.height / 3 });
+        bubble->setAnchorPoint({ .5f, 0 });
+        bubble->setContentSize(bubble->getTextureRect().size);
+
+        addChild(bubble);
+
+        auto messages = std::vector<std::string>{
+            selection->painter + lhs::Utility::ConvertToAscii(u8"\n의 작품입니다."),
+            lhs::Utility::ConvertToAscii(u8"10골드부터\n시작합니다."),
+            lhs::Utility::ConvertToAscii(u8"입찰\n시작합니다!"),
+        };
+        auto text = ui::Text::create("", "fonts/Dovemayo_gothic.ttf", 24);
+        text->setAnchorPoint({ .5f, .5f });
+        text->setTextColor(Color4B::BLACK);
+        bubble->addChild(text);
+        bubble->setOpacity(0);
+
+        float delay = 2.0f;
+        float showDuration = 1.0f;
+        float hideDuration = 1.0f;
+
+        auto delayAction = DelayTime::create(delay);
+
+        // Helper 함수: 메시지 표시 액션 시퀀스 생성
+        auto createMessageAction = [&](const std::string& message) {
+            auto showText = CallFunc::create([=]() {
+                text->setString(message);
+                bubble->setOpacity(0xFF);
+                bubble->setContentSize(text->getContentSize() + Size{ 10.f, 10.f });
+                text->setPosition(bubble->getContentSize() / 2);
+                });
+            auto hideText = CallFunc::create([=]() {
+                text->setString("");
+                bubble->setOpacity(0);
+                bubble->setContentSize(text->getContentSize() + Size{ 10.f, 10.f });
+                text->setPosition(bubble->getContentSize() / 2);
+                });
+            auto showAction = Sequence::create(FadeIn::create(showDuration), nullptr);
+            auto hideAction = Sequence::create(DelayTime::create(hideDuration), FadeOut::create(hideDuration), nullptr);
+
+            return Sequence::create(showAction, showText, hideAction, hideText, nullptr);
+        };
+
+        // 메시지 표시 시퀀스 생성
+        auto messageSequence = createMessageAction(messages[0]); // 첫 번째 메시지는 별도로 생성
+        for (int i = 1; i < messages.size(); ++i) {
+            auto messageAction = createMessageAction(messages[i]);
+            messageSequence = Sequence::create(messageSequence, delayAction->clone(), messageAction, nullptr);
+        }
+
+        auto updateTimerAction = CallFunc::create([=]() {
+            timer->start();
+            });
+
+        auto sequence = Sequence::create(delayAction, messageSequence, updateTimerAction, DelayTime::create(32.f), CallFunc::create([=]() {
+            timer->reset(30);
+            }), nullptr);
+
+        auto games = Sequence::create(sequence, sequence, nullptr);
+
+        runAction(games);
     }
 
     auto player = lhs::Manager::PlayerManager::Instance().GetPlayer(0);
