@@ -210,8 +210,7 @@ bool Auction::init()
         bidBoard->addChild(bidButton);
     }
 
-    //auto timer = ui::Timer::create(30);
-    auto timer = ui::Timer::create(3);
+    auto timer = ui::Timer::create(30);
     {
         timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
         timer->setAlarm([]() {});
@@ -347,14 +346,12 @@ bool Auction::init()
             lhs::Manager::SingleGameManager::Instance().Bid({ 2, cocos2d::RandomHelper::random_int<int>(0, 20) });
             lhs::Manager::SingleGameManager::Instance().Bid({ 3, cocos2d::RandomHelper::random_int<int>(0, 20) });
         });
-    //auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(32.f), nullptr);
-    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(5.f), nullptr);
+    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(32.f), nullptr);
 
     // 3. 결과 발표
     auto timerResetAction = CallFunc::create([=]()
         {
-            //timer->reset(30);
-            timer->reset(3);
+            timer->reset(30);
 
             auto bids = lhs::Manager::SingleGameManager::Instance().GetBids();
 
