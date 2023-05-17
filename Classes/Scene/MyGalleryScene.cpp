@@ -65,7 +65,7 @@ bool MyGallery::init()
         this->addChild(sprite, -1);
     }
 
-    auto roomTitle = Sprite::create("RoomTitle.png");
+    auto roomTitle = Sprite::createWithSpriteFrameName("RoomTitle.png");
     if (roomTitle == nullptr)
     {
         problemLoading("'RoomTitle.png'");
@@ -112,7 +112,7 @@ bool MyGallery::init()
 
         board->AddPaintings(paintings);
 
-        board->setBackGroundImage("GalleryBoard.png");
+        board->setBackGroundImage("GalleryBoard.png", Widget::TextureResType::PLIST);
         board->setBackGroundImageScale9Enabled(true);
         board->setContentSize({ 800, 500 });
         board->setAnchorPoint({ .5f, .5f });
@@ -138,7 +138,7 @@ bool MyGallery::init()
             addChild(timer);
         }
 
-        if (auto startButton = Button::create("StartButton.png", "StartButtonPressed.png"))
+        if (auto startButton = Button::create("StartButton.png", "StartButtonPressed.png", "", Widget::TextureResType::PLIST))
         {
             startButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type)
                 {

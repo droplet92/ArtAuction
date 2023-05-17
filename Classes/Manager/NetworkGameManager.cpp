@@ -62,6 +62,11 @@ namespace lhs::Manager
 	{
 	}
 
+	std::vector<std::pair<int, int>> NetworkGameManager::GetBids() const
+	{
+		return std::vector<std::pair<int, int>>();
+	}
+
 	std::pair<int, int> NetworkGameManager::GetWinningBid()
 	{
 		return std::pair<int, int>();

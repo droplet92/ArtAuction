@@ -56,7 +56,7 @@ bool Explanation::init()
             u8"비공개", u8"정찰제", u8"실시간", u8"NTF"
         };
         lhs::u8stringstream mm{};
-        mm << u8"이번 경매는 " << auctionType[0] << u8"경매입니다.";
+        mm << u8"이번 경매는 " << auctionType[0] << u8" 경매입니다.";
 
         auto msg = Label::createWithTTF(lhs::Utility::ConvertToAscii(mm.str()), "fonts/Dovemayo_gothic.ttf", 24);
         if (msg == nullptr)

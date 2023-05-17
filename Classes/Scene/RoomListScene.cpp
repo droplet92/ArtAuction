@@ -48,7 +48,7 @@ bool RoomList::init()
         this->addChild(sprite, -1);
     }
 
-    auto roomTitle = Sprite::create("RoomTitle.png");
+    auto roomTitle = Sprite::createWithSpriteFrameName("RoomTitle.png");
     if (roomTitle == nullptr)
     {
         problemLoading("'RoomTitle.png'");
@@ -81,10 +81,10 @@ bool RoomList::init()
     auto list = ListView::create();
     if (list != nullptr)
     {
-        auto btn1 = Button::create("Namecard.png", "NamecardPressed.png");
-        auto btn2 = Button::create("Namecard.png", "NamecardPressed.png");
-        auto btn3 = Button::create("Namecard.png", "NamecardPressed.png");
-        auto btn4 = Button::create("Namecard.png", "NamecardPressed.png");
+        auto btn1 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
+        auto btn2 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
+        auto btn3 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
+        auto btn4 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
 
         class PopupStatus
         {
@@ -126,8 +126,8 @@ bool RoomList::init()
             text->setTextColor(Color4B::BLACK);
             text->setString(messagefmt.str());
 
-            auto popupOk = Button::create("PopupOk.png");
-            auto popupCancel = Button::create("PopupCancel.png");
+            auto popupOk = Button::create("PopupOk.png", "", "", Widget::TextureResType::PLIST);
+            auto popupCancel = Button::create("PopupCancel.png", "", "", Widget::TextureResType::PLIST);
 
             popupOk->setTitleFontName("fonts/Dovemayo_gothic.ttf");
             popupOk->setTitleFontSize(24);
@@ -144,7 +144,7 @@ bool RoomList::init()
                 });
 
             auto popup = ListView::create();
-            popup->setBackGroundImage("Popup.png");
+            popup->setBackGroundImage("popup.png", Widget::TextureResType::PLIST);
             popup->setBackGroundImageScale9Enabled(true);
             popup->setPosition(Vec2{ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
             popup->setAnchorPoint(Vec2{ .5f, .5f });
@@ -202,8 +202,8 @@ bool RoomList::init()
         this->addChild(list);
     }
 
-    auto readyButton = Button::create("ReadyButton.png", "ReadyButtonPressed.png");
-    auto startButton = Button::create("StartButton.png", "StartButtonPressed.png");
+    auto readyButton = Button::create("ReadyButton.png", "ReadyButtonPressed.png", "", Widget::TextureResType::PLIST);
+    auto startButton = Button::create("StartButton.png", "StartButtonPressed.png", "", Widget::TextureResType::PLIST);
 
     startButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
         {

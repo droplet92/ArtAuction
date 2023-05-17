@@ -48,7 +48,7 @@ bool RankingResult::init()
         this->addChild(sprite, -1);
     }
 
-    auto roomTitle = Sprite::create("RoomTitle.png");
+    auto roomTitle = Sprite::createWithSpriteFrameName("RoomTitle.png");
     if (roomTitle == nullptr)
     {
         problemLoading("'RoomTitle.png'");
@@ -81,10 +81,10 @@ bool RankingResult::init()
     auto list = ListView::create();
     if (list != nullptr)
     {
-        auto btn1 = Button::create("Namecard.png", "NamecardPressed.png");
-        auto btn2 = Button::create("Namecard.png", "NamecardPressed.png");
-        auto btn3 = Button::create("Namecard.png", "NamecardPressed.png");
-        auto btn4 = Button::create("Namecard.png", "NamecardPressed.png");
+        auto btn1 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
+        auto btn2 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
+        auto btn3 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
+        auto btn4 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
 
         btn1->setTitleFontName("fonts/Dovemayo_gothic.ttf");
         btn2->setTitleFontName("fonts/Dovemayo_gothic.ttf");
@@ -112,7 +112,7 @@ bool RankingResult::init()
         this->addChild(list);
     }
 
-    auto okButton = Button::create("StartButton.png", "StartButtonPressed.png");
+    auto okButton = Button::create("StartButton.png", "StartButtonPressed.png", "", Widget::TextureResType::PLIST);
 
     okButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
         {

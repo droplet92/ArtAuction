@@ -30,6 +30,8 @@ namespace lhs::Manager
 
 		virtual void Bid(const std::pair<int, int>& bid) = 0;
 
+		virtual std::vector<std::pair<int, int>> GetBids() const = 0;
+
 		virtual std::pair<int, int> GetWinningBid() = 0;
 
 		virtual bool HasAllUserSubmitted() const = 0;

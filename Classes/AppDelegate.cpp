@@ -108,10 +108,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // create a scene. it's an autorelease object
+    // load sprite sheets
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images.plist", "images.png");
+
+    // create a scene.
     auto scene = Title::createScene();
 
-    // run
     director->runWithScene(scene);
 
     return true;

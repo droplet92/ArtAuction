@@ -10,6 +10,8 @@
 #include "../Utility.h"
 
 #include <ccRandom.h>
+#include <algorithm>
+#include <ranges>
 
 USING_NS_CC;
 
@@ -35,12 +37,13 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+
 Sprite* MakeCharacter(int n, const Vec2& origin, float visibleWidth)
 {
     std::stringstream ss;
-    ss << "characters/character" << n << ".png";
+    ss << "front" << n << ".png";
 
-    if (auto character = Sprite::create(ss.str()))
+    if (auto character = Sprite::createWithSpriteFrameName(ss.str()))
     {
         character->setPosition({ origin.x + visibleWidth / 10 * (n * 2 - 1), origin.y });
         character->setAnchorPoint({ .5f, 0 });
@@ -67,6 +70,7 @@ bool Auction::init()
     /////////////////////////////
     // 2. add your codes below...
 
+    // SpriteFrameCache에 이미지 파일 로드
     auto player = lhs::Manager::PlayerManager::Instance().GetPlayer(0);
 
 
@@ -78,7 +82,7 @@ bool Auction::init()
         addChild(background);
     }
 
-    auto easel = Sprite::create("easel.png");
+    auto easel = Sprite::createWithSpriteFrameName("easel.png");
     {
         easel->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 6 });
         easel->setAnchorPoint({ .5f, 0 });
@@ -86,22 +90,28 @@ bool Auction::init()
         addChild(easel);
     }
 
-    if (auto sprite = Sprite::create("dealer.png"))
+    if (auto sprite = Sprite::createWithSpriteFrameName("dealer.png"))
     {
         sprite->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4 });
         sprite->setAnchorPoint({ .5f, .5f });
 
         addChild(sprite);
     }
-    addChild(MakeCharacter(1, origin, visibleSize.width));
-    addChild(MakeCharacter(2, origin, visibleSize.width));
-    addChild(MakeCharacter(3, origin, visibleSize.width));
-    addChild(MakeCharacter(4, origin, visibleSize.width));
-    addChild(MakeCharacter(5, origin, visibleSize.width));
+
+    auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
+    std::vector<Sprite*> characters = {
+        MakeCharacter(1, origin, visibleSize.width),
+        MakeCharacter(2, origin, visibleSize.width),
+        MakeCharacter(3, origin, visibleSize.width),
+        MakeCharacter(4, origin, visibleSize.width),
+        //MakeCharacter(5, origin, visibleSize.width),
+    };
+    for (const auto& character : characters)
+        addChild(character);
 
     if (auto reputation = ui::ListView::create())
     {
-        reputation->setBackGroundImage("PaintersInfoBoard.png");
+        reputation->setBackGroundImage("PaintersInfoBoard.png", ui::Widget::TextureResType::PLIST);
         reputation->setContentSize(reputation->getBackGroundImageTextureSize());
         reputation->setAnchorPoint({ .5f, .1f });
         reputation->setPosition({ origin.x + visibleSize.width * 3 / 10, origin.y + visibleSize.height - reputation->getContentSize().height });
@@ -127,7 +137,7 @@ bool Auction::init()
 
     auto bidBoard = ui::Layout::create();
     {
-        bidBoard->setBackGroundImage("Popup.png");
+        bidBoard->setBackGroundImage("popup.png", ui::Widget::TextureResType::PLIST);
         bidBoard->setBackGroundImageScale9Enabled(true);
         bidBoard->setAnchorPoint({ .5f, .5f });
         bidBoard->setContentSize({ bidBoard->getBackGroundImageTextureSize().width * .6f,
@@ -164,7 +174,7 @@ bool Auction::init()
         bidBoard->addChild(bidField);
     }
 
-    auto bidButton = ui::Button::create("PopupOk.png");
+    auto bidButton = ui::Button::create("PopupOk.png", "", "", ui::Widget::TextureResType::PLIST);
     {
         bidButton->setTitleFontName(fontBasic);
         bidButton->setTitleFontSize(fontSizeMedium);
@@ -176,14 +186,20 @@ bool Auction::init()
                     auto offer = bidField->getString();
 
                     cocos2d::log("%s", offer.c_str());
-
-                    if (player->GetGold() < std::stoul(offer))
+                    try
                     {
-                        // 팝업 띄우기
-                        return;
+                        if (player->GetGold() < std::stoul(offer))
+                        {
+                            // 팝업 띄우기
+                            return;
+                        }
+                        lhs::Manager::SingleGameManager::Instance().Bid({ 0, std::stoi(offer) });
+                        bidField->setPlaceHolder("Offer: " + offer);
                     }
-                    lhs::Manager::SingleGameManager::Instance().Bid({ 0, std::stoi(offer) });
-                    bidField->setPlaceHolder("Offer: " + offer);
+                    catch (const std::exception& e)
+                    {
+                        cocos2d::log("%s: ", e.what());
+                    }
                     bidField->setString("");
                 }
             });
@@ -194,7 +210,8 @@ bool Auction::init()
         bidBoard->addChild(bidButton);
     }
 
-    auto timer = ui::Timer::create(30);
+    //auto timer = ui::Timer::create(30);
+    auto timer = ui::Timer::create(3);
     {
         timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
         timer->setAlarm([]() {});
@@ -202,7 +219,7 @@ bool Auction::init()
         addChild(timer);
     }
 
-    auto bubble = ui::Scale9Sprite::create("bubble.png");
+    auto bubble = ui::Scale9Sprite::createWithSpriteFrameName("bubble.png");
     {
         bubble->setPosition({ origin.x + visibleSize.width * .6f, origin.y + visibleSize.height / 3 });
         bubble->setAnchorPoint({ .5f, 0 });
@@ -240,7 +257,7 @@ bool Auction::init()
             // 이상하게 padding 옵션이 안 먹음
             auto gallery = ui::ListView::create();
             {
-                gallery->setBackGroundImage("PaintersInfoBoard.png");
+                gallery->setBackGroundImage("PaintersInfoBoard.png", ui::Widget::TextureResType::PLIST);
                 gallery->setContentSize(gallery->getBackGroundImageTextureSize());
                 gallery->setAnchorPoint({ .5f, .1f });
                 gallery->setPosition({ origin.x + visibleSize.width / 8, origin.y + visibleSize.height - gallery->getContentSize().height });
@@ -263,7 +280,7 @@ bool Auction::init()
 
             auto artInfo = ui::ListView::create();
             {
-                artInfo->setBackGroundImage("ArtInfoBoard.png");
+                artInfo->setBackGroundImage("ArtInfoBoard.png", ui::Widget::TextureResType::PLIST);
                 artInfo->setContentSize(artInfo->getBackGroundImageTextureSize());
                 artInfo->setAnchorPoint({ .5f, .1f });
                 artInfo->setPosition({ origin.x + visibleSize.width * 6 / 7, origin.y + visibleSize.height - artInfo->getContentSize().height });
@@ -291,10 +308,6 @@ bool Auction::init()
     auto beginSequence = Sequence::create(getDataAction, uiSetupAction, nullptr);
 
     // Playing Sequence
-    lhs::Manager::SingleGameManager::Instance().Bid({ 1, cocos2d::RandomHelper::random_int<int>(0, 20) });
-    lhs::Manager::SingleGameManager::Instance().Bid({ 2, cocos2d::RandomHelper::random_int<int>(0, 20) });
-    lhs::Manager::SingleGameManager::Instance().Bid({ 3, cocos2d::RandomHelper::random_int<int>(0, 20) });
-
     auto delayAction = DelayTime::create(delay);
 
     auto createMessageAction = [&](const std::string* message) {
@@ -329,24 +342,45 @@ bool Auction::init()
         {
             bidButton->setEnabled(true);
             timer->start();
+
+            lhs::Manager::SingleGameManager::Instance().Bid({ 1, cocos2d::RandomHelper::random_int<int>(0, 20) });
+            lhs::Manager::SingleGameManager::Instance().Bid({ 2, cocos2d::RandomHelper::random_int<int>(0, 20) });
+            lhs::Manager::SingleGameManager::Instance().Bid({ 3, cocos2d::RandomHelper::random_int<int>(0, 20) });
         });
-    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(32.f), nullptr);
+    //auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(32.f), nullptr);
+    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(5.f), nullptr);
 
     // 3. 결과 발표
     auto timerResetAction = CallFunc::create([=]()
         {
-            timer->reset(30);
-        });
-    for (auto n : { 1,2,3,4,5 })
-    {
-        if (auto board = Sprite::create("BidBoard.png"))
-        {
-            board->setPosition({ origin.x + visibleSize.width / 10 * (n * 2 - 1), origin.y + visibleSize.height / 6 });
-            board->setAnchorPoint({ .5f, 0 });
+            //timer->reset(30);
+            timer->reset(3);
 
-            //addChild(board);
-        }
-    }
+            auto bids = lhs::Manager::SingleGameManager::Instance().GetBids();
+
+            for (int i = 0; i < characters.size(); i++)
+            {
+                auto bidder = players[i];
+                auto iter = std::ranges::find_if(bids, [=](auto bid) { return bid.first == bidder->GetId(); });
+                auto bid = (iter != std::end(bids)) ? iter->second : 0;
+
+                if (auto board = Sprite::createWithSpriteFrameName("BidBoard.png"))
+                {
+                    board->setPosition(characters[i]->getPosition() + Vec2{0, 200});
+                    board->setAnchorPoint({ .5f, 0 });
+
+                    auto text = ui::Text::create(std::to_string(bid), fontBasic, fontSizeMedium);
+                    text->setTextColor(Color4B::BLACK);
+                    text->setPosition(board->getContentSize() / 2);
+                    text->setAnchorPoint({ .5f, .5f });
+
+                    board->addChild(text);
+
+                    addChild(board, 0, bidder->GetId());
+                }
+            }
+        });
+
     auto showResultAction = CallFunc::create([=]()
         {
             auto [id, gold] = lhs::Manager::SingleGameManager::Instance().GetWinningBid();
@@ -401,6 +435,9 @@ bool Auction::init()
             // 임시
             removeChildByTag(0x11112222);
             removeChildByTag(0x33334444);
+
+            for (const auto& player : players)
+                removeChildByTag(player->GetId());
         });
     auto endSequence = Sequence::create(uiCleanupAction, nullptr);
 

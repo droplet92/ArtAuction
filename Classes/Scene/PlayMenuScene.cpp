@@ -34,8 +34,10 @@ bool PlayMenu::init()
     /////////////////////////////
     // 2. add your codes below...
 
-    auto singlePlayButton = Button::create("SinglePlayButton.png", "SinglePlayButtonPressed.png");
+    auto singlePlayButton = Button::create();
 
+    singlePlayButton->loadTextureNormal("SinglePlayButton.png", Widget::TextureResType::PLIST);
+    singlePlayButton->loadTexturePressed("SinglePlayButtonPressed.png", Widget::TextureResType::PLIST);
     singlePlayButton->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.66f));
     singlePlayButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type) {
         auto scene = WaitingRoom::createScene();
@@ -53,8 +55,10 @@ bool PlayMenu::init()
         });
     this->addChild(singlePlayButton, 1);
 
-    auto multiplayButton = Button::create("MultiplayButton.png", "MultiplayButtonPressed.png");
+    auto multiplayButton = Button::create();
 
+    multiplayButton->loadTextureNormal("MultiplayButton.png", Widget::TextureResType::PLIST);
+    multiplayButton->loadTexturePressed("MultiplayButtonPressed.png", Widget::TextureResType::PLIST);
     multiplayButton->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.33f));
     multiplayButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type) {
         auto scene = RoomList::createScene();

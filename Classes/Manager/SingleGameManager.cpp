@@ -130,6 +130,11 @@ namespace lhs::Manager
 		bids.push_back(bid);
 	}
 
+	std::vector<std::pair<int, int>> SingleGameManager::GetBids() const
+	{
+		return bids;
+	}
+
 	std::pair<int, int> SingleGameManager::GetWinningBid()
 	{
 		auto winningBid = std::make_pair(0, 0);

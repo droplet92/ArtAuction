@@ -29,6 +29,8 @@ namespace lhs::Manager
 
 		void Bid(const std::pair<int, int>& bid) final;
 
+		std::vector<std::pair<int, int>> GetBids() const final;
+
 		std::pair<int, int> GetWinningBid() final;
 
 		bool HasAllUserSubmitted() const final;
