@@ -2,8 +2,13 @@
 #include "AuctionScene.h"
 #include "Widget/Painting.h"
 #include <Manager/SingleGameManager.h>
+#include <audio/include/AudioEngine.h>
 
 USING_NS_CC;
+
+PaintingSubmission::~PaintingSubmission()
+{
+}
 
 Scene* PaintingSubmission::createScene()
 {
@@ -64,6 +69,7 @@ bool PaintingSubmission::init()
         painting->setScale(3.f);
 
         float width = painting->getContentSize().width;
+        float height = 0;
 
         {
             painter->setPosition({ width / 2, painter->getContentSize().height / 2 });
@@ -73,6 +79,8 @@ bool PaintingSubmission::init()
             _layout->setContentSize({ width, painter->getContentSize().height });
             _layout->addChild(painter);
             vbox->addChild(_layout);
+
+            height += painter->getContentSize().height;
         }
 
         {
@@ -83,6 +91,8 @@ bool PaintingSubmission::init()
             _layout->setContentSize({ width, painting->getContentSize().height });
             _layout->addChild(painting);
             vbox->addChild(_layout);
+
+            height += painting->getContentSize().height;
         }
 
         {
@@ -93,8 +103,10 @@ bool PaintingSubmission::init()
             _layout->setContentSize({ width, title->getContentSize().height });
             _layout->addChild(title);
             vbox->addChild(_layout);
+
+            height += title->getContentSize().height;
         }
-        vbox->setContentSize({ width, visibleSize.height });
+        vbox->setContentSize({ width, height });
         vbox->setPosition({ visibleSize.width / 2, visibleSize.height / 2 });
         vbox->setAnchorPoint({ .5f, .5f });
 
@@ -110,7 +122,7 @@ bool PaintingSubmission::init()
             Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
         }
     };
-    schedule(moveToNextScene, 1.f, 30, 0, "key");
+    schedule(moveToNextScene, 3.f, 30, 0, "key");
 
     return true;
 }
@@ -123,6 +135,7 @@ void PaintingSubmission::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 

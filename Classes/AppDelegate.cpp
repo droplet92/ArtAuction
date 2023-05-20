@@ -23,16 +23,15 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "Scene/TitleScene.h"
 
-// #define USE_AUDIO_ENGINE 1
+#include <ccRandom.h>
+#include <audio/include/AudioEngine.h>
 
-#if USE_AUDIO_ENGINE
-#include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
-#endif
+#include <Scene/TitleScene.h>
+#include <Widget/Jukebox.h>
 
 USING_NS_CC;
+
 
 //static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size designResolutionSize = cocos2d::Size(1280, 720);
@@ -46,9 +45,7 @@ AppDelegate::AppDelegate()
 
 AppDelegate::~AppDelegate() 
 {
-#if USE_AUDIO_ENGINE
     AudioEngine::end();
-#endif
 }
 
 // if you want a different context, modify the value of glContextAttrs
@@ -106,6 +103,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
     }
 
+    AudioEngine::preload("audios/click.mp3");
+    lhs::Jukebox::Instance().Start();
+
     register_all_packages();
 
     // load sprite sheets
@@ -120,19 +120,15 @@ bool AppDelegate::applicationDidFinishLaunching() {
 }
 
 // This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
-void AppDelegate::applicationDidEnterBackground() {
+void AppDelegate::applicationDidEnterBackground()
+{
     Director::getInstance()->stopAnimation();
-
-#if USE_AUDIO_ENGINE
     AudioEngine::pauseAll();
-#endif
 }
 
 // this function will be called when the app is active again
-void AppDelegate::applicationWillEnterForeground() {
+void AppDelegate::applicationWillEnterForeground()
+{
     Director::getInstance()->startAnimation();
-
-#if USE_AUDIO_ENGINE
     AudioEngine::resumeAll();
-#endif
 }

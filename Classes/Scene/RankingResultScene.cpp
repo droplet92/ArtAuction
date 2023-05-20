@@ -2,9 +2,14 @@
 #include "WaitingRoomScene.h"
 
 #include "ui/CocosGUI.h"
+#include <audio/include/AudioEngine.h>
 
 USING_NS_CC;
 using namespace ui;
+
+RankingResult::~RankingResult()
+{
+}
 
 Scene* RankingResult::createScene()
 {
@@ -94,10 +99,10 @@ bool RankingResult::init()
         btn2->setTitleFontSize(40.f);
         btn3->setTitleFontSize(40.f);
         btn4->setTitleFontSize(40.f);
-        btn1->setTitleText("droplet9250");
-        btn2->setTitleText("loremipsum");
-        btn3->setTitleText("pdi0409");
-        btn4->setTitleText("hi");
+        btn1->setTitleText("You");
+        btn2->setTitleText("Andrew");
+        btn3->setTitleText("Benjamin");
+        btn4->setTitleText("Catherine");
 
         list->setContentSize(Size{ 437.5, 400 });
         list->setScrollBarEnabled(false);
@@ -146,6 +151,7 @@ void RankingResult::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 

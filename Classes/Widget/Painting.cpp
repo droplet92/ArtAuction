@@ -37,8 +37,8 @@ namespace ui
 
         if (image = ImageView::create(data->path.string()))
         {
-            image->setScale(.05f, .05f);
-            image->setPosition({ 75, 75 });
+            image->setScale(1 / 15.f);
+            image->setPosition({ 80, 80 });
             image->setAnchorPoint({ .5f, .5f });
             addChild(image);
 

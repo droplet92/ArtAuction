@@ -64,6 +64,9 @@
     <ClCompile Include="$(ProjectDir)..\cocos2d\cocos\precheader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Widget\Jukebox.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\Scene\AuctionScene.h">
@@ -141,6 +144,9 @@
     <ClInclude Include="$(ProjectDir)\resource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Widget\Jukebox.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="$(ProjectDir)..\CMakeLists.txt" />
@@ -202,6 +208,9 @@
     </Filter>
     <Filter Include="Source Files\Classes\Model">
       <UniqueIdentifier>{158d2b77-d067-4252-a318-645796dae4e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\audios">
+      <UniqueIdentifier>{5eb24498-63db-47a7-9185-45f5fef0790c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -400,5 +409,19 @@
     <Image Include="..\Resources\paintings\AI\AI - Haerin (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\Resources\audios\bgm2.mp3">
+      <Filter>Resources\audios</Filter>
+    </Media>
+    <Media Include="..\Resources\audios\bgm3.mp3">
+      <Filter>Resources\audios</Filter>
+    </Media>
+    <Media Include="..\Resources\audios\click.mp3">
+      <Filter>Resources\audios</Filter>
+    </Media>
+    <Media Include="..\Resources\audios\bgm1.mp3">
+      <Filter>Resources\audios</Filter>
+    </Media>
   </ItemGroup>
 </Project>

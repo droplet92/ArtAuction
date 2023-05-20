@@ -6,9 +6,14 @@
 #include <Manager/SingleGameManager.h>
 #include <Manager/PlayerManager.h>
 #include "../Utility.h"
+#include <audio/include/AudioEngine.h>
 
 
 USING_NS_CC;
+
+Explanation::~Explanation()
+{
+}
 
 Scene* Explanation::createScene()
 {
@@ -130,6 +135,7 @@ void Explanation::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 

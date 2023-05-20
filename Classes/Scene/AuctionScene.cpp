@@ -2,6 +2,8 @@
 #include "RankingResultScene.h"
 
 #include <cocos/ui/CocosGUI.h>
+#include <audio/include/AudioEngine.h>
+#include <ccRandom.h>
 
 #include <Widget/Timer.h>
 #include <Widget/Painting.h>
@@ -9,7 +11,6 @@
 #include <Manager/PlayerManager.h>
 #include "../Utility.h"
 
-#include <ccRandom.h>
 #include <algorithm>
 #include <ranges>
 
@@ -24,6 +25,10 @@ constexpr float delay = 2.0f;
 constexpr float showDuration = 1.0f;
 constexpr float hideDuration = 1.0f;
 
+
+Auction::~Auction()
+{
+}
 
 Scene* Auction::createScene()
 {
@@ -204,8 +209,8 @@ bool Auction::init()
                 }
             });
         bidButton->setAnchorPoint({ .1f, .5f });
-        bidButton->setPosition({ bidBoard->getContentSize().width - bidButton->getContentSize().width,
-                                bidBoard->getContentSize().height / 2 });
+        bidButton->setPosition({    bidBoard->getContentSize().width - bidButton->getContentSize().width,
+                                    bidBoard->getContentSize().height / 2 });
 
         bidBoard->addChild(bidButton);
     }
@@ -463,6 +468,7 @@ void Auction::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 

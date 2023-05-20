@@ -2,9 +2,14 @@
 #include "PlayMenuScene.h"
 #include "WaitingRoomScene.h"
 #include "RoomListScene.h"
+#include <audio/include/AudioEngine.h>
 
 USING_NS_CC;
 using namespace ui;
+
+PlayMenu::~PlayMenu()
+{
+}
 
 Scene* PlayMenu::createScene()
 {
@@ -47,6 +52,7 @@ bool PlayMenu::init()
         case ui::Widget::TouchEventType::BEGAN:
             break;
         case ui::Widget::TouchEventType::ENDED:
+            AudioEngine::play2d("audios/click.mp3");
             Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
             break;
         default:
@@ -66,12 +72,16 @@ bool PlayMenu::init()
         switch (type)
         {
         case ui::Widget::TouchEventType::ENDED:
+            AudioEngine::play2d("audios/click.mp3");
             Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
             break;
         default:
             break;
         }
         });
+
+    multiplayButton->setEnabled(false);
+
     this->addChild(multiplayButton, 1);
 
     // add "HelloWorld" splash screen"
@@ -100,6 +110,7 @@ void PlayMenu::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 

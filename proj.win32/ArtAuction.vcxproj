@@ -827,6 +827,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="..\Classes\Scene\TitleScene.h" />
     <ClInclude Include="..\Classes\Scene\WaitingRoomScene.h" />
     <ClInclude Include="..\Classes\Utility.h" />
+    <ClInclude Include="..\Classes\Widget\Jukebox.h" />
     <ClInclude Include="..\Classes\Widget\Painting.h" />
     <ClInclude Include="..\Classes\Widget\PaintingView.h" />
     <ClInclude Include="..\Classes\Widget\Popup.h" />
@@ -848,6 +849,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="..\Classes\Scene\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Scene\WaitingRoomScene.cpp" />
     <ClCompile Include="..\Classes\Utility.cpp" />
+    <ClCompile Include="..\Classes\Widget\Jukebox.cpp" />
     <ClCompile Include="..\Classes\Widget\Painting.cpp" />
     <ClCompile Include="..\Classes\Widget\PaintingView.cpp" />
     <ClCompile Include="..\Classes\Widget\Popup.cpp" />
@@ -991,6 +993,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Small Worlds II (1922).jpg" />
     <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Squares with Concentric (1913).jpg" />
     <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - The Cow (1910).jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\Resources\audios\bgm1.mp3" />
+    <Media Include="..\Resources\audios\bgm2.mp3" />
+    <Media Include="..\Resources\audios\bgm3.mp3" />
+    <Media Include="..\Resources\audios\click.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

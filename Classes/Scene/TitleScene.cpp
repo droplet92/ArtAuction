@@ -1,9 +1,15 @@
 #include "TitleScene.h"
 #include "PlayMenuScene.h"
 
+#include <audio/include/AudioEngine.h>
 #include <Manager/SingleGameManager.h>
 
 USING_NS_CC;
+
+
+Title::~Title()
+{
+}
 
 Scene* Title::createScene()
 {
@@ -27,6 +33,9 @@ bool Title::init()
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    //AudioEngine::preload("audios/bgm1.mp3");
+    //AudioEngine::play2d("audios/bgm1.mp3", true);
 
     /////////////////////////////
     // 2. add your codes below...
@@ -106,8 +115,7 @@ void Title::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
 }

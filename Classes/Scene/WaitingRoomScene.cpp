@@ -2,12 +2,19 @@
 
 #include <Manager/PlayerManager.h>
 #include <Manager/SingleGameManager.h>
+#include <audio/include/AudioEngine.h>
+
+#include <Widget/Popup.h>
 
 #include "WaitingRoomScene.h"
 #include "ExplanationScene.h"
 
 USING_NS_CC;
 using namespace ui;
+
+WaitingRoom::~WaitingRoom()
+{
+}
 
 Scene* WaitingRoom::createScene()
 {
@@ -103,95 +110,43 @@ bool WaitingRoom::init()
         auto btn3 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
         auto btn4 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
 
-        class PopupStatus
+
+        auto popup = Popup::create({ 1, .5f });
         {
-        public:
-            bool isOpen() const
-            {
-                return _isOpen;
-            }
+            //popup->setEnabled(false);
+            popup->setVisible(false);
+            addChild(popup, 1);
+        }
 
-            void setOpen(bool doOpen)
-            {
-                _isOpen = doOpen;
-            }
-
-        private:
-            bool _isOpen = false;
-        };
-
-        auto stat = new PopupStatus{};
-
-        auto func = [=](Ref* sender, Widget::TouchEventType type)
+        auto onButtonPressed = [=](Ref* sender, Widget::TouchEventType type)
             {
                 if (type != Widget::TouchEventType::ENDED)
                     return;
 
-                if (stat->isOpen())
+                if (popup->isVisible())
                     return;
 
-                stat->setOpen(true);
+                AudioEngine::play2d("audios/click.mp3");
 
                 std::stringstream messagefmt{};
-                Button* caller = (Button*)sender;
-
-                messagefmt << "Kick this player [" << caller->getTitleText() << "]?";
-
+                {
+                    Button* caller = (Button*)sender;
+                    messagefmt << "Kick this player [" << caller->getTitleText() << "]?";
+                }
                 auto text = Text::create();
-                text->setFontName("fonts/Dovemayo_gothic.ttf");
-                text->setFontSize(24);
-                text->setTextColor(Color4B::BLACK);
-                text->setString(messagefmt.str());
-
-                auto popupOk = Button::create("PopupOk.png", "", "", Widget::TextureResType::PLIST);
-                auto popupCancel = Button::create("PopupCancel.png", "", "", Widget::TextureResType::PLIST);
-
-                popupOk->setTitleFontName("fonts/Dovemayo_gothic.ttf");
-                popupOk->setTitleFontSize(24);
-                popupOk->setTitleText("Yes");
-                popupOk->addTouchEventListener([=](auto sender, auto type)
-                    {
-                        this->removeChildByTag(0xDEADBEEF);
-                        stat->setOpen(false);
-                    });
-                popupCancel->addTouchEventListener([=](auto sender, auto type)
-                    {
-                        this->removeChildByTag(0xDEADBEEF);
-                        stat->setOpen(false);
-                    });
-
-                auto popup = ListView::create();
-                popup->setBackGroundImage("popup.png", Widget::TextureResType::PLIST);
-                popup->setBackGroundImageScale9Enabled(true);
-                popup->setPosition(Vec2{ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
-                popup->setAnchorPoint(Vec2{ .5f, .5f });
-
-                popup->setContentSize(Size{ popup->getBackGroundImageTextureSize().width,
-                                            popup->getBackGroundImageTextureSize().height / 2 });
-                popup->setScrollBarEnabled(false);
-                popup->setItemsMargin(10.f);
-                popup->setPadding(20.f, 40.f, 20.f, 40.f);
-
-                popup->addChild(text);
-
-                popupOk->setAnchorPoint(Vec2{ .5f, 0 });
-                popupCancel->setAnchorPoint(Vec2{ .5f, .5f });
-                popupOk->setPosition(Vec2{ popup->getPosition().x,
-                                            popup->getPosition().y - popup->getInnerContainerSize().height / 2 + 10.f });
-                popupCancel->setPosition(Vec2{ popup->getPosition().x + popup->getInnerContainerSize().width / 2 - 20.f,
-                                                popup->getPosition().y + popup->getInnerContainerSize().height / 2 - 20.f });
-
-                auto layout = Layout::create();
-                layout->addChild(popup);
-                layout->addChild(popupOk);
-                layout->addChild(popupCancel);
-
-                this->addChild(layout, 0, 0xDEADBEEF);
+                {
+                    text->setFontName("fonts/Dovemayo_gothic.ttf");
+                    text->setFontSize(24);
+                    text->setTextColor(Color4B::BLACK);
+                    text->setString(messagefmt.str());
+                }
+                popup->addContent(text);
+                popup->setVisible(true);
             };
-        btn1->addTouchEventListener(func);
-        btn2->addTouchEventListener(func);
-        btn3->addTouchEventListener(func);
-        btn4->addTouchEventListener(func);
+        btn1->addTouchEventListener(onButtonPressed);
+        btn2->addTouchEventListener(onButtonPressed);
+        btn3->addTouchEventListener(onButtonPressed);
+        btn4->addTouchEventListener(onButtonPressed);
 
         btn1->setTitleFontName("fonts/Dovemayo_gothic.ttf");
         btn2->setTitleFontName("fonts/Dovemayo_gothic.ttf");
@@ -201,10 +156,10 @@ bool WaitingRoom::init()
         btn2->setTitleFontSize(40.f);
         btn3->setTitleFontSize(40.f);
         btn4->setTitleFontSize(40.f);
-        btn1->setTitleText("droplet9250");
-        btn2->setTitleText("loremipsum");
-        btn3->setTitleText("pdi0409");
-        btn4->setTitleText("hi");
+        btn1->setTitleText("You");
+        btn2->setTitleText("Andrew");
+        btn3->setTitleText("Benjamin");
+        btn4->setTitleText("Catherine");
 
         list->setContentSize(Size{ 437.5, 400 });
         list->setScrollBarEnabled(false);
@@ -216,10 +171,10 @@ bool WaitingRoom::init()
         list->addChild(btn3);
         list->addChild(btn4);
 
-        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "droplet9250" });
-        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "loremipsum" });
-        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "pdi0409" });
-        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "hi" });
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "You" });
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "Andrew" });
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "Benjamin" });
+        lhs::Manager::PlayerManager::Instance().AddPlayer(new lhs::Player{ "Catherine" });
         lhs::Manager::SingleGameManager::Instance().SetNumberOfPlayers(4);
 
         this->addChild(list);
@@ -227,7 +182,7 @@ bool WaitingRoom::init()
 
     auto chatlog = ListView::create();
 
-    chatlog->setContentSize(Size{ 400, 420 });
+    chatlog->setContentSize(Size{ 400, 420 }); 
     chatlog->setAnchorPoint(Vec2{ 0, 0.5 });
     chatlog->setPosition(Vec2{ origin.x + visibleSize.width * 0.6f, origin.y + visibleSize.height * 0.63f });
 
@@ -263,6 +218,7 @@ bool WaitingRoom::init()
             if (type != ui::Widget::TouchEventType::ENDED)
                 return;
 
+            AudioEngine::play2d("audios/click.mp3");
             auto scene = Explanation::createScene();
 
             Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
@@ -319,6 +275,7 @@ void WaitingRoom::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 

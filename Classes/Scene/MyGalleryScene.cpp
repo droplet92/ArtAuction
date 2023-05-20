@@ -1,5 +1,6 @@
 #include "ui/CocosGUI.h"
 #include <extensions/cocos-ext.h>
+#include <audio/include/AudioEngine.h>
 
 #include "MyGalleryScene.h"
 #include "PaintingSubmissionScene.h"
@@ -19,9 +20,12 @@
 #include <Manager/PlayerManager.h>
 
 
-
 USING_NS_CC;
 using namespace ui;
+
+MyGallery::~MyGallery()
+{
+}
 
 Scene* MyGallery::createScene()
 {
@@ -145,6 +149,7 @@ bool MyGallery::init()
                     if (type != ui::Widget::TouchEventType::ENDED)
                         return;
 
+                    AudioEngine::play2d("audios/click.mp3");
                     auto submission = board->getSelected();
 
                     lhs::Manager::SingleGameManager::Instance().SubmitPainting(submission);
@@ -170,6 +175,7 @@ void MyGallery::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 

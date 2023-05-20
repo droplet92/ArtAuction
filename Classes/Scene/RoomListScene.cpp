@@ -1,10 +1,16 @@
 #include "ui/CocosGUI.h"
 
+#include <audio/include/AudioEngine.h>
+
 #include "RoomListScene.h"
 #include "WaitingRoomScene.h"
 
 USING_NS_CC;
 using namespace ui;
+
+RoomList::~RoomList()
+{
+}
 
 Scene* RoomList::createScene()
 {
@@ -184,10 +190,10 @@ bool RoomList::init()
         btn2->setTitleFontSize(40.f);
         btn3->setTitleFontSize(40.f);
         btn4->setTitleFontSize(40.f);
-        btn1->setTitleText("droplet9250 2/4");
-        btn2->setTitleText("loremipsum 1/3");
-        btn3->setTitleText("pdi0409 1/5");
-        btn4->setTitleText("hi 3/3");
+        btn1->setTitleText("RoomA 2/4");
+        btn2->setTitleText("RoomB 1/3");
+        btn3->setTitleText("RoomC 1/5");
+        btn4->setTitleText("RoomD 3/3");
 
         list->setContentSize(Size{ 437.5, 400 });
         list->setScrollBarEnabled(false);
@@ -240,6 +246,7 @@ void RoomList::menuCloseCallback(Ref* pSender)
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
+    AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
