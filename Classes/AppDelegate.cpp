@@ -45,7 +45,7 @@ AppDelegate::AppDelegate()
 
 AppDelegate::~AppDelegate() 
 {
-    AudioEngine::end();
+    //AudioEngine::end();
 }
 
 // if you want a different context, modify the value of glContextAttrs

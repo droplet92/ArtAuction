@@ -113,7 +113,6 @@ bool WaitingRoom::init()
 
         auto popup = Popup::create({ 1, .5f });
         {
-            //popup->setEnabled(false);
             popup->setVisible(false);
             addChild(popup, 1);
         }
