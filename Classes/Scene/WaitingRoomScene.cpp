@@ -142,7 +142,7 @@ bool WaitingRoom::init()
                 popup->addContent(text);
                 popup->setVisible(true);
             };
-        btn1->addTouchEventListener(onButtonPressed);
+        //btn1->addTouchEventListener(onButtonPressed);
         btn2->addTouchEventListener(onButtonPressed);
         btn3->addTouchEventListener(onButtonPressed);
         btn4->addTouchEventListener(onButtonPressed);
@@ -222,6 +222,7 @@ bool WaitingRoom::init()
 
             Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
         });
+    readyButton->setVisible(false);
 
     auto buttons = ListView::create();
     buttons->setDirection(ScrollView::Direction::HORIZONTAL);
