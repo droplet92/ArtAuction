@@ -23,9 +23,9 @@ namespace ui
 
         ~Popup() override;
 
-        static Popup* create(const Vec2& scale = Vec2::ONE);
+        static Popup* create(const Vec2& scale = Vec2::ONE, bool canCancel = true);
 
-        bool init(const Vec2& scale);
+        bool init(const Vec2& scale, bool canCancel);
 
         void addContent(Widget* widget);
 

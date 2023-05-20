@@ -1,18 +1,19 @@
 #include "AuctionScene.h"
 #include "RankingResultScene.h"
 
+#include <algorithm>
+#include <ranges>
+
 #include <cocos/ui/CocosGUI.h>
 #include <audio/include/AudioEngine.h>
 #include <ccRandom.h>
 
 #include <Widget/Timer.h>
 #include <Widget/Painting.h>
+#include <Widget/Popup.h>
 #include <Manager/SingleGameManager.h>
 #include <Manager/PlayerManager.h>
 #include "../Utility.h"
-
-#include <algorithm>
-#include <ranges>
 
 USING_NS_CC;
 
@@ -65,9 +66,7 @@ bool Auction::init()
     //////////////////////////////
     // 1. super init first
     if (!Scene::init())
-    {
         return false;
-    }
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -78,7 +77,6 @@ bool Auction::init()
     // SpriteFrameCache에 이미지 파일 로드
     auto player = lhs::Manager::PlayerManager::Instance().GetPlayer(0);
 
-
     if (auto background = Sprite::create("backgrounds/AuctionBackground.jpg"))
     {
         background->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
@@ -86,7 +84,6 @@ bool Auction::init()
 
         addChild(background);
     }
-
     auto easel = Sprite::createWithSpriteFrameName("easel.png");
     {
         easel->setPosition({ origin.x + visibleSize.width / 3, origin.y + visibleSize.height / 6 });
@@ -94,7 +91,6 @@ bool Auction::init()
 
         addChild(easel);
     }
-
     if (auto sprite = Sprite::createWithSpriteFrameName("dealer.png"))
     {
         sprite->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4 });
@@ -102,7 +98,6 @@ bool Auction::init()
 
         addChild(sprite);
     }
-
     auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
     std::vector<Sprite*> characters = {
         MakeCharacter(1, origin, visibleSize.width),
@@ -139,7 +134,11 @@ bool Auction::init()
         }
         addChild(reputation);
     }
-
+    auto popup = ui::Popup::create({ .61f, .4f }, false);
+    {
+        popup->setVisible(false);
+        addChild(popup, 1);
+    }
     auto bidBoard = ui::Layout::create();
     {
         bidBoard->setBackGroundImage("popup.png", ui::Widget::TextureResType::PLIST);
@@ -151,7 +150,6 @@ bool Auction::init()
 
         addChild(bidBoard);
     }
-
     std::stringstream ss{};
     ss << "Gold: " << player->GetGold();
 
@@ -178,7 +176,6 @@ bool Auction::init()
 
         bidBoard->addChild(bidField);
     }
-
     auto bidButton = ui::Button::create("PopupOk.png", "", "", ui::Widget::TextureResType::PLIST);
     {
         bidButton->setTitleFontName(fontBasic);
@@ -195,9 +192,21 @@ bool Auction::init()
                     {
                         if (player->GetGold() < std::stoul(offer))
                         {
-                            // 팝업 띄우기
+                            if (popup->isVisible())
+                                return;
+
+                            auto text = ui::Text::create();
+                            {
+                                text->setFontName("fonts/Dovemayo_gothic.ttf");
+                                text->setFontSize(24);
+                                text->setTextColor(Color4B::BLACK);
+                                text->setString("Not enough golds.");
+                            }
+                            popup->addContent(text);
+                            popup->setVisible(true);
                             return;
                         }
+                        AudioEngine::play2d("audios/click.mp3");
                         lhs::Manager::SingleGameManager::Instance().Bid({ 0, std::stoi(offer) });
                         bidField->setPlaceHolder("Offer: " + offer);
                     }
@@ -214,7 +223,6 @@ bool Auction::init()
 
         bidBoard->addChild(bidButton);
     }
-
     auto timer = ui::Timer::create(30);
     {
         timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
@@ -222,7 +230,6 @@ bool Auction::init()
 
         addChild(timer);
     }
-
     auto bubble = ui::Scale9Sprite::createWithSpriteFrameName("bubble.png");
     {
         bubble->setPosition({ origin.x + visibleSize.width * .6f, origin.y + visibleSize.height / 3 });
@@ -231,7 +238,6 @@ bool Auction::init()
 
         addChild(bubble);
     }
-
     auto text = ui::Text::create("", fontBasic, fontSizeMedium);
     {
         text->setAnchorPoint({ .5f, .5f });
@@ -249,7 +255,6 @@ bool Auction::init()
         new std::string{ lhs::Utility::ConvertToAscii(u8"10골드부터\n시작합니다.") },
         new std::string{ lhs::Utility::ConvertToAscii(u8"입찰\n시작합니다!") },
     };
-
     auto getDataAction = CallFunc::create([=]()
         {
             *selection = lhs::Manager::SingleGameManager::Instance().GetSelectionForAuction();
@@ -313,19 +318,21 @@ bool Auction::init()
 
     // Playing Sequence
     auto delayAction = DelayTime::create(delay);
-
-    auto createMessageAction = [&](const std::string* message) {
-        auto showText = CallFunc::create([=]() {
-            text->setString(*message);
-            bubble->setOpacity(0xFF);
-            bubble->setContentSize(text->getContentSize() + Size{ 20.f, 20.f });
-            text->setPosition(bubble->getContentSize() / 2);
+    auto createMessageAction = [&](const std::string* message)
+    {
+        auto showText = CallFunc::create([=]()
+            {
+                text->setString(*message);
+                bubble->setOpacity(0xFF);
+                bubble->setContentSize(text->getContentSize() + Size{ 20.f, 20.f });
+                text->setPosition(bubble->getContentSize() / 2);
             });
-        auto hideText = CallFunc::create([=]() {
-            text->setString("");
-            bubble->setOpacity(0);
-            bubble->setContentSize(text->getContentSize() + Size{ 20.f, 20.f });
-            text->setPosition(bubble->getContentSize() / 2);
+        auto hideText = CallFunc::create([=]()
+            {
+                text->setString("");
+                bubble->setOpacity(0);
+                bubble->setContentSize(text->getContentSize() + Size{ 20.f, 20.f });
+                text->setPosition(bubble->getContentSize() / 2);
             });
         auto showAction = Sequence::create(FadeIn::create(showDuration), nullptr);
         auto hideAction = Sequence::create(DelayTime::create(hideDuration), FadeOut::create(hideDuration), nullptr);
@@ -382,7 +389,6 @@ bool Auction::init()
                 }
             }
         });
-
     auto showResultAction = CallFunc::create([=]()
         {
             auto [id, gold] = lhs::Manager::SingleGameManager::Instance().GetWinningBid();
@@ -402,7 +408,6 @@ bool Auction::init()
 
             player->AddPainting(const_cast<lhs::Model::Painting*>(*selection));
         });
-
     auto showText = CallFunc::create([=]() {
         text->setString(*winnerMessage);
         bubble->setOpacity(0xFF);
@@ -420,7 +425,7 @@ bool Auction::init()
 
     auto finishSequence = Sequence::create(showAction, showText, hideAction, hideText, nullptr);
     auto showResultSequence = Sequence::create(timerResetAction, showResultAction, finishSequence, nullptr);
-
+    
     auto playingSequence = Sequence::create
     (
         guideSequence,
@@ -452,7 +457,6 @@ bool Auction::init()
             auto scene = RankingResult::createScene();
             Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
         });
-
     auto auction = Sequence::create(beginSequence, playingSequence, endSequence, nullptr);
     auto round = Sequence::create(auction, auction, auction, auction, moveSceneAction, nullptr);
 
@@ -471,6 +475,4 @@ void Auction::menuCloseCallback(Ref* pSender)
     AudioEngine::end();
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
 }

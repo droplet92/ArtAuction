@@ -21,11 +21,11 @@ namespace ui
 	{
 	}
 
-    Popup* Popup::create(const Vec2& scale)
+    Popup* Popup::create(const Vec2& scale, bool canCancel)
     {
         Popup* pRet = new(std::nothrow) Popup;
 
-        if (pRet && pRet->init(scale))
+        if (pRet && pRet->init(scale, canCancel))
         {
             pRet->autorelease();
             return pRet;
@@ -37,7 +37,7 @@ namespace ui
         }
     }
 
-    bool Popup::init(const Vec2& scale)
+    bool Popup::init(const Vec2& scale, bool canCancel)
     {
         if (!Layout::init())
             return false;
@@ -58,7 +58,8 @@ namespace ui
             contents->setContentSize(getContentSize());
             contents->setScrollBarEnabled(false);
             contents->setItemsMargin(10.f);
-            contents->setPadding(20.f, 40.f, 20.f, 40.f);
+            contents->setLeftPadding(20.f);
+            contents->setTopPadding(20.f);
         }
         auto onButtonPressed = [=](Ref* sender, auto type)
         {
@@ -76,18 +77,22 @@ namespace ui
             buttonOk->setPosition({ getContentSize().width / 2, 10.f });
             buttonOk->addTouchEventListener(onButtonPressed);
         }
-        buttonCancel = Button::create();
-        {
-            buttonCancel->loadTextureNormal("PopupCancel.png", Widget::TextureResType::PLIST);
-            buttonCancel->addTouchEventListener([=](auto, auto) { setEnabled(false); });
-            buttonCancel->setAnchorPoint({ .5f, .5f });
-            buttonCancel->setPosition(Vec2(getContentSize()) - Vec2{ 20.f, 20.f });
-            buttonCancel->addTouchEventListener(onButtonPressed);
-        }
         addChild(contents);
         addChild(buttonOk);
-        addChild(buttonCancel);
 
+        if (canCancel)
+        {
+            buttonCancel = Button::create();
+            {
+                buttonCancel->loadTextureNormal("PopupCancel.png", Widget::TextureResType::PLIST);
+                buttonCancel->addTouchEventListener([=](auto, auto) { setEnabled(false); });
+                buttonCancel->setAnchorPoint({ .5f, .5f });
+                buttonCancel->setPosition(Vec2(getContentSize()) - Vec2{ 20.f, 20.f });
+                buttonCancel->addTouchEventListener(onButtonPressed);
+            }
+            addChild(buttonCancel);
+            contents->setTopPadding(40.f);
+        }
         return true;
     }
 
