@@ -22,9 +22,18 @@ constexpr auto fontBasic = "fonts/Dovemayo_gothic.ttf";
 constexpr auto fontSizeMedium = 24;
 constexpr auto fontSizeSmall = 16;
 
-constexpr float delay = 2.0f;
-constexpr float showDuration = 1.0f;
-constexpr float hideDuration = 1.0f;
+constexpr float delay = 2.f;
+constexpr float showDuration = 1.f;
+constexpr float hideDuration = 1.f;
+
+constexpr float playtime = 30.f;
+
+bool isBidValid(int bid, uint32_t gold)
+{
+    if (bid < 1) return false;
+    if (bid > gold) return false;
+    return true;
+}
 
 
 Auction::~Auction()
@@ -91,12 +100,12 @@ bool Auction::init()
 
         addChild(easel);
     }
-    if (auto sprite = Sprite::createWithSpriteFrameName("dealer.png"))
+    if (auto dealer = Sprite::createWithSpriteFrameName("dealer.png"))
     {
-        sprite->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4 });
-        sprite->setAnchorPoint({ .5f, .5f });
+        dealer->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 4 });
+        dealer->setAnchorPoint({ .5f, .5f });
 
-        addChild(sprite);
+        addChild(dealer);
     }
     auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
     std::vector<Sprite*> characters = {
@@ -185,30 +194,44 @@ bool Auction::init()
             {
                 if (type == ui::Widget::TouchEventType::BEGAN)
                 {
-                    auto offer = bidField->getString();
-
-                    cocos2d::log("%s", offer.c_str());
+                    auto alert = ui::Text::create();
+                    {
+                        alert->setFontName("fonts/Dovemayo_gothic.ttf");
+                        alert->setFontSize(24);
+                        alert->setTextColor(Color4B::BLACK);
+                    }
                     try
                     {
-                        if (player->GetGold() < std::stoul(offer))
+                        auto offer = std::stoi(bidField->getString());
+                        cocos2d::log("%d", offer);
+
+                        if (!isBidValid(offer, player->GetGold()))
                         {
                             if (popup->isVisible())
                                 return;
 
-                            auto text = ui::Text::create();
-                            {
-                                text->setFontName("fonts/Dovemayo_gothic.ttf");
-                                text->setFontSize(24);
-                                text->setTextColor(Color4B::BLACK);
-                                text->setString("Not enough golds.");
-                            }
-                            popup->addContent(text);
+                            alert->setString("Not enough golds.");
+                            popup->addContent(alert);
                             popup->setVisible(true);
                             return;
                         }
                         AudioEngine::play2d("audios/click.mp3");
-                        lhs::Manager::SingleGameManager::Instance().Bid({ 0, std::stoi(offer) });
-                        bidField->setPlaceHolder("Offer: " + offer);
+                        lhs::Manager::SingleGameManager::Instance().Bid({ 0, offer });
+                        bidField->setPlaceHolder("Offer: " + std::to_string(offer));
+                    }
+                    catch (const std::invalid_argument& e)
+                    {
+                        cocos2d::log("invalid %s: ", e.what());
+                        alert->setString("Not a number.");
+                        popup->addContent(alert);
+                        popup->setVisible(true);
+                    }
+                    catch (const std::out_of_range& e)
+                    {
+                        cocos2d::log("OOR %s: ", e.what());
+                        alert->setString("Not enough golds.");
+                        popup->addContent(alert);
+                        popup->setVisible(true);
                     }
                     catch (const std::exception& e)
                     {
@@ -223,7 +246,7 @@ bool Auction::init()
 
         bidBoard->addChild(bidButton);
     }
-    auto timer = ui::Timer::create(30);
+    auto timer = ui::Timer::create(playtime);
     {
         timer->setPosition({ visibleSize.width * .5f, visibleSize.height * .85f });
         timer->setAlarm([]() {});
@@ -252,7 +275,7 @@ bool Auction::init()
     auto startMessage = new std::string;
     auto messages = std::vector<std::string*>{
         startMessage,
-        new std::string{ lhs::Utility::ConvertToAscii(u8"10골드부터\n시작합니다.") },
+        new std::string{ lhs::Utility::ConvertToAscii(u8"1 골드부터\n시작합니다.") },
         new std::string{ lhs::Utility::ConvertToAscii(u8"입찰\n시작합니다!") },
     };
     auto getDataAction = CallFunc::create([=]()
@@ -296,8 +319,11 @@ bool Auction::init()
                 artInfo->setPadding(20, 20, 20, 20);
                 artInfo->setItemsMargin(10);
 
+                auto title = ui::Text::create((*selection)->title, fontBasic, fontSizeSmall);
+                title->setTextAreaSize({ artInfo->getContentSize().width - 20, 100 });
+
                 artInfo->addChild(ui::Text::create((*selection)->painter, fontBasic, fontSizeMedium));
-                artInfo->addChild(ui::Text::create((*selection)->title, fontBasic, fontSizeSmall));
+                artInfo->addChild(title);
                 addChild(artInfo, 0, 0x33334444);
             }
         });
@@ -358,12 +384,12 @@ bool Auction::init()
             lhs::Manager::SingleGameManager::Instance().Bid({ 2, cocos2d::RandomHelper::random_int<int>(0, 20) });
             lhs::Manager::SingleGameManager::Instance().Bid({ 3, cocos2d::RandomHelper::random_int<int>(0, 20) });
         });
-    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(32.f), nullptr);
+    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(playtime + delay), nullptr);
 
     // 3. 결과 발표
     auto timerResetAction = CallFunc::create([=]()
         {
-            timer->reset(30);
+            timer->reset(playtime);
 
             auto bids = lhs::Manager::SingleGameManager::Instance().GetBids();
 
