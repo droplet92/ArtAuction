@@ -33,7 +33,7 @@ namespace ui
         if (!Widget::init())
             return false;
 
-        auto timerSprite = Sprite::create("Timer.png");
+        auto timerSprite = Sprite::createWithSpriteFrameName("Timer.png");
 
         if (!timerSprite)
             return false;
@@ -47,7 +47,7 @@ namespace ui
         _timer->setType(ProgressTimer::Type::RADIAL);
         _timer->setReverseDirection(true);
 
-        auto timerBaseSprite = Sprite::create("TimerBase.png");
+        auto timerBaseSprite = Sprite::createWithSpriteFrameName("TimerBase.png");
         timerBaseSprite->setContentSize(timerBaseSprite->getContentSize() / 2);
 
         addChild(timerBaseSprite);
