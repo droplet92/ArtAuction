@@ -139,9 +139,9 @@ bool WaitingRoom::init()
                 popup->setVisible(true);
             };
         //btn1->addTouchEventListener(onButtonPressed);
-        btn2->addTouchEventListener(onButtonPressed);
-        btn3->addTouchEventListener(onButtonPressed);
-        btn4->addTouchEventListener(onButtonPressed);
+        //btn2->addTouchEventListener(onButtonPressed);
+        //btn3->addTouchEventListener(onButtonPressed);
+        //btn4->addTouchEventListener(onButtonPressed);
 
         btn1->setTitleFontName("fonts/Dovemayo_gothic.ttf");
         btn2->setTitleFontName("fonts/Dovemayo_gothic.ttf");
