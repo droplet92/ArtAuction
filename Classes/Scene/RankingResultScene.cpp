@@ -1,8 +1,13 @@
 #include "RankingResultScene.h"
 #include "WaitingRoomScene.h"
 
+#include <algorithm>
+#include <ranges>
+
 #include <AudioEngine.h>
 #include <ui/CocosGUI.h>
+
+#include <Manager/PlayerManager.h>
 
 USING_NS_CC;
 using namespace ui;
@@ -35,108 +40,72 @@ bool RankingResult::init()
 
     //////////////////////////////
     // 2. Write your codes below
+    auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
 
-    auto sprite = Sprite::create("backgrounds/6.jpg");
-    if (sprite == nullptr)
+    std::ranges::stable_sort(players, [](lhs::Player* lhs, lhs::Player* rhs)
+        {
+            return lhs->GetGold() > rhs->GetGold();
+        });
+    if (auto sprite = Sprite::create("backgrounds/6.jpg"))
     {
-        problemLoading("'backgrounds/6.jpg'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
         sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
-        // add the sprite as a child to this layer
-        this->addChild(sprite, -1);
+        addChild(sprite, -1);
     }
+    if (auto roomTitle = Sprite::createWithSpriteFrameName("RoomTitle.png"))
+    {
+        roomTitle->setPosition(Vec2{ origin.x + visibleSize.width / 4,
+                            origin.y + visibleSize.height * 1.13f - roomTitle->getContentSize().height });
 
-    auto roomTitle = Sprite::createWithSpriteFrameName("RoomTitle.png");
-    if (roomTitle == nullptr)
-    {
-        problemLoading("'RoomTitle.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
+        addChild(roomTitle, -1);
+
+        if (auto label = Label::createWithTTF("Gallery Ranking", "fonts/Dovemayo_gothic.ttf", 40))
         {
-            roomTitle->setPosition(Vec2{ origin.x + visibleSize.width / 4,
-                                origin.y + visibleSize.height * 1.13f - roomTitle->getContentSize().height });
-
-            // add the sprite as a child to this layer
-            this->addChild(roomTitle, -1);
-
-            auto label = Label::createWithTTF("Gallery Ranking", "fonts/Dovemayo_gothic.ttf", 40);
-            if (label == nullptr)
-            {
-                problemLoading("'fonts/Dovemayo_gothic.ttf'");
-            }
-            else
-            {
-                label->setAnchorPoint(Vec2{ 0.5, 0.5 });
-                label->setTextColor(Color4B::BLACK);
-                label->setPosition(Vec2{ roomTitle->getContentSize().width / 2, roomTitle->getContentSize().height / 2 - 15 });
-                roomTitle->addChild(label);
-            }
+            label->setAnchorPoint({ .5f, .5f });
+            label->setTextColor(Color4B::BLACK);
+            label->setPosition(-Vec2{ 0, 15 } + (roomTitle->getContentSize() / 2));
+            roomTitle->addChild(label);
         }
     }
-
-    auto list = ListView::create();
-    if (list != nullptr)
+    if (auto list = ListView::create())
     {
-        auto btn1 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
-        auto btn2 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
-        auto btn3 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
-        auto btn4 = Button::create("Namecard.png", "NamecardPressed.png", "", Widget::TextureResType::PLIST);
-
-        btn1->setTitleFontName("fonts/Dovemayo_gothic.ttf");
-        btn2->setTitleFontName("fonts/Dovemayo_gothic.ttf");
-        btn3->setTitleFontName("fonts/Dovemayo_gothic.ttf");
-        btn4->setTitleFontName("fonts/Dovemayo_gothic.ttf");
-        btn1->setTitleFontSize(40.f);
-        btn2->setTitleFontSize(40.f);
-        btn3->setTitleFontSize(40.f);
-        btn4->setTitleFontSize(40.f);
-        btn1->setTitleText("You");
-        btn2->setTitleText("Andrew");
-        btn3->setTitleText("Benjamin");
-        btn4->setTitleText("Catherine");
-
-        list->setContentSize(Size{ 437.5, 400 });
-        list->setScrollBarEnabled(false);
-        list->setAnchorPoint(Vec2{ 0.5, 0.5 });
-        list->setPosition(Vec2{ origin.x + visibleSize.width / 4, origin.y + visibleSize.height / 2 });
-
-        list->addChild(btn1);
-        list->addChild(btn2);
-        list->addChild(btn3);
-        list->addChild(btn4);
-
-        this->addChild(list);
-    }
-
-    auto okButton = Button::create("StartButton.png", "StartButtonPressed.png", "", Widget::TextureResType::PLIST);
-
-    okButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
+        for (const auto& player : players)
         {
-            if (type != ui::Widget::TouchEventType::ENDED)
-                return;
+            auto namePlate = Button::create();
 
-            auto scene = WaitingRoom::createScene();
+            namePlate->loadTextureNormal("Namecard.png", Widget::TextureResType::PLIST);
+            namePlate->loadTextureDisabled("NamecardPressed.png", Widget::TextureResType::PLIST);
+            namePlate->setTitleFontName("fonts/Dovemayo_gothic.ttf");
+            namePlate->setTitleFontSize(40.f);
+            namePlate->setTitleText(player->GetName());
 
-            Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
-        });
+            list->addChild(namePlate);
+        }
+        list->setContentSize({ 437.5, 400 });
+        list->setScrollBarEnabled(false);
+        list->setAnchorPoint({ 0.5, 0.5 });
+        list->setPosition({ origin.x + visibleSize.width / 4, origin.y + visibleSize.height / 2 });
 
-    auto buttons = ListView::create();
-    buttons->setDirection(ScrollView::Direction::HORIZONTAL);
-    buttons->setPosition(Vec2{ origin.x + visibleSize.width * 0.75f,
-                                origin.y + visibleSize.height * 0.12f });
-    buttons->setContentSize(Size{ 500, 500 });
-    buttons->setAnchorPoint(Vec2{ 0.4f, 0.5f });
-    buttons->addChild(okButton);
-    buttons->setItemsMargin(30.f);
+        addChild(list);
+    }
+    if (auto okButton = Button::create())
+    {
+        okButton->loadTextureNormal("OkButton.png", Widget::TextureResType::PLIST);
+        okButton->loadTexturePressed("OkButtonPressed.png", Widget::TextureResType::PLIST);
+        okButton->setPosition({ origin.x + visibleSize.width / 2, origin.x + visibleSize.height * .12f });
+        okButton->addTouchEventListener([&](Ref* sender, Widget::TouchEventType type)
+            {
+                if (type != ui::Widget::TouchEventType::ENDED)
+                    return;
 
-    this->addChild(buttons, 1);
+                AudioEngine::play2d("audios/click.mp3");
 
+                auto scene = WaitingRoom::createScene();
+
+                Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+            });
+        addChild(okButton);
+    }
     return true;
 }
 
