@@ -150,7 +150,8 @@ namespace lhs::Manager
 
 	std::vector<std::pair<int, int>> SingleGameManager::GetBids() const
 	{
-		return bids;
+		auto view = bids | std::views::reverse;
+		return { view.begin(), view.end() };
 	}
 
 	std::pair<int, int> SingleGameManager::GetWinningBid()
