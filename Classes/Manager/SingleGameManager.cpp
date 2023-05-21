@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <algorithm>
+#include <ranges>
+#include <random>
 
 #include <ccRandom.h>
 
@@ -11,6 +13,7 @@ namespace lhs::Manager
 
 	SingleGameManager::SingleGameManager()
 		: nPlayers(0)
+		, rounds()
 		, submission(nullptr)
 	{
 		selections.reserve(MAX_USER_COUNT);
@@ -73,6 +76,21 @@ namespace lhs::Manager
 	void SingleGameManager::SetNumberOfPlayers(size_t nPlayers)
 	{
 		this->nPlayers = nPlayers;
+	}
+
+	std::u8string SingleGameManager::GetNextRound()
+	{
+		if (rounds.empty())
+		{
+			std::random_device rd;
+			std::mt19937 generator(rd());
+			rounds = { u8"비공개", u8"정찰제", u8"실시간", u8"NTF" };
+
+			std::ranges::shuffle(rounds, generator);
+		}
+		auto next = rounds.back();
+		rounds.pop_back();
+		return next;
 	}
 
 	std::vector<std::vector<Model::Painting*>> SingleGameManager::GetPaintings(size_t nPlayers) const

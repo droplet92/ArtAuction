@@ -16,6 +16,8 @@ namespace lhs::Manager
 
 		virtual void SetNumberOfPlayers(size_t nPlayers) = 0;
 
+		virtual std::u8string GetNextRound() = 0;
+
 		virtual std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const = 0;
 
 		virtual void SubmitPainting(Model::Painting const* painting) = 0;
