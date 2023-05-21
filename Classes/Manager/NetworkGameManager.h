@@ -14,6 +14,8 @@ namespace lhs::Manager
 		void Init();
 
 		void SetNumberOfPlayers(size_t nPlayers) final;
+		
+		std::u8string GetNextRound() final;
 
 		std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const final;
 

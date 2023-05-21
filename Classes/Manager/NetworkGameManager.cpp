@@ -29,6 +29,11 @@ namespace lhs::Manager
 	{
 	}
 
+	std::u8string NetworkGameManager::GetNextRound()
+	{
+		return std::u8string();
+	}
+
 	std::vector<std::vector<Model::Painting*>> NetworkGameManager::GetPaintings(size_t nPlayers) const
 	{
 		return std::vector<std::vector<Model::Painting*>>();
