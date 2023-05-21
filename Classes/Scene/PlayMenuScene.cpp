@@ -1,15 +1,13 @@
-#include "ui/CocosGUI.h"
 #include "PlayMenuScene.h"
 #include "WaitingRoomScene.h"
 #include "RoomListScene.h"
-#include <audio/include/AudioEngine.h>
+
+#include <AudioEngine.h>
+#include <ui/CocosGUI.h>
 
 USING_NS_CC;
 using namespace ui;
 
-PlayMenu::~PlayMenu()
-{
-}
 
 Scene* PlayMenu::createScene()
 {

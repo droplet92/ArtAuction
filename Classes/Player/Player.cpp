@@ -1,14 +1,12 @@
 #include "Player.h"
-#include <typeinfo>
+
 #include <algorithm>
 #include <ranges>
-#include <string>
-#include <set>
-#include <map>
 
 #include <Manager/SingleGameManager.h>
 
 using namespace lhs;
+
 
 Player::Player(std::string name)
 	: id(0)

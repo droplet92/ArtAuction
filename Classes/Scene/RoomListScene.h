@@ -1,11 +1,11 @@
 #pragma once
-#include "cocos2d.h"
+#include <cocos2d.h>
 
 
 class RoomList : public cocos2d::Scene
 {
 public:
-    ~RoomList() final;
+    ~RoomList() final = default;
 
     static cocos2d::Scene* createScene();
 

@@ -1,9 +1,10 @@
 #pragma once
-
-#include <vector>
 #include <set>
 #include <unordered_map>
+#include <vector>
+
 #include <Model/Painting.h>
+
 
 namespace lhs::Manager
 {

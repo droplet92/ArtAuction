@@ -1,11 +1,11 @@
 #pragma once
-#include "cocos2d.h"
+#include <cocos2d.h>
 
 
 class WaitingRoom : public cocos2d::Scene
 {
 public:
-    ~WaitingRoom() final;
+    ~WaitingRoom() final = default;
 
     static cocos2d::Scene* createScene();
 

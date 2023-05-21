@@ -1,12 +1,10 @@
 #include "Popup.h"
 
-#include <cocos/ui/CocosGUI.h>
-#include <audio/include/AudioEngine.h>
+#include <AudioEngine.h>
 #include <CCDirector.h>
+#include <ui/CocosGUI.h>
 
 NS_CC_BEGIN
-
-
 namespace ui
 {
 	Popup::Popup()
@@ -101,5 +99,4 @@ namespace ui
         contents->addChild(widget, 1, 0xDEADBEEF);
     }
 }
-
 NS_CC_END

@@ -1,7 +1,9 @@
-#include "Popup.h"
 #include "Jukebox.h"
 
 #include <sstream>
+
+#include <AudioEngine.h>
+#include <ccRandom.h>
 
 USING_NS_CC;
 

@@ -1,7 +1,6 @@
 #include "Timer.h"
 
 NS_CC_BEGIN
-
 namespace ui
 {
     Timer::Timer(int remainTime)
@@ -87,5 +86,4 @@ namespace ui
         _time->setString(std::to_string(--_remainTime));
     }
 }
-
 NS_CC_END

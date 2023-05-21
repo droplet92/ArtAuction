@@ -1,16 +1,12 @@
-#include "ui/CocosGUI.h"
-
-#include <audio/include/AudioEngine.h>
-
 #include "RoomListScene.h"
 #include "WaitingRoomScene.h"
+
+#include <AudioEngine.h>
+#include <ui/CocosGUI.h>
 
 USING_NS_CC;
 using namespace ui;
 
-RoomList::~RoomList()
-{
-}
 
 Scene* RoomList::createScene()
 {

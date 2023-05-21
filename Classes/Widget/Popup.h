@@ -1,17 +1,9 @@
 #pragma once
-
-#include "ui/UIWidget.h"
-#include "ui/GUIExport.h"
+#include <ui/UIButton.h>
 #include <ui/UILayout.h>
 #include <ui/UIListView.h>
-#include <ui/UIButton.h>
 
-/**
- * @addtogroup ui
- * @{
- */
 NS_CC_BEGIN
-
 namespace ui
 {
     class Popup : public Layout
@@ -35,7 +27,4 @@ namespace ui
         Button* buttonCancel;
     };
 }
-
 NS_CC_END
-// end of ui group
-/// @}

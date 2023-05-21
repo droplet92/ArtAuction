@@ -1,11 +1,11 @@
 #pragma once
-#include "cocos2d.h"
+#include <cocos2d.h>
 
 
 class PlayMenu : public cocos2d::Scene
 {
 public:
-    ~PlayMenu() final;
+    ~PlayMenu() final = default;
 
     static cocos2d::Scene* createScene();
 

@@ -4,16 +4,16 @@
 #include <algorithm>
 #include <ranges>
 
-#include <cocos/ui/CocosGUI.h>
-#include <audio/include/AudioEngine.h>
+#include <AudioEngine.h>
 #include <ccRandom.h>
+#include <ui/CocosGUI.h>
 
-#include <Widget/Timer.h>
+#include <Utility.h>
+#include <Manager/PlayerManager.h>
+#include <Manager/SingleGameManager.h>
 #include <Widget/Painting.h>
 #include <Widget/Popup.h>
-#include <Manager/SingleGameManager.h>
-#include <Manager/PlayerManager.h>
-#include "../Utility.h"
+#include <Widget/Timer.h>
 
 USING_NS_CC;
 
@@ -33,11 +33,6 @@ bool isBidValid(int bid, uint32_t gold)
     if (bid < 1) return false;
     if (bid > gold) return false;
     return true;
-}
-
-
-Auction::~Auction()
-{
 }
 
 Scene* Auction::createScene()

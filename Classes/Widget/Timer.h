@@ -1,16 +1,8 @@
 #pragma once
-
-#include "cocos2d.h"
-#include "ui/UIWidget.h"
-#include "ui/GUIExport.h"
+#include <cocos2d.h>
 #include <ui/UILayout.h>
 
-/**
- * @addtogroup ui
- * @{
- */
 NS_CC_BEGIN
-
 namespace ui
 {
     using TimerAlarm = std::function<void()>;
@@ -45,7 +37,4 @@ namespace ui
         int _remainTime;
     };
 }
-
 NS_CC_END
-// end of ui group
-/// @}

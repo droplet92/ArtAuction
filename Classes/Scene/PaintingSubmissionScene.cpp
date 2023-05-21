@@ -1,14 +1,13 @@
 #include "PaintingSubmissionScene.h"
 #include "AuctionScene.h"
-#include "Widget/Painting.h"
+
+#include <AudioEngine.h>
+
 #include <Manager/SingleGameManager.h>
-#include <audio/include/AudioEngine.h>
+#include <Widget/Painting.h>
 
 USING_NS_CC;
 
-PaintingSubmission::~PaintingSubmission()
-{
-}
 
 Scene* PaintingSubmission::createScene()
 {

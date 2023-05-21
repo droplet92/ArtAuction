@@ -1,8 +1,7 @@
-#include "Painting.h"
 #include "PaintingView.h"
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 #include <AudioEngine.h>
 #include <ccRandom.h>

@@ -1,9 +1,7 @@
 #pragma once
-
 #include <cocos2d.h>
-#include <cocos/ui/CocosGUI.h>
+#include <ui/CocosGUI.h>
 
-#include <filesystem>
 #include <Model/Painting.h>
 
 NS_CC_BEGIN

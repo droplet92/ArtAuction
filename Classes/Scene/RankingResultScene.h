@@ -1,11 +1,11 @@
 #pragma once
-#include "cocos2d.h"
+#include <cocos2d.h>
 
 
 class RankingResult : public cocos2d::Scene
 {
 public:
-    ~RankingResult() final;
+    ~RankingResult() final = default;
 
     static cocos2d::Scene* createScene();
 

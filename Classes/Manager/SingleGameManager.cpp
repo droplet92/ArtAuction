@@ -1,11 +1,12 @@
-#include <Manager/SingleGameManager.h>
+#include "SingleGameManager.h"
 
-#include <iostream>
 #include <algorithm>
-#include <ranges>
+#include <iostream>
 #include <random>
+#include <ranges>
 
 #include <ccRandom.h>
+
 
 namespace lhs::Manager
 {

@@ -1,20 +1,16 @@
-#include "ui/CocosGUI.h"
+#include "WaitingRoomScene.h"
+#include "ExplanationScene.h"
+
+#include <AudioEngine.h>
+#include <ui/CocosGUI.h>
 
 #include <Manager/PlayerManager.h>
 #include <Manager/SingleGameManager.h>
-#include <audio/include/AudioEngine.h>
-
 #include <Widget/Popup.h>
-
-#include "WaitingRoomScene.h"
-#include "ExplanationScene.h"
 
 USING_NS_CC;
 using namespace ui;
 
-WaitingRoom::~WaitingRoom()
-{
-}
 
 Scene* WaitingRoom::createScene()
 {

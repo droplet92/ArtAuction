@@ -1,27 +1,20 @@
-#include "ui/CocosGUI.h"
-#include <extensions/cocos-ext.h>
-#include <audio/include/AudioEngine.h>
-
 #include "MyGalleryScene.h"
 #include "PaintingSubmissionScene.h"
 
-#include "Widget/Timer.h"
-#include "Widget/Painting.h"
-
-#include <filesystem>
-#include <iostream>
-#include <vector>
 #include <algorithm>
 #include <ranges>
 
-#include "Widget/PaintingView.h"
+#include <AudioEngine.h>
+#include <ui/CocosGUI.h>
 
-#include <Manager/SingleGameManager.h>
 #include <Manager/PlayerManager.h>
-
+#include <Manager/SingleGameManager.h>
+#include <Widget/PaintingView.h>
+#include <Widget/Timer.h>
 
 USING_NS_CC;
 using namespace ui;
+
 
 MyGallery::~MyGallery()
 {

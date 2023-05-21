@@ -1,11 +1,11 @@
 #pragma once
-#include "cocos2d.h"
+#include <cocos2d.h>
 
 
 class Explanation : public cocos2d::Scene
 {
 public:
-    ~Explanation() final;
+    ~Explanation() final = default;
 
     static cocos2d::Scene* createScene();
 

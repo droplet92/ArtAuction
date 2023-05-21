@@ -1,10 +1,10 @@
 #pragma once
-
-#include <cocos2d.h>
-#include <cocos/ui/CocosGUI.h>
 #include <vector>
 
-#include "Widget/Painting.h"
+#include <cocos2d.h>
+#include <ui/CocosGUI.h>
+
+#include <Widget/Painting.h>
 
 NS_CC_BEGIN
 namespace ui

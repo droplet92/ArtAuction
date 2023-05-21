@@ -1,14 +1,15 @@
 #include "ExplanationScene.h"
 #include "MyGalleryScene.h"
 
-#include <unordered_map>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
-#include <Manager/SingleGameManager.h>
+#include <AudioEngine.h>
+
+#include <Utility.h>
 #include <Manager/PlayerManager.h>
-#include "../Utility.h"
-#include <audio/include/AudioEngine.h>
+#include <Manager/SingleGameManager.h>
 
 USING_NS_CC;
 
@@ -47,10 +48,6 @@ const std::unordered_map<std::u8string, std::vector<std::u8string>> scriptMap =
         }
     },
 };
-
-Explanation::~Explanation()
-{
-}
 
 Scene* Explanation::createScene()
 {
