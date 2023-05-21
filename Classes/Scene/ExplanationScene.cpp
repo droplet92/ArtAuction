@@ -1,52 +1,15 @@
 #include "ExplanationScene.h"
 #include "MyGalleryScene.h"
 
-#include <unordered_map>
 #include <sstream>
 #include <string>
-
 #include <Manager/SingleGameManager.h>
 #include <Manager/PlayerManager.h>
 #include "../Utility.h"
 #include <audio/include/AudioEngine.h>
 
+
 USING_NS_CC;
-
-
-constexpr float delay = 1.0f;
-constexpr float fadeInDuration = 0.5f;
-
-const std::unordered_map<std::u8string, std::vector<std::u8string>> scriptMap =
-{
-    { u8"비공개",
-        {
-            u8"각 플레이어는 비공개로 가격을 제시합니다.",
-            u8"시간이 만료되면 가장 먼저 최고액을 작성했던 플레이어가 낙찰합니다.",
-            u8"구매한 작품은 자신의 갤러리에 추가됩니다.",
-        }
-    },
-    { u8"정찰제",
-        {
-            u8"각 플레이어는 공개로 가격을 제시합니다.",
-            u8"가장 먼저 제시 금액을 작성했던 플레이어가 낙찰합니다.",
-            u8"구매한 작품은 자신의 갤러리에 추가됩니다.",
-        }
-    },
-    { u8"실시간",
-        {
-            u8"각 플레이어는 공개로 가격을 제시합니다.",
-            u8"시간이 만료되면 가장 마지막에 최고액을 작성했던 플레이어가 낙찰합니다.",
-            u8"구매한 작품은 자신의 갤러리에 추가됩니다.",
-        }
-    },
-    { u8"NTF",
-        {
-            u8"각 플레이어는 공개로 가격을 제시합니다.",
-            u8"시간이 만료되면 가장 마지막에 최고액을 작성했던 플레이어가 낙찰합니다.",
-            u8"구매한 작품은 즉시 시세가(랜덤)에 판매됩니다.",
-        }
-    },
-};
 
 Explanation::~Explanation()
 {
@@ -74,52 +37,76 @@ bool Explanation::init()
         return false;
     }
 
-    /////////////////////////////
-
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    auto nextRound = lhs::Manager::SingleGameManager::Instance().GetNextRound();
+
+    /////////////////////////////
+    // 3. add your codes below...
 
     this->setColor(Color3B::BLACK);
 
-    if (auto title = Label::createWithTTF("Round 1", "fonts/Dovemayo_gothic.ttf", 40))
+    auto label = Label::createWithTTF("Round 1", "fonts/Dovemayo_gothic.ttf", 40);
+    if (label == nullptr)
     {
-        title->setPosition({ origin.x + visibleSize.width / 2,
-                            origin.y + visibleSize.height - title->getContentSize().height });
-        addChild(title);
+        problemLoading("'fonts/Dovemayo_gothic.ttf'");
     }
-    auto lines = scriptMap.at(nextRound);
-    std::vector<std::u8string> script
+    else
     {
-        u8"이번 경매는 " + nextRound + u8" 경매입니다.",
-        u8"경매는 작품 하나당 30초간 진행됩니다.",
-        lines.at(0),
-        lines.at(1),
-        lines.at(2),
-        u8"가장 높은 금액에 거래된 작가 순으로 작가의 평판이 상승합니다."
-    };
-    auto dummyAction = CallFunc::create([]() {});
-    auto explanationSequence = Sequence::create(dummyAction, nullptr);
+        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
+                                origin.y + visibleSize.height - label->getContentSize().height));
+        this->addChild(label);
 
-    for (int i = 0; i < script.size(); ++i)
-    {
-        auto delayAction = DelayTime::create(delay);
-        auto text = lhs::Utility::ConvertToAscii(script[i]);
-        if (auto label = Label::createWithTTF("", "fonts/Dovemayo_gothic.ttf", 24))
+        std::vector<std::u8string> auctionType
         {
-            float yTotal = (script.size() + 1) * 2;
-            float yPortion = (script.size() - i) * 2 - 1;
+            u8"비공개", u8"정찰제", u8"실시간", u8"NTF"
+        };
+        lhs::u8stringstream mm{};
+        mm << u8"이번 경매는 " << auctionType[0] << u8" 경매입니다.";
 
-            label->setPosition({ origin.x + visibleSize.width / 2,
-                                origin.y + 100 + (visibleSize.height - 100) * yPortion / yTotal });
-            addChild(label);
-
-            auto updateTextAction = CallFunc::create([=]() { label->setString(text); });
-            auto sequence = Sequence::create(delayAction, updateTextAction, delayAction, nullptr);
-            explanationSequence = Sequence::create(explanationSequence, sequence, nullptr);
+        auto msg = Label::createWithTTF(lhs::Utility::ConvertToAscii(mm.str()), "fonts/Dovemayo_gothic.ttf", 24);
+        if (msg == nullptr)
+        {
+            problemLoading("'fonts/Dovemayo_gothic.ttf'");
         }
-        explanationSequence = Sequence::create(explanationSequence, delayAction, nullptr);
+        else
+        {
+            // position the label on the center of the screen
+            msg->setPosition(Vec2(origin.x + visibleSize.width / 2, label->getPosition().y / 2));
+
+            addChild(msg);
+        }
     }
+    //auto label = Label::createWithTTF("", "fonts/Dovemayo_gothic.ttf", 24);
+    //label->setPosition(Vec2(200, 200));
+    //label->setTextColor(Color4B::BLACK);
+    //this->addChild(label);
+
+    //std::string text = "Line 1\nLine 2\nLine 3";
+
+    //std::vector<std::string> lines;
+    //std::stringstream ss(text);
+    //std::string line;
+
+    //while (std::getline(ss, line, '\n')) {
+    //    lines.push_back(line);
+    //}
+
+    //float delay = 1.0f;  // Delay between each line display
+    //float fadeInDuration = 0.5f;  // Duration of the fade-in effect
+
+    //for (int i = 0; i < lines.size(); ++i) {
+    //    auto delayAction = DelayTime::create(delay * i);
+    //    auto updateTextAction = CallFunc::create([=]() {
+    //        label->setString(lines[i]);
+    //        });
+
+    //    label->setOpacity(0);  // Set initial opacity to 0
+
+    //    auto fadeInAction = FadeIn::create(fadeInDuration);
+    //    auto sequence = Sequence::create(delayAction, updateTextAction, fadeInAction, nullptr);
+    //    label->runAction(sequence);
+    //}
+
     auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
     auto paintings = lhs::Manager::SingleGameManager::Instance().GetPaintings(4);
 
@@ -129,15 +116,13 @@ bool Explanation::init()
         paintings.pop_back();
     }
 
-    auto moveToNextScene = CallFunc::create([=]()
-        {
-            auto scene = MyGallery::createScene();
+    auto moveToNextScene = [](float f)
+    {
+        auto scene = MyGallery::createScene();
 
-            Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
-        });
-    explanationSequence = Sequence::create(explanationSequence, moveToNextScene, nullptr);
-
-    runAction(explanationSequence);
+        Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
+    };
+    this->scheduleOnce(moveToNextScene, 1.f, "asdf");
 
     return true;
 }

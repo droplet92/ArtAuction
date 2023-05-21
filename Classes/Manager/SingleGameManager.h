@@ -15,8 +15,6 @@ namespace lhs::Manager
 
 		void SetNumberOfPlayers(size_t nPlayers) final;
 
-		std::u8string GetNextRound() final;
-
 		std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const final;
 
 		void SubmitPainting(Model::Painting const* painting) final;
@@ -43,8 +41,6 @@ namespace lhs::Manager
 		static size_t const MAX_USER_COUNT;
 
 		size_t nPlayers;
-
-		std::vector<std::u8string> rounds;
 
 		std::vector<Model::Painting const*> selections;
 
