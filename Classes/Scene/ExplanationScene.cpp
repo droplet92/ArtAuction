@@ -111,7 +111,7 @@ bool Explanation::init()
             float yPortion = (script.size() - i) * 2 - 1;
 
             label->setPosition({ origin.x + visibleSize.width / 2,
-                                origin.y + 100 + (visibleSize.height - 100) * yPortion / yTotal });
+                                origin.y + 150 + (visibleSize.height - 200) * yPortion / yTotal });
             addChild(label);
 
             auto updateTextAction = CallFunc::create([=]() { label->setString(text); });
