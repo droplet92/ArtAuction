@@ -55,7 +55,7 @@ Sprite* MakeCharacter(int n, const Vec2& origin, float visibleWidth)
 
     if (auto character = Sprite::createWithSpriteFrameName(ss.str()))
     {
-        character->setPosition({ origin.x + visibleWidth / 10 * (n * 2 - 1), origin.y });
+        character->setPosition({ origin.x + visibleWidth / 8 * (n * 2 - 1), origin.y });
         character->setAnchorPoint({ .5f, 0 });
 
         return character;
@@ -326,9 +326,10 @@ bool Auction::init()
         {
             if (auto painting = ui::Painting::create(*selection))
             {
-                painting->setScale(2.5f);
+                painting->setScale(2.f);
                 painting->setAnchorPoint({ .5f, 0 });
-                painting->setPosition({ easel->getPositionX() + 10, easel->getPositionY() + easel->getContentSize().height - painting->getBottomPadding() + 10 });
+                painting->setPosition({ easel->getPositionX(),
+                                        easel->getPositionY() + easel->getContentSize().height - painting->getBottomPadding() });
 
                 addChild(painting, 0, 0x12345678);
             }
