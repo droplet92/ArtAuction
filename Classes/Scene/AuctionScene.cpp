@@ -387,21 +387,23 @@ bool Auction::init()
     auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(playtime + delay), nullptr);
 
     // 3. 결과 발표
-    auto timerResetAction = CallFunc::create([=]()
-        {
-            timer->reset(playtime);
+    auto bids = new std::vector<std::pair<int, int>>;
+    auto dummyAction = CallFunc::create([]() {});
+    auto showBidSequence = Sequence::create(dummyAction, nullptr);
+    auto showAction = Sequence::create(FadeIn::create(showDuration), nullptr);
+    auto hideAction = Sequence::create(DelayTime::create(hideDuration), FadeOut::create(hideDuration), nullptr);
 
-            auto bids = lhs::Manager::SingleGameManager::Instance().GetBids();
-
-            for (int i = 0; i < characters.size(); i++)
+    for (int i = 0; i < characters.size(); i++)
+    {
+        auto showBidAction = CallFunc::create([=]()
             {
                 auto bidder = players[i];
-                auto iter = std::ranges::find_if(bids, [=](auto bid) { return bid.first == bidder->GetId(); });
-                auto bid = (iter != std::end(bids)) ? iter->second : 0;
+                auto iter = std::ranges::find_if(*bids, [=](auto bid) { return bid.first == bidder->GetId(); });
+                auto bid = (iter != std::end(*bids)) ? iter->second : 0;
 
                 if (auto board = Sprite::createWithSpriteFrameName("BidBoard.png"))
                 {
-                    board->setPosition(characters[i]->getPosition() + Vec2{0, 200});
+                    board->setPosition(characters[i]->getPosition() + Vec2{ 0, 150 });
                     board->setAnchorPoint({ .5f, 0 });
 
                     auto text = ui::Text::create(std::to_string(bid), fontBasic, fontSizeMedium);
@@ -413,7 +415,13 @@ bool Auction::init()
 
                     addChild(board, 0, bidder->GetId());
                 }
-            }
+            });
+        showBidSequence = Sequence::create(showBidSequence, showAction, showBidAction, nullptr);
+    }
+    auto dataUpdateAction = CallFunc::create([=]()
+        {
+            *bids = lhs::Manager::SingleGameManager::Instance().GetBids();
+            timer->reset(playtime);
         });
     auto showResultAction = CallFunc::create([=]()
         {
@@ -446,11 +454,9 @@ bool Auction::init()
         bubble->setContentSize(text->getContentSize() + Size{ 20.f, 20.f });
         text->setPosition(bubble->getContentSize() / 2);
         });
-    auto showAction = Sequence::create(FadeIn::create(showDuration), nullptr);
-    auto hideAction = Sequence::create(DelayTime::create(hideDuration), FadeOut::create(hideDuration), nullptr);
 
     auto finishSequence = Sequence::create(showAction, showText, hideAction, hideText, nullptr);
-    auto showResultSequence = Sequence::create(timerResetAction, showResultAction, finishSequence, nullptr);
+    auto showResultSequence = Sequence::create(dataUpdateAction, showBidSequence, showResultAction, finishSequence, nullptr);
     
     auto playingSequence = Sequence::create
     (
@@ -479,6 +485,7 @@ bool Auction::init()
             delete selection;
             delete winnerMessage;
             delete startMessage;
+            delete bids;
 
             auto scene = RankingResult::createScene();
             Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
