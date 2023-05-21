@@ -389,7 +389,7 @@ bool Auction::init()
 
     // 3. 결과 발표
     auto bids = new std::vector<std::pair<int, int>>;
-    auto dummyAction = CallFunc::create([]() {});
+    auto dummyAction = CallFunc::create({});
     auto showBidSequence = Sequence::create(dummyAction, nullptr);
     auto showAction = Sequence::create(FadeIn::create(showDuration), nullptr);
     auto hideAction = Sequence::create(DelayTime::create(hideDuration), FadeOut::create(hideDuration), nullptr);
