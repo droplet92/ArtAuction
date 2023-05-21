@@ -332,6 +332,11 @@ bool Auction::init()
 
                 addChild(painting, 0, 0x12345678);
             }
+            for (int i = 0; i < characters.size(); i++)
+            {
+                characters[i]->initWithSpriteFrameName("front" + std::to_string(i + 1) + ".png");
+                characters[i]->setAnchorPoint({ .5f, 0 });
+            }
             bubble->setOpacity(0);
             bidButton->setEnabled(false);
         });
@@ -392,6 +397,15 @@ bool Auction::init()
     {
         auto showBidAction = CallFunc::create([=]()
             {
+                characters[i]->initWithSpriteFrameName("back" + std::to_string(i + 1) + ".png");
+                characters[i]->setAnchorPoint({ .5f, 0 });
+            });
+        showBidSequence = Sequence::create(showBidSequence, showAction, showBidAction, nullptr);
+    }
+    for (int i = 0; i < characters.size(); i++)
+    {
+        auto showBidAction = CallFunc::create([=]()
+            {
                 auto bidder = players[i];
                 auto iter = std::ranges::find_if(*bids, [=](auto bid) { return bid.first == bidder->GetId(); });
                 auto bid = (iter != std::end(*bids)) ? iter->second : 0;
@@ -410,6 +424,8 @@ bool Auction::init()
 
                     addChild(board, 0, bidder->GetId());
                 }
+                characters[i]->initWithSpriteFrameName("bid" + std::to_string(i + 1) + ".png");
+                characters[i]->setAnchorPoint({ .5f, 0 });
             });
         showBidSequence = Sequence::create(showBidSequence, showAction, showBidAction, nullptr);
     }
