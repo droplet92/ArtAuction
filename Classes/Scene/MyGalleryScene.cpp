@@ -118,7 +118,7 @@ bool MyGallery::init()
 
         board->setBackGroundImage("GalleryBoard.png", Widget::TextureResType::PLIST);
         board->setBackGroundImageScale9Enabled(true);
-        board->setContentSize({ 800, 500 });
+        board->setContentSize({ 950, 570 });
         board->setAnchorPoint({ .5f, .5f });
         board->setPosition({ visibleSize.width * .4f, visibleSize.height * .4f });
 

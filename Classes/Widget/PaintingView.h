@@ -26,7 +26,7 @@ namespace ui
     private:
         std::vector<HBox*> _children;
         std::vector<lhs::Model::Painting const*> _data;
-        lhs::Model::Painting const* _selected;
+        ui::Painting* _selected;
     };
 }
 NS_CC_END

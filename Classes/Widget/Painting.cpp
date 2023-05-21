@@ -33,12 +33,12 @@ namespace ui
 
         this->data = data;
 
-        setContentSize({ 160, 160 });
+        setContentSize({ 190, 190 });
 
         if (image = ImageView::create(data->path.string()))
         {
             image->setScale(1 / 15.f);
-            image->setPosition({ 80, 80 });
+            image->setPosition(getContentSize() / 2);
             image->setAnchorPoint({ .5f, .5f });
             addChild(image);
 

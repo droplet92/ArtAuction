@@ -19,14 +19,13 @@ namespace ui
 
         bool init(lhs::Model::Painting const* data);
 
-        //Widget* createCloneInstance() override;
-        //void copyClonedWidgetChildren(Widget* model) override;
+        float getBottomPadding() const;
 
         void setScale(float scale) override;
 
-        float getBottomPadding() const;
-
         inline lhs::Model::Painting const* getData() const { return data; }
+
+        inline void setColor(const Color3B& color) { image->setColor(color); }
 
     private:
         ImageView* image;
