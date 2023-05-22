@@ -51,12 +51,9 @@ namespace lhs::Manager
 
 					std::stringstream ss{ entry.path().stem().string() };
 
-					std::getline(ss, painting->painter, '-');
-					std::getline(ss, painting->title, '-');
-					painting->painter.pop_back();
-
+					std::getline(ss, painting->painter, ';');
+					std::getline(ss, painting->title, ';');
 					painting->path = entry.path();
-					painting->title = painting->title.substr(1);
 
 					paintings.push_back(painting);
 					painters.insert(painting->painter);

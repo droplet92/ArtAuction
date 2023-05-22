@@ -265,155 +265,155 @@
     <Image Include="..\Resources\backgrounds\15.jpg">
       <Filter>Resources\backgrounds</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - The Parasol (1777).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - The Third of May 1808 (1814).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - Witches%27 Flight (1798).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - Witches%27 Sabbath (1798).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - Autumn (1786).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - Majas on a Balcony (1814).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - Saturn devouring His Son (1823).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - The Clothed Maja (1805).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - The Colossus (1808).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya - The Dog (1823).jpg">
-      <Filter>Resources\paintings\Francisco de Goya</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - The Ghost of Oiwa (1837).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - The Great Wave off Kanagawa (1832).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Thunderstorm Beneath the Summit (1832).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Two mice (1849).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Courtesan Asleep (Unknown).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Ejiri in the Suruga province (1832).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Fuji from Goten-yama at Shinagawa on the Tokaido (1830).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Kajikazawa in Kai Province (1832).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Poem by Minamoto no Muneyuki Ason (1837).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai - Sazai Hall of the Temple of the Five Hundred Arhats (1830).jpg">
-      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - The Potato Eaters (1885).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - The Starry Night (1889).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Wheat Field with Cypresses (1889).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Windmills on Montmartre (1886).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Courtesan (After Eisen) (1887).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Self-Portrait (1887).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Self-Portrait with Bandaged Ear (1889).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Skull of a Skeleton with Burning Cigarette (1886).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Starry Night Over the Rhone (1888).jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh - Sunflowers.jpg">
-      <Filter>Resources\paintings\Vincent van Gogh</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Small Worlds I (1922).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Small Worlds II (1922).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Squares with Concentric (1913).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - The Cow (1910).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Composition VII (1913).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Couple on Horseback (1907).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Crusaders (1903).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - La Forme Blanche (1939).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Murnau with Church I (1910).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky - Several Circles (1926).jpg">
-      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Karina (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bKarina (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Mars (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bMars (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Pope Francis Wears BALENCIAGA (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bPope Francis Wears BALENCIAGA (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Space Opera Theator (2022).jpg">
+    <Image Include="..\Resources\paintings\AI\AI%3bSpace Opera Theator (2022).jpg">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - A Game Character (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bA Game Character (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - A Woman (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bA Woman (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Chaos (2022).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bChaos (2022).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Frozen Clover (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bFrozen Clover (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Gotoh Hitori (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bGotoh Hitori (2023).png">
       <Filter>Resources\paintings\AI</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI - Haerin (2023).png">
+    <Image Include="..\Resources\paintings\AI\AI%3bHaerin (2023).png">
       <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Parasol (1777).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Third of May 1808 (1814).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bWitches%27 Flight (1798).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bWitches%27 Sabbath (1798).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bAutumn (1786).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bMajas on a Balcony (1814).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bSaturn devouring His Son (1823).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Clothed Maja (1805).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Colossus (1808).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Dog (1823).jpg">
+      <Filter>Resources\paintings\Francisco de Goya</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bThe Ghost of Oiwa (1837).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bThe Great Wave off Kanagawa (1832).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bThunderstorm Beneath the Summit (1832).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bTwo mice (1849).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bCourtesan Asleep (Unknown).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bEjiri in the Suruga province (1832).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bFuji from Goten-yama at Shinagawa on the Tokaido (1830).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bKajikazawa in Kai Province (1832).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bPoem by Minamoto no Muneyuki Ason (1837).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bSazai Hall of the Temple of the Five Hundred Arhats (1830).jpg">
+      <Filter>Resources\paintings\Katsushika Hokusai</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bThe Potato Eaters (1885).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bThe Starry Night (1889).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bWheat Field with Cypresses (1889).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bWindmills on Montmartre (1886).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bCourtesan (After Eisen) (1887).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSelf-Portrait (1887).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSelf-Portrait with Bandaged Ear (1889).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSkull of a Skeleton with Burning Cigarette (1886).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bStarry Night Over the Rhone (1888).jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSunflowers.jpg">
+      <Filter>Resources\paintings\Vincent van Gogh</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSmall Worlds I (1922).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSmall Worlds II (1922).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSquares with Concentric (1913).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bThe Cow (1910).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bComposition VII (1913).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bCouple on Horseback (1907).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bCrusaders (1903).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bLa Forme Blanche (1939).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bMurnau with Church I (1910).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSeveral Circles (1926).jpg">
+      <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
