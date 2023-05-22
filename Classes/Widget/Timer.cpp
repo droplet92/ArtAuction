@@ -71,6 +71,9 @@ namespace ui
     {
         _remainTime = time;
 
+        _timer->stopAllActions();
+        _timer->unscheduleAllCallbacks();
+
         _time->setString(std::to_string(time));
         _timer->setPercentage(0);
         _timer->runAction(ProgressTo::create(_remainTime, 0));

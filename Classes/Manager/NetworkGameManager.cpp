@@ -29,9 +29,13 @@ namespace lhs::Manager
 	{
 	}
 
-	std::u8string NetworkGameManager::GetNextRound()
+	void NetworkGameManager::MoveToNextRound()
 	{
-		return std::u8string();
+	}
+
+	std::pair<int, std::u8string>  NetworkGameManager::GetCurrentRound() const
+	{
+		return {};
 	}
 
 	std::vector<std::vector<Model::Painting*>> NetworkGameManager::GetPaintings(size_t nPlayers) const
@@ -70,6 +74,16 @@ namespace lhs::Manager
 	std::vector<std::pair<int, int>> NetworkGameManager::GetBids() const
 	{
 		return std::vector<std::pair<int, int>>();
+	}
+
+	bool NetworkGameManager::IsBidUpdated() const
+	{
+		return false;
+	}
+
+	std::pair<int, int> NetworkGameManager::GetLastBid() const
+	{
+		return std::pair<int, int>();
 	}
 
 	std::pair<int, int> NetworkGameManager::GetWinningBid()

@@ -5,6 +5,7 @@
 #include <random>
 #include <ranges>
 
+#include <cocos2d.h>
 #include <ccRandom.h>
 
 
@@ -16,12 +17,9 @@ namespace lhs::Manager
 		: nPlayers(0)
 		, rounds()
 		, submission(nullptr)
+		, prevBidsCount(0)
 	{
 		selections.reserve(MAX_USER_COUNT);
-	}
-
-	SingleGameManager::~SingleGameManager()
-	{
 	}
 
 	SingleGameManager& SingleGameManager::Instance()
@@ -79,19 +77,24 @@ namespace lhs::Manager
 		this->nPlayers = nPlayers;
 	}
 
-	std::u8string SingleGameManager::GetNextRound()
+	void SingleGameManager::MoveToNextRound()
 	{
+		if (!rounds.empty())
+			rounds.pop_back();
+
 		if (rounds.empty())
 		{
 			std::random_device rd;
 			std::mt19937 generator(rd());
-			rounds = { u8"비공개", u8"정찰제", u8"실시간", u8"NTF" };
+			rounds = { u8"공개 입찰", u8"비공개 입찰", u8"정찰", u8"NFT 공개 입찰" };
 
 			std::ranges::shuffle(rounds, generator);
 		}
-		auto next = rounds.back();
-		rounds.pop_back();
-		return next;
+	}
+
+	std::pair<int, std::u8string> SingleGameManager::GetCurrentRound() const
+	{
+		return { 5 - rounds.size(), rounds.back() };
 	}
 
 	std::vector<std::vector<Model::Painting*>> SingleGameManager::GetPaintings(size_t nPlayers) const
@@ -146,7 +149,15 @@ namespace lhs::Manager
 
 	void SingleGameManager::Bid(const std::pair<int, int>& bid)
 	{
-		bids.push_back(bid);
+		cocos2d::log("[Id %d] bid %d golds.", bid.first, bid.second);
+
+		if (bids.empty() || bids.back().second != bid.second)	// 동시에 들어올 때 조금 대비
+		{
+			bids.push_back(bid);
+
+			if (newBidEventListener)
+				newBidEventListener(bid.second);
+		}
 	}
 
 	std::vector<std::pair<int, int>> SingleGameManager::GetBids() const
@@ -155,10 +166,38 @@ namespace lhs::Manager
 		return { view.begin(), view.end() };
 	}
 
+	bool SingleGameManager::IsBidUpdated() const
+	{
+		auto [_, round] = GetCurrentRound();
+
+		return (round == u8"정찰") ? !bids.empty() : false;
+	}
+
+	std::pair<int, int> SingleGameManager::GetLastBid() const
+	{
+		return bids.empty() ? std::make_pair(-1, 0) : bids.back();
+	}
+
 	std::pair<int, int> SingleGameManager::GetWinningBid()
 	{
-		auto winningBid = std::make_pair(0, 0);
+		auto [_, round] = GetCurrentRound();
 
+		if (round == u8"비공개 입찰")
+			return GetClosedWinningBid();
+
+		auto winningBid = GetLastBid();
+		bids.clear();
+		return winningBid;
+	}
+
+	bool SingleGameManager::HasAllUserSubmitted() const
+	{
+		return (selections.size() == nPlayers);
+	}
+
+	std::pair<int, int> SingleGameManager::GetClosedWinningBid()
+	{
+		auto winningBid = std::make_pair(0, 0);
 		do
 		{
 			auto bid = bids.back();
@@ -170,14 +209,8 @@ namespace lhs::Manager
 
 			if (bid.second > winningBid.second)
 				winningBid = bid;
-		}
-		while (!bids.empty());
+		} while (!bids.empty());
 
 		return winningBid;
-	}
-
-	bool SingleGameManager::HasAllUserSubmitted() const
-	{
-		return (selections.size() == nPlayers);
 	}
 }

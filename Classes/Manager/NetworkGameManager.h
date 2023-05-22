@@ -14,8 +14,10 @@ namespace lhs::Manager
 		void Init();
 
 		void SetNumberOfPlayers(size_t nPlayers) final;
+
+		void MoveToNextRound() final;
 		
-		std::u8string GetNextRound() final;
+		std::pair<int, std::u8string> GetCurrentRound() const final;
 
 		std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const final;
 
@@ -32,10 +34,16 @@ namespace lhs::Manager
 		void Bid(const std::pair<int, int>& bid) final;
 
 		std::vector<std::pair<int, int>> GetBids() const final;
+		
+		bool IsBidUpdated() const final;
+
+		std::pair<int, int> GetLastBid() const final;
 
 		std::pair<int, int> GetWinningBid() final;
 
 		bool HasAllUserSubmitted() const final;
+
+		inline bool IsRoundEnd() const final { return false; }
 
 	private:
 		NetworkGameManager();

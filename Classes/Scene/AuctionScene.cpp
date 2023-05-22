@@ -1,4 +1,5 @@
 #include "AuctionScene.h"
+#include "ExplanationScene.h"
 #include "RankingResultScene.h"
 
 #include <algorithm>
@@ -8,6 +9,7 @@
 #include <ccRandom.h>
 #include <ui/CocosGUI.h>
 
+#include <EventCheckingAction.h>
 #include <Utility.h>
 #include <Manager/PlayerManager.h>
 #include <Manager/SingleGameManager.h>
@@ -28,10 +30,10 @@ constexpr float hideDuration = 1.f;
 
 constexpr float playtime = 30.f;
 
-bool isBidValid(int bid, uint32_t gold)
+bool isBidValid(int bid, int lower, int upper)
 {
-    if (bid < 1) return false;
-    if (bid > gold) return false;
+    if (bid < lower) return false;
+    if (bid > upper) return false;
     return true;
 }
 
@@ -77,9 +79,15 @@ bool Auction::init()
 
     /////////////////////////////
     // 2. add your codes below...
+    auto temp = new std::vector<Action*>;
+    auto bids = new std::vector<std::pair<int, int>>;
 
-    // SpriteFrameCache에 이미지 파일 로드
     auto player = lhs::Manager::PlayerManager::Instance().GetPlayer(0);
+    auto [roundCount, roundType] = lhs::Manager::SingleGameManager::Instance().GetCurrentRound();
+    auto minBid = new int;
+
+    if ((roundType == u8"공개 입찰") || (roundType == u8"NFT 공개 입찰"))
+        lhs::Manager::SingleGameManager::Instance().AddNewBidEventListener([=](int newBid) { *minBid = newBid; });
 
     if (auto background = Sprite::create("backgrounds/AuctionBackground.jpg"))
     {
@@ -200,12 +208,12 @@ bool Auction::init()
                         auto offer = std::stoi(bidField->getString());
                         cocos2d::log("%d", offer);
 
-                        if (!isBidValid(offer, player->GetGold()))
+                        if (!isBidValid(offer, *minBid, player->GetGold()))
                         {
                             if (popup->isVisible())
                                 return;
 
-                            alert->setString("Not enough golds.");
+                            alert->setString("Check your offer.");
                             popup->addContent(alert);
                             popup->setVisible(true);
                             return;
@@ -236,7 +244,7 @@ bool Auction::init()
                 }
             });
         bidButton->setAnchorPoint({ .1f, .5f });
-        bidButton->setPosition({    bidBoard->getContentSize().width - bidButton->getContentSize().width,
+        bidButton->setPosition({ bidBoard->getContentSize().width - bidButton->getContentSize().width,
                                     bidBoard->getContentSize().height / 2 });
 
         bidBoard->addChild(bidButton);
@@ -268,16 +276,19 @@ bool Auction::init()
     lhs::Model::Painting const** selection = new lhs::Model::Painting const*;
     auto winnerMessage = new std::string;
     auto startMessage = new std::string;
+    auto bidMessage = new std::string;
     auto messages = std::vector<std::string*>{
         startMessage,
-        new std::string{ lhs::Utility::ConvertToAscii(u8"1 골드부터\n시작합니다.") },
-        new std::string{ lhs::Utility::ConvertToAscii(u8"입찰\n시작합니다!") },
+        bidMessage,
+        new std::string{ lhs::Utility::ConvertToAscii(u8"시작합니다!") },
     };
     auto getDataAction = CallFunc::create([=]()
         {
             *selection = lhs::Manager::SingleGameManager::Instance().GetSelectionForAuction();
             *startMessage = (*selection)->painter + lhs::Utility::ConvertToAscii(u8"\n의 작품입니다.");
-            
+            *minBid = (roundType == u8"정찰") ? 10 : 1;
+            *bidMessage = std::to_string(*minBid) + lhs::Utility::ConvertToAscii(u8" 골드 이상\n제시해주세요.");
+
             auto info = player->GetInformations();
 
             // 데이터만 업데이트하고 싶은데
@@ -380,15 +391,142 @@ bool Auction::init()
         {
             bidButton->setEnabled(true);
             timer->start();
-
-            lhs::Manager::SingleGameManager::Instance().Bid({ 1, cocos2d::RandomHelper::random_int<int>(0, 20) });
-            lhs::Manager::SingleGameManager::Instance().Bid({ 2, cocos2d::RandomHelper::random_int<int>(0, 20) });
-            lhs::Manager::SingleGameManager::Instance().Bid({ 3, cocos2d::RandomHelper::random_int<int>(0, 20) });
         });
-    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, DelayTime::create(playtime + delay), nullptr);
+    auto biddingAction = CallFunc::create([=]()
+        {
+            if (roundType == u8"공개 입찰")
+            {
+                schedule([=](float t)
+                    {
+                        cocos2d::log("open1 3");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 1, *minBid + 1 });
+                    }, 3.f, 9, 0, "open1");
+                schedule([=](float t)
+                    {
+                        cocos2d::log("open2 5 +1");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 2, *minBid + 1 });
+                    }, 5.f, 3, 1, "open2");
+                schedule([=](float t)
+                    {
+                        cocos2d::log("open3 7");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 3, *minBid + 1 });
+                    }, 7.f, 2, 0, "open3");
+            }
+            else if (roundType == u8"비공개 입찰")
+            {
+                scheduleOnce([=](float t)
+                    {
+                        cocos2d::log("closed1 3");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 1, cocos2d::RandomHelper::random_int<int>(*minBid, std::min(20, int(players[1]->GetGold()))) });
+                    }, 3, "closed1");
+                scheduleOnce([=](float t)
+                    {
+                        cocos2d::log("closed2 10");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 2, cocos2d::RandomHelper::random_int<int>(*minBid, std::min(20, int(players[2]->GetGold()))) });
+                    }, 10, "closed2");
+                scheduleOnce([=](float t)
+                    {
+                        cocos2d::log("closed3 14");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 3, cocos2d::RandomHelper::random_int<int>(*minBid, std::min(20, int(players[3]->GetGold()))) });
+                    }, 14, "closed3");
+            }
+            else if (roundType == u8"정찰")
+            {
+                schedule([=](float t)
+                    {
+                        cocos2d::log("fixed1 5 +1");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 1, *minBid });
+                    }, 5, 3, 1, "fixed1");
+                scheduleOnce([=](float t)
+                    {
+                        cocos2d::log("fixed2 10");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 2, *minBid });
+                    }, 10, "fixed2");
+                scheduleOnce([=](float t)
+                    {
+                        cocos2d::log("fixed3 15");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 3, *minBid });
+                    }, 15, "fixed3");
+            }
+            else if (roundType == u8"NFT 공개 입찰")
+            {
+                schedule([=](float t)
+                    {
+                        cocos2d::log("nft1 3");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 1, *minBid + 1 });
+                    }, 3.f, 9, 0, "nft1");
+                schedule([=](float t)
+                    {
+                        cocos2d::log("nft2 5 +1");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 2, *minBid + 1 });
+                    }, 5.f, 3, 1, "nft2");
+                schedule([=](float t)
+                    {
+                        cocos2d::log("nft3 7");
+                        if (cocos2d::RandomHelper::random_int<int>(0, 1))
+                            lhs::Manager::SingleGameManager::Instance().Bid({ 3, *minBid + 1 });
+                    }, 7.f, 2, 0, "nft3");
+            }
+        });
+    auto timerWaitingAction = EventCheckingAction::create(playtime + delay, [=]()
+        {
+            stopAllActions();
+
+            auto round = Sequence::create(CallFunc::create({}), nullptr);
+
+            for (int i = 6; i < temp->size(); i++)
+                round = Sequence::create(round, temp->at(i), nullptr);
+
+            // 원인불명
+            if (roundType == u8"정찰")
+            {
+                if (lhs::Manager::SingleGameManager::Instance().IsRoundEnd())
+                {
+                    auto moveSceneAction = CallFunc::create([=]()
+                        {
+                            delete minBid;
+                            delete selection;
+                            delete winnerMessage;
+                            delete startMessage;
+                            delete bidMessage;
+                            delete bids;
+
+                            auto scene = (roundCount < 4)
+                                ? Explanation::createScene()
+                                : RankingResult::createScene();
+                            Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
+                        });
+                    round = Sequence::create(round, moveSceneAction, nullptr);
+                }
+                else
+                {
+                    for (auto elem : *temp)
+                        round = Sequence::create(round, elem, nullptr);
+                }
+            }
+
+            runAction(round);
+        });
+    auto afterBidAction = CallFunc::create([=]()
+        {
+            bidButton->setEnabled(false);
+            timer->reset(playtime);
+            unscheduleAllCallbacks();
+        });
+    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, timerWaitingAction, nullptr);
 
     // 3. 결과 발표
-    auto bids = new std::vector<std::pair<int, int>>;
     auto dummyAction = CallFunc::create({});
     auto showBidSequence = Sequence::create(dummyAction, nullptr);
     auto showAction = Sequence::create(FadeIn::create(showDuration), nullptr);
@@ -441,7 +579,7 @@ bool Auction::init()
             auto winner = lhs::Manager::PlayerManager::Instance().GetPlayer(id);
 
             lhs::u8stringstream ss{};
-            ss << lhs::Utility::ConvertToUtf8(winner->GetName()) << u8"님이" << std::endl;
+            ss << lhs::Utility::ConvertToUtf8(winner->GetName()) << u8" 님이" << std::endl;
             ss << lhs::Utility::ConvertToUtf8(std::to_string(gold)) << u8"골드에" << std::endl;
             ss << u8"낙찰했습니다!";
 
@@ -452,7 +590,7 @@ bool Auction::init()
             sss << "Gold: " << player->GetGold();
             bidField->setPlaceHolder(sss.str());
 
-            player->AddPainting(const_cast<lhs::Model::Painting*>(*selection));
+            winner->AddPainting(const_cast<lhs::Model::Painting*>(*selection));
         });
     auto showText = CallFunc::create([=]() {
         text->setString(*winnerMessage);
@@ -469,7 +607,7 @@ bool Auction::init()
 
     auto finishSequence = Sequence::create(showAction, showText, hideAction, hideText, nullptr);
     auto showResultSequence = Sequence::create(dataUpdateAction, showBidSequence, showResultAction, finishSequence, nullptr);
-    
+
     auto playingSequence = Sequence::create
     (
         guideSequence,
@@ -481,6 +619,37 @@ bool Auction::init()
     // End Sequence
     auto uiCleanupAction = CallFunc::create([=]()
         {
+            if (roundType != u8"정찰")
+            {
+                stopAllActions();
+                auto round = Sequence::create(CallFunc::create({}), nullptr);
+
+                if (lhs::Manager::SingleGameManager::Instance().IsRoundEnd())
+                {
+                    auto moveSceneAction = CallFunc::create([=]()
+                        {
+                            delete minBid;
+                            delete selection;
+                            delete winnerMessage;
+                            delete startMessage;
+                            delete bidMessage;
+                            delete bids;
+
+                            auto scene = (roundCount < 4)
+                                ? Explanation::createScene()
+                                : RankingResult::createScene();
+                            Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
+                        });
+                    round = Sequence::create(round, moveSceneAction, nullptr);
+                }
+                else
+                {
+                    for (auto elem : *temp)
+                        round = Sequence::create(round, elem, nullptr);
+                }
+                runAction(round);
+            }
+
             removeChildByTag(0x12345678);
 
             // 임시
@@ -491,19 +660,25 @@ bool Auction::init()
                 removeChildByTag(player->GetId());
         });
     auto endSequence = Sequence::create(uiCleanupAction, nullptr);
+    temp->assign({
+        // begin sequence
+        getDataAction,
+        uiSetupAction,
+        // playing sequence
+        guideSequence,
+        uiUpdateAction,
+        biddingAction,
+        timerWaitingAction,
+        afterBidAction,
+        showResultSequence,
+        // end sequence
+        uiCleanupAction,
+        nullptr
+    });
+    auto round = Sequence::create(CallFunc::create({}), nullptr);
 
-    auto moveSceneAction = CallFunc::create([=]()
-        {
-            delete selection;
-            delete winnerMessage;
-            delete startMessage;
-            delete bids;
-
-            auto scene = RankingResult::createScene();
-            Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
-        });
-    auto auction = Sequence::create(beginSequence, playingSequence, endSequence, nullptr);
-    auto round = Sequence::create(auction, auction, auction, auction, moveSceneAction, nullptr);
+    for (auto elem : *temp)
+        round = Sequence::create(round, elem, nullptr);
 
     runAction(round);
 

@@ -811,6 +811,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Classes\EventCheckingAction.h" />
     <ClInclude Include="..\Classes\Manager\GameManager.h" />
     <ClInclude Include="..\Classes\Manager\NetworkGameManager.h" />
     <ClInclude Include="..\Classes\Manager\PlayerManager.h" />
@@ -835,6 +836,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(ProjectDir)..\Classes\AppDelegate.h" />
     <ClInclude Include="$(ProjectDir)\main.h" />
     <ClInclude Include="$(ProjectDir)\resource.h" />
+    <ClCompile Include="..\Classes\EventCheckingAction.cpp" />
     <ClCompile Include="..\Classes\Manager\NetworkGameManager.cpp" />
     <ClCompile Include="..\Classes\Manager\PlayerManager.cpp" />
     <ClCompile Include="..\Classes\Manager\SingleGameManager.cpp" />

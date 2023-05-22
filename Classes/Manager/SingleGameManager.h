@@ -1,5 +1,6 @@
 #pragma once
 #include <Manager/GameManager.h>
+#include <functional>
 
 
 namespace lhs::Manager
@@ -7,7 +8,7 @@ namespace lhs::Manager
 	class SingleGameManager : public GameManager
 	{
 	public:
-		~SingleGameManager() final;
+		~SingleGameManager() final = default;
 
 		static SingleGameManager& Instance();
 
@@ -15,7 +16,9 @@ namespace lhs::Manager
 
 		void SetNumberOfPlayers(size_t nPlayers) final;
 
-		std::u8string GetNextRound() final;
+		void MoveToNextRound() final;
+
+		std::pair<int, std::u8string> GetCurrentRound() const final;
 
 		std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const final;
 
@@ -33,12 +36,23 @@ namespace lhs::Manager
 
 		std::vector<std::pair<int, int>> GetBids() const final;
 
+		bool IsBidUpdated() const final;
+
+		std::pair<int, int> GetLastBid() const final;
+
 		std::pair<int, int> GetWinningBid() final;
 
 		bool HasAllUserSubmitted() const final;
 
+		inline bool IsRoundEnd() const final { return selections.empty(); }
+
+		//
+		inline void AddNewBidEventListener(std::function<void(int)> listener) { newBidEventListener = listener; }
+
 	private:
 		SingleGameManager();
+
+		std::pair<int, int> GetClosedWinningBid();
 
 		static size_t const MAX_USER_COUNT;
 
@@ -57,5 +71,10 @@ namespace lhs::Manager
 		std::unordered_map<std::string, size_t> reputation;
 
 		std::vector<std::pair<int, int>> bids;
+
+		int prevBidsCount;
+
+		//
+		std::function<void(int)> newBidEventListener;
 	};
 }

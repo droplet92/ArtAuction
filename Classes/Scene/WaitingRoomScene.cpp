@@ -214,6 +214,15 @@ bool WaitingRoom::init()
                 return;
 
             AudioEngine::play2d("audios/click.mp3");
+
+            auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
+            auto paintings = lhs::Manager::SingleGameManager::Instance().GetPaintings(4);
+
+            for (auto player : players)
+            {
+                player->SetPaintings(paintings.back());
+                paintings.pop_back();
+            }
             auto scene = Explanation::createScene();
 
             Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));

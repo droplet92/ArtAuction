@@ -67,6 +67,9 @@
     <ClCompile Include="..\Classes\Widget\Jukebox.cpp">
       <Filter>Source Files\Classes\Widget</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\EventCheckingAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\Scene\AuctionScene.h">
@@ -146,6 +149,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Widget\Jukebox.h">
       <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EventCheckingAction.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,9 @@ namespace lhs::Manager
 
 		virtual void SetNumberOfPlayers(size_t nPlayers) = 0;
 
-		virtual std::u8string GetNextRound() = 0;
+		virtual void MoveToNextRound() = 0;
+
+		virtual std::pair<int, std::u8string> GetCurrentRound() const = 0;
 
 		virtual std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const = 0;
 
@@ -35,7 +37,13 @@ namespace lhs::Manager
 
 		virtual std::vector<std::pair<int, int>> GetBids() const = 0;
 
+		virtual bool IsBidUpdated() const = 0;
+
+		virtual std::pair<int, int> GetLastBid() const = 0;
+
 		virtual std::pair<int, int> GetWinningBid() = 0;
+
+		virtual bool IsRoundEnd() const = 0;
 
 		virtual bool HasAllUserSubmitted() const = 0;
 	};
