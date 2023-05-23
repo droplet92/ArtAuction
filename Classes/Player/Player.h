@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <Model/Painting.h>
@@ -30,6 +31,8 @@ namespace lhs
 		void AddPainting(Model::Painting* painting);
 
 		void RemovePainting(Model::Painting const* target);
+
+		void SellAll(const std::unordered_map<std::string, size_t>& reputation);
 
 		inline std::string GetName() const { return name; }
 

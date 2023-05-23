@@ -8,6 +8,7 @@
 #include <ui/CocosGUI.h>
 
 #include <Manager/PlayerManager.h>
+#include <Manager/SingleGameManager.h>
 
 USING_NS_CC;
 using namespace ui;
@@ -41,6 +42,9 @@ bool RankingResult::init()
     //////////////////////////////
     // 2. Write your codes below
     auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
+
+    for (auto& player : players)
+        player->SellAll(lhs::Manager::SingleGameManager::Instance().GetReputation());
 
     std::ranges::stable_sort(players, [](lhs::Player* lhs, lhs::Player* rhs)
         {
@@ -77,7 +81,12 @@ bool RankingResult::init()
             namePlate->loadTextureDisabled("NamecardPressed.png", Widget::TextureResType::PLIST);
             namePlate->setTitleFontName("fonts/Dovemayo_gothic.ttf");
             namePlate->setTitleFontSize(40.f);
-            namePlate->setTitleText(player->GetName());
+
+            std::stringstream ss{};
+            ss << player->GetName() << " (" <<  player->GetGold() << ")";
+            namePlate->setTitleText(ss.str());
+
+            cocos2d::log("player: %s, gold: %d", player->GetName().c_str(), player->GetGold());
 
             list->addChild(namePlate);
         }

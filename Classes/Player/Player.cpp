@@ -72,3 +72,11 @@ void Player::RemovePainting(Model::Painting const* target)
 			return (source->title == target->title);
 		});
 }
+
+void lhs::Player::SellAll(const std::unordered_map<std::string, size_t>& reputation)
+{
+	for (auto& painting : paintings)
+		gold += reputation.at(painting->painter);
+
+	paintings.clear();
+}

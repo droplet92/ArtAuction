@@ -87,9 +87,66 @@ bool Auction::init()
     auto [roundCount, roundType] = lhs::Manager::SingleGameManager::Instance().GetCurrentRound();
     auto minBid = new int;
 
+    auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
+    std::vector<Sprite*> characters = {
+        MakeCharacter(1, origin, visibleSize.width),
+        MakeCharacter(2, origin, visibleSize.width),
+        MakeCharacter(3, origin, visibleSize.width),
+        MakeCharacter(4, origin, visibleSize.width),
+        //MakeCharacter(5, origin, visibleSize.width),
+    };
+
+    // TODO: 시간 지나면 원래대로 돌리기
+    auto showBidFunc = [=](const std::pair<int, int>& newBid)
+    {
+        const auto& [bidderId, bid] = newBid;
+        auto bidder = players[bidderId];
+        *minBid = bid;
+
+        if (auto board = Sprite::createWithSpriteFrameName("BidBoard.png"))
+        {
+            board->setPosition(characters[bidderId]->getPosition() + Vec2{ 0, 150 });
+            board->setAnchorPoint({ .5f, 0 });
+
+            auto text = ui::Text::create(std::to_string(bid), fontBasic, fontSizeMedium);
+            text->setTextColor(Color4B::BLACK);
+            text->setPosition(board->getContentSize() / 2);
+            text->setAnchorPoint({ .5f, .5f });
+
+            board->addChild(text);
+
+            addChild(board, 0, bidder->GetId());
+        }
+        characters[bidderId]->initWithSpriteFrameName("bid" + std::to_string(bidderId + 1) + ".png");
+        characters[bidderId]->setAnchorPoint({ .5f, 0 });
+
+        if (isScheduled("showBoardOnce" + std::to_string(bidder->GetId())))
+        {
+            removeChildByTag(bidder->GetId());
+            characters[bidderId]->initWithSpriteFrameName("front" + std::to_string(bidderId + 1) + ".png");
+            characters[bidderId]->setAnchorPoint({ .5f, 0 });
+        }
+        scheduleOnce([=](float t)
+            {
+                removeChildByTag(bidder->GetId());
+                characters[bidderId]->initWithSpriteFrameName("front" + std::to_string(bidderId + 1) + ".png");
+                characters[bidderId]->setAnchorPoint({ .5f, 0 });
+            }, 1.f, "showBoardOnce" + std::to_string(bidder->GetId()));
+    };
+
     //if ((roundType == u8"공개 입찰") || (roundType == u8"NFT 공개 입찰"))
     if ((roundType == u8"Open Bidding") || (roundType == u8"NFT Open Bidding"))
-        lhs::Manager::SingleGameManager::Instance().AddNewBidEventListener([=](int newBid) { *minBid = newBid; });
+    {
+        lhs::Manager::SingleGameManager::Instance().AddNewBidEventListener([=](const std::pair<int, int>& newBid)
+            {
+                *minBid = newBid.second;
+                showBidFunc(newBid);
+            });
+    }
+    else if (roundType == u8"Fixed Price")
+    {
+        lhs::Manager::SingleGameManager::Instance().AddNewBidEventListener(showBidFunc);
+    }
 
     if (auto background = Sprite::create("backgrounds/AuctionBackground.jpg"))
     {
@@ -112,19 +169,11 @@ bool Auction::init()
 
         addChild(dealer);
     }
-    auto players = lhs::Manager::PlayerManager::Instance().GetRoomPlayers(0);
-    std::vector<Sprite*> characters = {
-        MakeCharacter(1, origin, visibleSize.width),
-        MakeCharacter(2, origin, visibleSize.width),
-        MakeCharacter(3, origin, visibleSize.width),
-        MakeCharacter(4, origin, visibleSize.width),
-        //MakeCharacter(5, origin, visibleSize.width),
-    };
-    for (const auto& character : characters)
-        addChild(character);
 
     for (int i = 0; i < characters.size(); i++)
     {
+        addChild(characters[i]);
+
         if (auto nameTag = ui::Text::create(players[i]->GetName(), fontBasic, fontSizeMedium))
         {
             nameTag->enableOutline(Color4B::BLACK, 2);
@@ -545,6 +594,27 @@ bool Auction::init()
         {
             bidButton->setEnabled(false);
             timer->reset(playtime);
+
+            //while (isScheduled("showBoardOnce"))
+            //{
+
+            //    removeChildByTag(bidder->GetId());
+            //    characters[bidderId]->initWithSpriteFrameName("front" + std::to_string(bidderId + 1) + ".png");
+            //    characters[bidderId]->setAnchorPoint({ .5f, 0 });
+            //}
+            if (roundType != u8"Fixed Price")
+            {
+                for (const auto& player : players)
+                {
+                    const auto& playerId = player->GetId();
+                    if (isScheduled("showBoardOnce" + std::to_string(playerId)))
+                    {
+                        removeChildByTag(playerId);
+                        characters[playerId]->initWithSpriteFrameName("front" + std::to_string(playerId + 1) + ".png");
+                        characters[playerId]->setAnchorPoint({ .5f, 0 });
+                    }
+                }
+            }
             unscheduleAllCallbacks();
         });
     //auto auctionPlayingSequence = Sequence::create(uiUpdateAction, timerWaitingAction, nullptr);
@@ -555,41 +625,44 @@ bool Auction::init()
     auto showAction = Sequence::create(FadeIn::create(showDuration), nullptr);
     auto hideAction = Sequence::create(DelayTime::create(hideDuration), FadeOut::create(hideDuration), nullptr);
 
-    for (int i = 0; i < characters.size(); i++)
+    if (roundType == u8"Closed Bidding")
     {
-        auto showBidAction = CallFunc::create([=]()
-            {
-                characters[i]->initWithSpriteFrameName("back" + std::to_string(i + 1) + ".png");
-                characters[i]->setAnchorPoint({ .5f, 0 });
-            });
-        showBidSequence = Sequence::create(showBidSequence, showAction, showBidAction, nullptr);
-    }
-    for (int i = 0; i < characters.size(); i++)
-    {
-        auto showBidAction = CallFunc::create([=]()
-            {
-                auto bidder = players[i];
-                auto iter = std::ranges::find_if(*bids, [=](auto bid) { return bid.first == bidder->GetId(); });
-                auto bid = (iter != std::end(*bids)) ? iter->second : 0;
-
-                if (auto board = Sprite::createWithSpriteFrameName("BidBoard.png"))
+        for (int i = 0; i < characters.size(); i++)
+        {
+            auto showBidAction = CallFunc::create([=]()
                 {
-                    board->setPosition(characters[i]->getPosition() + Vec2{ 0, 150 });
-                    board->setAnchorPoint({ .5f, 0 });
+                    characters[i]->initWithSpriteFrameName("back" + std::to_string(i + 1) + ".png");
+                    characters[i]->setAnchorPoint({ .5f, 0 });  // 이것도 스프라이트 수정하면 될 텐데
+                });
+            showBidSequence = Sequence::create(showBidSequence, showAction, showBidAction, nullptr);
+        }
+        for (int i = 0; i < characters.size(); i++)
+        {
+            auto showBidAction = CallFunc::create([=]()
+                {
+                    auto bidder = players[i];
+                    auto iter = std::ranges::find_if(*bids, [=](auto bid) { return bid.first == bidder->GetId(); });
+                    auto bid = (iter != std::end(*bids)) ? iter->second : 0;
 
-                    auto text = ui::Text::create(std::to_string(bid), fontBasic, fontSizeMedium);
-                    text->setTextColor(Color4B::BLACK);
-                    text->setPosition(board->getContentSize() / 2);
-                    text->setAnchorPoint({ .5f, .5f });
+                    if (auto board = Sprite::createWithSpriteFrameName("BidBoard.png"))
+                    {
+                        board->setPosition(characters[i]->getPosition() + Vec2{ 0, 150 });
+                        board->setAnchorPoint({ .5f, 0 });
 
-                    board->addChild(text);
+                        auto text = ui::Text::create(std::to_string(bid), fontBasic, fontSizeMedium);
+                        text->setTextColor(Color4B::BLACK);
+                        text->setPosition(board->getContentSize() / 2);
+                        text->setAnchorPoint({ .5f, .5f });
 
-                    addChild(board, 0, bidder->GetId());
-                }
-                characters[i]->initWithSpriteFrameName("bid" + std::to_string(i + 1) + ".png");
-                characters[i]->setAnchorPoint({ .5f, 0 });
-            });
-        showBidSequence = Sequence::create(showBidSequence, showAction, showBidAction, nullptr);
+                        board->addChild(text);
+
+                        addChild(board, 0, bidder->GetId());
+                    }
+                    characters[i]->initWithSpriteFrameName("bid" + std::to_string(i + 1) + ".png");
+                    characters[i]->setAnchorPoint({ .5f, 0 });
+                });
+            showBidSequence = Sequence::create(showBidSequence, showAction, showBidAction, nullptr);
+        }
     }
     auto dataUpdateAction = CallFunc::create([=]()
         {

@@ -36,8 +36,11 @@ namespace lhs::Manager
 	{
 		try
 		{
+#ifdef _DEBUG
 			std::filesystem::directory_iterator root{ "../Resources/paintings" };
-
+#else
+			std::filesystem::directory_iterator root{ "./Resources/paintings" };
+#endif
 			for (const auto& directory : root)
 			{
 				std::filesystem::directory_iterator iter{ directory.path() };
@@ -53,7 +56,11 @@ namespace lhs::Manager
 
 					std::getline(ss, painting->painter, ';');
 					std::getline(ss, painting->title, ';');
+#ifdef _DEBUG
 					painting->path = entry.path();
+#else
+					painting->path = entry.path().lexically_relative("./Resources");
+#endif
 
 					paintings.push_back(painting);
 					painters.insert(painting->painter);
@@ -156,7 +163,7 @@ namespace lhs::Manager
 			bids.push_back(bid);
 
 			if (newBidEventListener)
-				newBidEventListener(bid.second);
+				newBidEventListener(bid);
 		}
 	}
 
@@ -239,7 +246,7 @@ namespace lhs::Manager
 		std::set<int> s{ goldView.begin(), goldView.end() };
 
 		// 각 작가의 tier 매기기
-		std::vector<int> v{ 20, 10, 5, 0 };
+		std::vector<int> v{ 5, 3, 1, 0 };
 		
 		for (const auto& target : s)
 		{
@@ -258,10 +265,12 @@ namespace lhs::Manager
 				| std::views::transform([](const auto& src) { return src.first; });
 
 			for (const auto& painter : bar)
-			{
-				reputation.at(painter) += v.back();
-			}
+				reputation.at(painter) +=  v.back();
+
 			v.pop_back();
+
+			if (v.empty())
+				v.push_back(0);
 		}
 		// reset
 		for (auto& [_, value] : winningBids)
@@ -273,15 +282,9 @@ namespace lhs::Manager
 		std::random_device rd;
 		std::mt19937 gen(rd());
 
-		constexpr double mean = 0.0;
-		constexpr double stddev = 1.0;
-		constexpr double minRange = 0.0;
-		constexpr double maxRange = 30.0;
-		constexpr double coeff = 2.0;
+		std::uniform_int_distribution<int> dist(0, 30);
 
-		std::normal_distribution<double> dist(mean, stddev);
-
-		size_t price = dist(gen) * (maxRange - minRange) / (coeff * stddev) + (maxRange + minRange) / coeff;
+		size_t price = dist(gen);
 
 		cocos2d::log("sold at %d", price);
 		return price;

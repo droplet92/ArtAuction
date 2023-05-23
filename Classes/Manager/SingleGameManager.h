@@ -47,7 +47,7 @@ namespace lhs::Manager
 		inline bool IsRoundEnd() const final { return selections.empty(); }
 
 		//
-		inline void AddNewBidEventListener(std::function<void(int)> listener) { newBidEventListener = listener; }
+		inline void AddNewBidEventListener(std::function<void(const std::pair<int, int>&)> listener) { newBidEventListener = listener; }
 
 		void AddWinningBid(const std::string& painter, int winningBid);
 
@@ -81,7 +81,7 @@ namespace lhs::Manager
 		int prevBidsCount;
 
 		//
-		std::function<void(int)> newBidEventListener;
+		std::function<void(const std::pair<int, int>&)> newBidEventListener;
 
 		// painter, golds
 		std::vector<std::pair<std::string, int>> winningBids;
