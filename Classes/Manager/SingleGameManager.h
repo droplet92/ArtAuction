@@ -49,6 +49,12 @@ namespace lhs::Manager
 		//
 		inline void AddNewBidEventListener(std::function<void(int)> listener) { newBidEventListener = listener; }
 
+		void AddWinningBid(const std::string& painter, int winningBid);
+
+		void UpdateReputation();
+
+		size_t GetRealTimeNftPrice();
+
 	private:
 		SingleGameManager();
 
@@ -76,5 +82,8 @@ namespace lhs::Manager
 
 		//
 		std::function<void(int)> newBidEventListener;
+
+		// painter, golds
+		std::vector<std::pair<std::string, int>> winningBids;
 	};
 }

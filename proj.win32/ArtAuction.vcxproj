@@ -824,6 +824,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="..\Classes\Scene\PaintingSubmissionScene.h" />
     <ClInclude Include="..\Classes\Scene\PlayMenuScene.h" />
     <ClInclude Include="..\Classes\Scene\RankingResultScene.h" />
+    <ClInclude Include="..\Classes\Scene\ReputationScene.h" />
     <ClInclude Include="..\Classes\Scene\RoomListScene.h" />
     <ClInclude Include="..\Classes\Scene\TitleScene.h" />
     <ClInclude Include="..\Classes\Scene\WaitingRoomScene.h" />
@@ -847,6 +848,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="..\Classes\Scene\PaintingSubmissionScene.cpp" />
     <ClCompile Include="..\Classes\Scene\PlayMenuScene.cpp" />
     <ClCompile Include="..\Classes\Scene\RankingResultScene.cpp" />
+    <ClCompile Include="..\Classes\Scene\ReputationScene.cpp" />
     <ClCompile Include="..\Classes\Scene\RoomListScene.cpp" />
     <ClCompile Include="..\Classes\Scene\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Scene\WaitingRoomScene.cpp" />

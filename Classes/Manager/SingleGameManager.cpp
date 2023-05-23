@@ -59,9 +59,11 @@ namespace lhs::Manager
 					painters.insert(painting->painter);
 				}
 			}
-
 			for (const auto& painter : painters)
+			{
 				reputation.emplace(painter, 0);
+				winningBids.push_back({ painter, 0 });
+			}
 		}
 		catch (std::exception e)
 		{
@@ -83,7 +85,8 @@ namespace lhs::Manager
 		{
 			std::random_device rd;
 			std::mt19937 generator(rd());
-			rounds = { u8"공개 입찰", u8"비공개 입찰", u8"정찰", u8"NFT 공개 입찰" };
+			rounds = { u8"Open Bidding", u8"Closed Bidding", u8"Fixed Price", u8"NFT Open Bidding" };
+			//rounds = { u8"공개 입찰", u8"비공개 입찰", u8"정찰", u8"NFT 공개 입찰" };
 
 			std::ranges::shuffle(rounds, generator);
 		}
@@ -167,19 +170,23 @@ namespace lhs::Manager
 	{
 		auto [_, round] = GetCurrentRound();
 
-		return (round == u8"정찰") ? !bids.empty() : false;
+		return (round == u8"Fixed Price") ? !bids.empty() : false;
+		//return (round == u8"정찰") ? !bids.empty() : false;
 	}
 
 	std::pair<int, int> SingleGameManager::GetLastBid() const
 	{
-		return bids.empty() ? std::make_pair(-1, 0) : bids.back();
+		return bids.empty()
+			? std::make_pair(cocos2d::RandomHelper::random_int<int>(0, nPlayers - 1), 0)
+			: bids.back();
 	}
 
 	std::pair<int, int> SingleGameManager::GetWinningBid()
 	{
 		auto [_, round] = GetCurrentRound();
 
-		if (round == u8"비공개 입찰")
+		if (round == u8"Closed Bidding")
+			//if (round == u8"비공개 입찰")
 			return GetClosedWinningBid();
 
 		auto winningBid = GetLastBid();
@@ -194,8 +201,9 @@ namespace lhs::Manager
 
 	std::pair<int, int> SingleGameManager::GetClosedWinningBid()
 	{
-		auto winningBid = std::make_pair(0, 0);
-		do
+		auto winningBid = std::make_pair(cocos2d::RandomHelper::random_int<int>(0, nPlayers - 1), 0);
+		
+		while (!bids.empty())
 		{
 			auto bid = bids.back();
 
@@ -206,8 +214,76 @@ namespace lhs::Manager
 
 			if (bid.second > winningBid.second)
 				winningBid = bid;
-		} while (!bids.empty());
-
+		}
 		return winningBid;
+	}
+
+	void SingleGameManager::AddWinningBid(const std::string& painter, int winningBid)
+	{
+		auto r = std::find_if(winningBids.begin(), winningBids.end(), [&](auto source)
+			{
+				return (source.first == painter);
+			});
+		if (r == winningBids.end())
+			return;
+
+		r->second += winningBid;
+	}
+
+	void SingleGameManager::UpdateReputation()
+	{
+		// 각 금액의 tier 매기기
+		auto goldView = winningBids
+			| std::views::transform([](auto& bid) { return bid.second; });
+
+		std::set<int> s{ goldView.begin(), goldView.end() };
+
+		// 각 작가의 tier 매기기
+		std::vector<int> v{ 20, 10, 5, 0 };
+		
+		for (const auto& target : s)
+		{
+			auto view = winningBids
+				| std::views::filter([&](const auto& src) { return (src.second == target); });
+			//	| std::views::transform([](const auto& src) { return src.first; });
+
+			// vs2022 컴파일 or 타입 추론 오류?
+			//std::ranges::for_each(bar, [&](auto& painter)
+			//	{
+			//		reputation.at(painter) += v.back();
+			//	});
+
+			std::vector<std::pair<std::string, int>> foo{ view.begin(), view.end() };
+			auto bar = foo
+				| std::views::transform([](const auto& src) { return src.first; });
+
+			for (const auto& painter : bar)
+			{
+				reputation.at(painter) += v.back();
+			}
+			v.pop_back();
+		}
+		// reset
+		for (auto& [_, value] : winningBids)
+			value = 0;
+	}
+
+	size_t SingleGameManager::GetRealTimeNftPrice()
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+
+		constexpr double mean = 0.0;
+		constexpr double stddev = 1.0;
+		constexpr double minRange = 0.0;
+		constexpr double maxRange = 30.0;
+		constexpr double coeff = 2.0;
+
+		std::normal_distribution<double> dist(mean, stddev);
+
+		size_t price = dist(gen) * (maxRange - minRange) / (coeff * stddev) + (maxRange + minRange) / coeff;
+
+		cocos2d::log("sold at %d", price);
+		return price;
 	}
 }

@@ -1,6 +1,5 @@
 #include "AuctionScene.h"
-#include "ExplanationScene.h"
-#include "RankingResultScene.h"
+#include "ReputationScene.h"
 
 #include <algorithm>
 #include <ranges>
@@ -29,6 +28,8 @@ constexpr float showDuration = 1.f;
 constexpr float hideDuration = 1.f;
 
 constexpr float playtime = 30.f;
+
+const Color3B accentColor = { 0xF8, 0xE2, 0x57 };
 
 bool isBidValid(int bid, int lower, int upper)
 {
@@ -86,7 +87,8 @@ bool Auction::init()
     auto [roundCount, roundType] = lhs::Manager::SingleGameManager::Instance().GetCurrentRound();
     auto minBid = new int;
 
-    if ((roundType == u8"°ø°³ ÀÔÂû") || (roundType == u8"NFT °ø°³ ÀÔÂû"))
+    //if ((roundType == u8"°ø°³ ÀÔÂû") || (roundType == u8"NFT °ø°³ ÀÔÂû"))
+    if ((roundType == u8"Open Bidding") || (roundType == u8"NFT Open Bidding"))
         lhs::Manager::SingleGameManager::Instance().AddNewBidEventListener([=](int newBid) { *minBid = newBid; });
 
     if (auto background = Sprite::create("backgrounds/AuctionBackground.jpg"))
@@ -121,6 +123,17 @@ bool Auction::init()
     for (const auto& character : characters)
         addChild(character);
 
+    for (int i = 0; i < characters.size(); i++)
+    {
+        if (auto nameTag = ui::Text::create(players[i]->GetName(), fontBasic, fontSizeMedium))
+        {
+            nameTag->enableOutline(Color4B::BLACK, 2);
+            nameTag->setPosition({ origin.x + visibleSize.width / 8 * ((i + 1) * 2 - 1), origin.y });
+            nameTag->setAnchorPoint({ .5f, 0 });
+            addChild(nameTag);
+        }
+    }
+
     if (auto reputation = ui::ListView::create())
     {
         reputation->setBackGroundImage("PaintersInfoBoard.png", ui::Widget::TextureResType::PLIST);
@@ -135,12 +148,16 @@ bool Auction::init()
         title->setTextColor({ 0x58, 0xcd, 0xf8, 0xFF });
         reputation->addChild(title);
 
-        for (const auto& datum : data)
+        for (const auto& [painter, golds] : data)
         {
-            std::stringstream ss;
-            ss << datum.first << ": $" << datum.second;
+            auto text = ui::RichText::create();
+            auto painterText = ui::RichElementText::create(1, Color3B::WHITE, 0xFF, painter + ": ", fontBasic, fontSizeSmall);
+            auto nPiecesText = ui::RichElementText::create(2, accentColor, 0xFF, std::to_string(golds), fontBasic, fontSizeSmall);
 
-            auto text = ui::Text::create(ss.str(), fontBasic, fontSizeSmall);
+            text->ignoreContentAdaptWithSize(false);
+            text->setContentSize({ 200, 20 });
+            text->pushBackElement(painterText);
+            text->pushBackElement(nPiecesText);
 
             reputation->addChild(text);
         }
@@ -280,14 +297,17 @@ bool Auction::init()
     auto messages = std::vector<std::string*>{
         startMessage,
         bidMessage,
-        new std::string{ lhs::Utility::ConvertToAscii(u8"½ÃÀÛÇÕ´Ï´Ù!") },
+        new std::string{ lhs::Utility::ConvertToAscii(u8"We start the bidding!") },
+        //new std::string{ lhs::Utility::ConvertToAscii(u8"½ÃÀÛÇÕ´Ï´Ù!") },
     };
     auto getDataAction = CallFunc::create([=]()
         {
             *selection = lhs::Manager::SingleGameManager::Instance().GetSelectionForAuction();
-            *startMessage = (*selection)->painter + lhs::Utility::ConvertToAscii(u8"\nÀÇ ÀÛÇ°ÀÔ´Ï´Ù.");
-            *minBid = (roundType == u8"Á¤Âû") ? 10 : 1;
-            *bidMessage = std::to_string(*minBid) + lhs::Utility::ConvertToAscii(u8" °ñµå ÀÌ»ó\nÁ¦½ÃÇØÁÖ¼¼¿ä.");
+            *startMessage = lhs::Utility::ConvertToAscii(u8"This is by\n") + (*selection)->painter;
+            //*startMessage = (*selection)->painter + lhs::Utility::ConvertToAscii(u8"\nÀÇ ÀÛÇ°ÀÔ´Ï´Ù.");
+            *minBid = (roundType == u8"Fixed Price") ? 10 : 1;
+            *bidMessage = lhs::Utility::ConvertToAscii(u8"Please bid\nat least ") + std::to_string(*minBid);
+            //*bidMessage = std::to_string(*minBid) + lhs::Utility::ConvertToAscii(u8" °ñµå ÀÌ»ó\nÁ¦½ÃÇØÁÖ¼¼¿ä.");
 
             auto info = player->GetInformations();
 
@@ -307,10 +327,15 @@ bool Auction::init()
 
                 for (const auto& [painter, nPieces] : info)
                 {
-                    std::stringstream ss{};
-                    ss << painter << ": " << nPieces;
+                    auto text = ui::RichText::create();
+                    auto painterText = ui::RichElementText::create(1, Color3B::WHITE, 0xFF, painter + ": ", fontBasic, fontSizeSmall);
+                    auto nPiecesText = ui::RichElementText::create(2, accentColor, 0xFF, std::to_string(nPieces), fontBasic, fontSizeSmall);
 
-                    auto text = ui::Text::create(ss.str(), fontBasic, fontSizeSmall);
+                    text->ignoreContentAdaptWithSize(false);
+                    text->setContentSize({ 200, 20 });
+                    text->pushBackElement(painterText);
+                    text->pushBackElement(nPiecesText);
+
                     gallery->addChild(text);
                 }
                 addChild(gallery, 0, 0x11112222);
@@ -352,7 +377,7 @@ bool Auction::init()
             bubble->setOpacity(0);
             bidButton->setEnabled(false);
         });
-    auto beginSequence = Sequence::create(getDataAction, uiSetupAction, nullptr);
+    //auto beginSequence = Sequence::create(getDataAction, uiSetupAction, nullptr);
 
     // Playing Sequence
     auto delayAction = DelayTime::create(delay);
@@ -394,7 +419,7 @@ bool Auction::init()
         });
     auto biddingAction = CallFunc::create([=]()
         {
-            if (roundType == u8"°ø°³ ÀÔÂû")
+            if (roundType == u8"Open Bidding")
             {
                 schedule([=](float t)
                     {
@@ -415,7 +440,7 @@ bool Auction::init()
                             lhs::Manager::SingleGameManager::Instance().Bid({ 3, *minBid + 1 });
                     }, 7.f, 2, 0, "open3");
             }
-            else if (roundType == u8"ºñ°ø°³ ÀÔÂû")
+            else if (roundType == u8"Closed Bidding")
             {
                 scheduleOnce([=](float t)
                     {
@@ -436,7 +461,7 @@ bool Auction::init()
                             lhs::Manager::SingleGameManager::Instance().Bid({ 3, cocos2d::RandomHelper::random_int<int>(*minBid, std::min(20, int(players[3]->GetGold()))) });
                     }, 14, "closed3");
             }
-            else if (roundType == u8"Á¤Âû")
+            else if (roundType == u8"Fixed Price")
             {
                 schedule([=](float t)
                     {
@@ -457,7 +482,7 @@ bool Auction::init()
                             lhs::Manager::SingleGameManager::Instance().Bid({ 3, *minBid });
                     }, 15, "fixed3");
             }
-            else if (roundType == u8"NFT °ø°³ ÀÔÂû")
+            else if (roundType == u8"NFT Open Bidding")
             {
                 schedule([=](float t)
                     {
@@ -489,7 +514,7 @@ bool Auction::init()
                 round = Sequence::create(round, temp->at(i), nullptr);
 
             // ¿øÀÎºÒ¸í
-            if (roundType == u8"Á¤Âû")
+            if (roundType == u8"Fixed Price")
             {
                 if (lhs::Manager::SingleGameManager::Instance().IsRoundEnd())
                 {
@@ -502,9 +527,7 @@ bool Auction::init()
                             delete bidMessage;
                             delete bids;
 
-                            auto scene = (roundCount < 4)
-                                ? Explanation::createScene()
-                                : RankingResult::createScene();
+                            auto scene = Reputation::createScene();
                             Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
                         });
                     round = Sequence::create(round, moveSceneAction, nullptr);
@@ -524,7 +547,7 @@ bool Auction::init()
             timer->reset(playtime);
             unscheduleAllCallbacks();
         });
-    auto auctionPlayingSequence = Sequence::create(uiUpdateAction, timerWaitingAction, nullptr);
+    //auto auctionPlayingSequence = Sequence::create(uiUpdateAction, timerWaitingAction, nullptr);
 
     // 3. °á°ú ¹ßÇ¥
     auto dummyAction = CallFunc::create({});
@@ -573,24 +596,35 @@ bool Auction::init()
             *bids = lhs::Manager::SingleGameManager::Instance().GetBids();
             timer->reset(playtime);
         });
-    auto showResultAction = CallFunc::create([=]()
+    auto updateResultAction = CallFunc::create([=]()
         {
             auto [id, gold] = lhs::Manager::SingleGameManager::Instance().GetWinningBid();
             auto winner = lhs::Manager::PlayerManager::Instance().GetPlayer(id);
 
             lhs::u8stringstream ss{};
-            ss << lhs::Utility::ConvertToUtf8(winner->GetName()) << u8" ´ÔÀÌ" << std::endl;
-            ss << lhs::Utility::ConvertToUtf8(std::to_string(gold)) << u8"°ñµå¿¡" << std::endl;
-            ss << u8"³«ÂûÇß½À´Ï´Ù!";
+            ss << lhs::Utility::ConvertToUtf8(winner->GetName()) << u8" has" << std::endl
+                << u8"won your bid" << std::endl
+                << u8"for " << lhs::Utility::ConvertToUtf8(std::to_string(gold)) << u8" gold!";
+            //ss << lhs::Utility::ConvertToUtf8(winner->GetName()) << u8" ´ÔÀÌ" << std::endl;
+            //ss << lhs::Utility::ConvertToUtf8(std::to_string(gold)) << u8"°ñµå¿¡" << std::endl;
+            //ss << u8"³«ÂûµÆ½À´Ï´Ù!";
 
+            //
+            // Update Result
             *winnerMessage = lhs::Utility::ConvertToAscii(ss.str());
             winner->UpdateGold(-gold);
+
+            if (roundType == u8"NFT Open Bidding")
+                winner->UpdateGold(lhs::Manager::SingleGameManager::Instance().GetRealTimeNftPrice());
+            else
+                winner->AddPainting(const_cast<lhs::Model::Painting*>(*selection));
+
+            lhs::Manager::SingleGameManager::Instance().AddWinningBid((*selection)->painter, gold);
 
             std::stringstream sss{};
             sss << "Gold: " << player->GetGold();
             bidField->setPlaceHolder(sss.str());
 
-            winner->AddPainting(const_cast<lhs::Model::Painting*>(*selection));
         });
     auto showText = CallFunc::create([=]() {
         text->setString(*winnerMessage);
@@ -606,20 +640,20 @@ bool Auction::init()
         });
 
     auto finishSequence = Sequence::create(showAction, showText, hideAction, hideText, nullptr);
-    auto showResultSequence = Sequence::create(dataUpdateAction, showBidSequence, showResultAction, finishSequence, nullptr);
+    auto updateResultSequence = Sequence::create(dataUpdateAction, showBidSequence, updateResultAction, finishSequence, nullptr);
 
-    auto playingSequence = Sequence::create
-    (
-        guideSequence,
-        auctionPlayingSequence,
-        showResultSequence,
-        nullptr
-    );
+    //auto playingSequence = Sequence::create
+    //(
+    //    guideSequence,
+    //    auctionPlayingSequence,
+    //    showResultSequence,
+    //    nullptr
+    //);
 
     // End Sequence
     auto uiCleanupAction = CallFunc::create([=]()
         {
-            if (roundType != u8"Á¤Âû")
+            if (roundType != u8"Fixed Price")
             {
                 stopAllActions();
                 auto round = Sequence::create(CallFunc::create({}), nullptr);
@@ -635,9 +669,7 @@ bool Auction::init()
                             delete bidMessage;
                             delete bids;
 
-                            auto scene = (roundCount < 4)
-                                ? Explanation::createScene()
-                                : RankingResult::createScene();
+                            auto scene = Reputation::createScene();
                             Director::getInstance()->replaceScene(TransitionSlideInB::create(.3f, scene));
                         });
                     round = Sequence::create(round, moveSceneAction, nullptr);
@@ -659,7 +691,7 @@ bool Auction::init()
             for (const auto& player : players)
                 removeChildByTag(player->GetId());
         });
-    auto endSequence = Sequence::create(uiCleanupAction, nullptr);
+    //auto endSequence = Sequence::create(uiCleanupAction, nullptr);
     temp->assign({
         // begin sequence
         getDataAction,
@@ -670,7 +702,7 @@ bool Auction::init()
         biddingAction,
         timerWaitingAction,
         afterBidAction,
-        showResultSequence,
+        updateResultSequence,
         // end sequence
         uiCleanupAction,
         nullptr
