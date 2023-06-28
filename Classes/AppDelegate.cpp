@@ -27,8 +27,9 @@
 #include <ccRandom.h>
 #include <audio/include/AudioEngine.h>
 
+#include <Manager/SingleGameManager.h>
 #include <Scene/TitleScene.h>
-#include <Widget/Jukebox.h>
+#include <Jukebox.h>
 
 USING_NS_CC;
 
@@ -45,7 +46,6 @@ AppDelegate::AppDelegate()
 
 AppDelegate::~AppDelegate() 
 {
-    //AudioEngine::end();
 }
 
 // if you want a different context, modify the value of glContextAttrs
@@ -102,19 +102,24 @@ bool AppDelegate::applicationDidFinishLaunching() {
     {        
         director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
     }
+    register_all_packages();
 
+    // 1. Load spritesheet
+    //
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images.plist", "images.png");
+
+    // 2. Initialize game manager
+    //
+    lhs::manager::SingleGameManager::Instance().Init();
+    
+    // 3. Initialize music player
+    //
     AudioEngine::preload("audios/click.mp3");
     lhs::Jukebox::Instance().Start();
 
-    register_all_packages();
-
-    // load sprite sheets
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images.plist", "images.png");
-
-    // create a scene.
-    auto scene = Title::createScene();
-
-    director->runWithScene(scene);
+    // 4. Start game
+    //
+    director->runWithScene(Title::createScene());
 
     return true;
 }

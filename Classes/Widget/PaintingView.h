@@ -1,32 +1,34 @@
 #pragma once
-#include <vector>
-
 #include <cocos2d.h>
-#include <ui/CocosGUI.h>
+#include <ui/UIVBox.h>
+#include <ui/UIHBox.h>
 
 #include <Widget/Painting.h>
 
-NS_CC_BEGIN
-namespace ui
+
+namespace lhs::widget
 {
-    class PaintingView : public VBox
+    /**
+    * The table view of paintings
+    * 
+    * It shows paintings in a 5xN table format.
+    */
+    class PaintingView : public cocos2d::ui::VBox
     {
     public:
         PaintingView();
-        ~PaintingView() override;
+
+        ~PaintingView() final = default;
 
         CREATE_FUNC(PaintingView);
 
-        bool init() override;
+        void AddPaintings(const std::vector<Painting*>& paintings);
 
-        void AddPaintings(std::vector<ui::Painting*> paintings);
-
-        lhs::Model::Painting const* getSelected() const;
+        const model::Painting& GetSelected() const;
 
     private:
-        std::vector<HBox*> _children;
-        std::vector<lhs::Model::Painting const*> _data;
-        ui::Painting* _selected;
+        std::vector<cocos2d::ui::HBox*> children;   // rows
+        std::vector<model::Painting> data;          // paintings
+        Painting* selected;     // selected painting by player
     };
 }
-NS_CC_END

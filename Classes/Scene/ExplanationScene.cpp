@@ -1,20 +1,19 @@
 #include "ExplanationScene.h"
 #include "MyGalleryScene.h"
 
-#include <sstream>
 #include <string>
 #include <unordered_map>
 
 #include <AudioEngine.h>
+USING_NS_CC;
+using namespace ui;
 
 #include <Utility.h>
+#include <ScriptSequenceGenerator.h>
 #include <Manager/SingleGameManager.h>
+using namespace lhs;
+using namespace lhs::manager;
 
-USING_NS_CC;
-
-
-constexpr float delay = 1.0f;
-constexpr float fadeInDuration = 0.5f;
 
 const std::unordered_map<std::u8string, std::vector<std::u8string>> scriptMap =
 {
@@ -76,106 +75,67 @@ const std::unordered_map<std::u8string, std::vector<std::u8string>> scriptMap =
     //},
 };
 
+static void ChangeScene()
+{
+    auto scene = MyGallery::createScene();
+    auto transition = TransitionSlideInB::create(.3f, scene);
+    Director::getInstance()->replaceScene(transition);
+};
+
+std::vector<std::u8string> GetScript(const std::u8string& roundType)
+{
+    const auto& lines = scriptMap.at(roundType);
+    return
+    {
+        u8"This round is a(n) " + roundType + u8" trade.",
+            u8"It lasts 30 seconds per artwork.",
+            lines.at(0),
+            lines.at(1),
+            lines.at(2),
+            u8"The artist's reputation increases in order of the highest bidder."
+            //u8"이번 라운드는 " + roundType + u8" 거래입니다.",
+            //u8"작품 하나당 30초간 진행됩니다.",
+            //lines.at(0),
+            //lines.at(1),
+            //lines.at(2),
+            //u8"가장 높은 금액이 거래된 작가 순으로 작가의 평판이 상승합니다."
+    };
+}
+
 Scene* Explanation::createScene()
 {
     return Explanation::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
-static void problemLoading(const char* filename)
-{
-    printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
-}
-
-// on "init" you need to initialize your instance
 bool Explanation::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Scene::init() )
-    {
+    if (!Scene::init())
         return false;
-    }
 
-    /////////////////////////////
+    // 1. Initialize constants
+    //
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
+    const auto origin = Director::getInstance()->getVisibleOrigin();
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    SingleGameManager::Instance().MoveToNextRound();
+    const auto [nextRound, roundType] = SingleGameManager::Instance().GetCurrentRound();
+    const auto roundString = "Round " + std::to_string(nextRound);
+    const auto script = GetScript(roundType);
 
-    lhs::Manager::SingleGameManager::Instance().MoveToNextRound();
-    auto [nextRound, roundType] = lhs::Manager::SingleGameManager::Instance().GetCurrentRound();
+    // 2. Create and initialize items
+    //
+    setColor(Color3B::BLACK);
 
-    this->setColor(Color3B::BLACK);
+    auto title = Utility::CreateWithFile<Label>(roundString, FONT_SIZE_LARGE);
+    title->setPosition(origin + Vec2{ visibleSize.width / 2, visibleSize.height - title->getContentSize().height });
 
-    if (auto title = Label::createWithTTF("Round " + std::to_string(nextRound), "fonts/Dovemayo_gothic.ttf", 40))
-    {
-        title->setPosition({ origin.x + visibleSize.width / 2,
-                            origin.y + visibleSize.height - title->getContentSize().height });
-        addChild(title);
-    }
-    auto lines = scriptMap.at(roundType);
-    std::vector<std::u8string> script
-    {
-        u8"This round is a(n) " + roundType + u8" trade.",
-        u8"It lasts 30 seconds per artwork.",
-        lines.at(0),
-        lines.at(1),
-        lines.at(2),
-        u8"The artist's reputation increases in order of the highest bidder."
-        //u8"이번 라운드는 " + roundType + u8" 거래입니다.",
-        //u8"작품 하나당 30초간 진행됩니다.",
-        //lines.at(0),
-        //lines.at(1),
-        //lines.at(2),
-        //u8"가장 높은 금액이 거래된 작가 순으로 작가의 평판이 상승합니다."
-    };
-    auto dummyAction = CallFunc::create({});
-    auto explanationSequence = Sequence::create(dummyAction, nullptr);
+    auto scriptSequence = ScriptSequenceGenerator::Generate(script, [=](Label* line) { addChild(line); });
+    auto changeSceneAction = CallFunc::create(ChangeScene);
 
-    for (int i = 0; i < script.size(); ++i)
-    {
-        auto delayAction = DelayTime::create(delay);
-        auto text = lhs::Utility::ConvertToAscii(script[i]);
-        if (auto label = Label::createWithTTF("", "fonts/Dovemayo_gothic.ttf", 24))
-        {
-            float yTotal = (script.size() + 1) * 2;
-            float yPortion = (script.size() - i) * 2 - 1;
-
-            label->setPosition({ origin.x + visibleSize.width / 2,
-                                origin.y + 150 + (visibleSize.height - 200) * yPortion / yTotal });
-            addChild(label);
-
-            auto updateTextAction = CallFunc::create([=]() { label->setString(text); });
-            auto sequence = Sequence::create(delayAction, updateTextAction, delayAction, nullptr);
-            explanationSequence = Sequence::create(explanationSequence, sequence, nullptr);
-        }
-        explanationSequence = Sequence::create(explanationSequence, delayAction, nullptr);
-    }
-    auto moveToNextScene = CallFunc::create([=]()
-        {
-            auto scene = MyGallery::createScene();
-
-            Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
-        });
-    explanationSequence = Sequence::create(explanationSequence, moveToNextScene, nullptr);
-
-    runAction(explanationSequence);
+    // 3. Add items to scene
+    //
+    addChild(title);
+    runAction(Sequence::create(scriptSequence, changeSceneAction, nullptr));
 
     return true;
-}
-
-
-void Explanation::menuCloseCallback(Ref* pSender)
-{
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    AudioEngine::end();
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
 }

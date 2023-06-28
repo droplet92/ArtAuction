@@ -5,7 +5,7 @@
 class MyGallery : public cocos2d::Scene
 {
 public:
-    ~MyGallery() final;
+    ~MyGallery() final = default;
 
     static cocos2d::Scene* createScene();
 
@@ -13,7 +13,4 @@ public:
     CREATE_FUNC(MyGallery);
 
     bool init() final;
-    
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
 };

@@ -1,17 +1,8 @@
 #include "NetworkGameManager.h"
 
 
-namespace lhs::Manager
+namespace lhs::manager
 {
-	NetworkGameManager::NetworkGameManager()
-	{
-
-	}
-
-	NetworkGameManager::~NetworkGameManager()
-	{
-	}
-
 	NetworkGameManager& NetworkGameManager::Instance()
 	{
 		static NetworkGameManager* manager = nullptr;
@@ -25,12 +16,19 @@ namespace lhs::Manager
 	{
 	}
 
-	void NetworkGameManager::SetNumberOfPlayers(size_t nPlayers)
+	bool NetworkGameManager::IsBidUpdated() const
 	{
+		return false;
 	}
 
-	void NetworkGameManager::MoveToNextRound()
+	bool NetworkGameManager::IsRoundEnd() const
 	{
+		return false;
+	}
+
+	bool NetworkGameManager::HasAllUserSubmitted() const
+	{
+		return false;
 	}
 
 	std::pair<int, std::u8string>  NetworkGameManager::GetCurrentRound() const
@@ -38,47 +36,34 @@ namespace lhs::Manager
 		return {};
 	}
 
-	std::vector<std::vector<Model::Painting*>> NetworkGameManager::GetPaintings(size_t nPlayers) const
+	std::vector<std::string> NetworkGameManager::GetPainters() const
 	{
-		return std::vector<std::vector<Model::Painting*>>();
+		return std::vector<std::string>();
 	}
 
-	void NetworkGameManager::SubmitPainting(Model::Painting const* painting)
+	std::vector<std::vector<model::Painting>> NetworkGameManager::GetPaintings(uint32_t nPlayers) const
 	{
+		return std::vector<std::vector<model::Painting>>();
 	}
 
-	Model::Painting const* NetworkGameManager::GetSubmission() const
-	{
-		return nullptr;
-	}
-
-	Model::Painting const* NetworkGameManager::GetSelectionForAuction()
+	const model::Painting& NetworkGameManager::GetSubmission() const
 	{
 		return {};
 	}
 
-	std::set<std::string> NetworkGameManager::GetPainters() const
+	std::map<std::string, uint32_t> NetworkGameManager::GetReputation() const
 	{
-		return std::set<std::string>();
+		return std::map<std::string, uint32_t>();
 	}
 
-	std::unordered_map<std::string, size_t> NetworkGameManager::GetReputation() const
+	model::Painting NetworkGameManager::GetSelectionForAuction()
 	{
-		return std::unordered_map<std::string, size_t>();
-	}
-
-	void NetworkGameManager::Bid(const std::pair<int, int>& bid)
-	{
+		return {};
 	}
 
 	std::vector<std::pair<int, int>> NetworkGameManager::GetBids() const
 	{
 		return std::vector<std::pair<int, int>>();
-	}
-
-	bool NetworkGameManager::IsBidUpdated() const
-	{
-		return false;
 	}
 
 	std::pair<int, int> NetworkGameManager::GetLastBid() const
@@ -91,9 +76,19 @@ namespace lhs::Manager
 		return std::pair<int, int>();
 	}
 
-	bool NetworkGameManager::HasAllUserSubmitted() const
+	void NetworkGameManager::SetNumberOfPlayers(uint32_t nPlayers)
 	{
-		return false;
 	}
 
+	void NetworkGameManager::SubmitPainting(const model::Painting& painting)
+	{
+	}
+
+	void NetworkGameManager::Bid(const std::pair<int, int>& bid)
+	{
+	}
+
+	void NetworkGameManager::MoveToNextRound()
+	{
+	}
 }

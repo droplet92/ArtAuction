@@ -1,18 +1,23 @@
 #include "Utility.h"
 
-#include <locale>
-#include <codecvt>
+#include <Windows.h>
 
 
 namespace lhs
 {
-    std::string Utility::ConvertToAscii(const std::u8string& u8str)
+    void Utility::Abort(std::string_view message) noexcept
+    {
+        (void)MessageBoxA(nullptr, message.data(), "Error!", MB_OK | MB_ICONERROR);
+        std::abort();
+    }
+
+    std::string Utility::ConvertToAscii(std::u8string_view u8str) noexcept
 	{
-        return { reinterpret_cast<const char*>(u8str.c_str()) };
+        return { reinterpret_cast<const char*>(u8str.data()) };
 	}
 
-    std::u8string Utility::ConvertToUtf8(const std::string& str)
+    std::u8string Utility::ConvertToUtf8(std::string_view str) noexcept
     {
-        return { reinterpret_cast<const char8_t*>(str.c_str()) };
+        return { reinterpret_cast<const char8_t*>(str.data()) };
     }
 }

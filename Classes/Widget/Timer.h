@@ -2,39 +2,42 @@
 #include <cocos2d.h>
 #include <ui/UILayout.h>
 
-NS_CC_BEGIN
-namespace ui
+
+namespace lhs::widget
 {
     using TimerAlarm = std::function<void()>;
 
-    class Timer : public Layout
+    /**
+    * The timeout event handler
+    * 
+    * The Observer patter is used.
+    */
+    class Timer : public cocos2d::ui::Layout
     {
-        DECLARE_CLASS_GUI_INFO
-
     public:
-        Timer(int remainTime);
+        Timer();
 
-        virtual ~Timer();
+        virtual ~Timer() = default;
 
-        static Timer* create(int time);
+        CREATE_FUNC(Timer);
 
-        bool init();
+        bool init() final;
 
-        void setAlarm(const TimerAlarm& alarm);
+        void SetRemainTime(float time);
 
-        void start();
+        void SetAlarm(const TimerAlarm& alarm) noexcept;
 
-        void reset(int time);
+        void Start() noexcept;
+
+        void Reset(float time);
 
     private:
-        void scheduler(float dt);
+        void scheduler();
 
     private:
-        Label* _time;
-        ProgressTimer* _timer;
-        TimerAlarm _alarm;
-
-        int _remainTime;
+        cocos2d::ProgressTimer* timer;  // real timer
+        cocos2d::Label* timeLabel;      // time string
+        TimerAlarm alarm;               // timeout observer
+        float remainTime;
     };
 }
-NS_CC_END

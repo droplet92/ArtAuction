@@ -13,7 +13,4 @@ public:
     CREATE_FUNC(RankingResult);
 
     bool init() final;
-    
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
 };

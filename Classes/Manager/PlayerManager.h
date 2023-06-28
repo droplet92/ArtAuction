@@ -1,25 +1,31 @@
 #pragma once
-#include <vector>
-
-#include <Player/Player.h>
+#include <Model/Player.h>
 
 
-namespace lhs::Manager
+namespace lhs::manager
 {
+	/**
+	* The player manager
+	*
+	* A manager class for players' data.
+	* Ths Singleton pattern is used.
+	*/
 	class PlayerManager
 	{
 	public:
-		static PlayerManager& Instance();
+		static PlayerManager& Instance() noexcept;
 
-		void AddPlayer(lhs::Player* player);
-		
-		lhs::Player* GetPlayer(size_t id);
+		// Return a player whose ID equals to the given id.
+		// If there is no player with the given id, return nullptr.
+		model::Player* GetPlayer(uint32_t id);
 
-		std::vector<lhs::Player*> GetRoomPlayers(size_t roomId);
+		std::vector<model::Player*> GetRoomPlayers(uint32_t roomId);
+
+		void AddPlayer(std::string_view name);
 
 	private:
 		PlayerManager() = default;
 
-		std::vector<lhs::Player*> players;
+		std::vector<model::Player> players;
 	};
 }

@@ -1,69 +1,62 @@
 #include "PaintingView.h"
 
 #include <algorithm>
-#include <iostream>
 
 #include <AudioEngine.h>
 #include <ccRandom.h>
-
 USING_NS_CC;
-using namespace cocos2d::ui;
+using namespace ui;
 
 
-PaintingView::PaintingView()
-	: _selected(nullptr)
+namespace lhs::widget
 {
-}
+	static constexpr auto MAX_COUNT_IN_ROW = 5;
 
-PaintingView::~PaintingView()
-{
-}
-
-bool PaintingView::init()
-{
-	if (!VBox::init())
-		return false;
-
-	return true;
-}
-
-void PaintingView::AddPaintings(std::vector<ui::Painting*> paintings)
-{
-	_children.push_back(HBox::create({ 950, 190 }));
-	
-	for (auto& painting : paintings)
+	PaintingView::PaintingView()
+		: selected(nullptr)
 	{
-		painting->addTouchEventListener([&](Ref* ref, Widget::TouchEventType type)
-			{
-				if (type != Widget::TouchEventType::ENDED)
-					return;
-
-				if (_selected)
-					_selected->setColor(Color3B::WHITE);
-
-				_selected = dynamic_cast<ui::Painting*>(ref);
-
-				AudioEngine::play2d("audios/click.mp3");
-				_selected->setColor(Color3B::ORANGE);
-			});
-		if (_children.back()->getChildrenCount() == 5)
-			_children.push_back(HBox::create({ 950, 190 }));
-
-		_children.back()->addChild(painting);
-		_data.push_back(painting->getData());
 	}
 
-	for (const auto& row : _children)
+	void PaintingView::AddPaintings(const std::vector<Painting*>& paintings)
 	{
-		addChild(row);
+		// Add an initial row.
+		children.push_back(HBox::create({ 950, 190 }));
+
+		for (auto& painting : paintings)
+		{
+			painting->addTouchEventListener([&](Ref* ref, Widget::TouchEventType type)
+				{
+					if (type != Widget::TouchEventType::ENDED)
+						return;
+
+					AudioEngine::play2d("audios/click.mp3");
+
+					// change the selected
+					if (selected)
+						selected->SetColor(Color3B::WHITE);
+
+					selected = dynamic_cast<Painting*>(ref);
+					selected->SetColor(Color3B::ORANGE);	// focus on
+				});
+
+			// If the current row is full, add an additional row.
+			if (children.back()->getChildrenCount() == MAX_COUNT_IN_ROW)
+				children.push_back(HBox::create({ 950, 190 }));
+
+			children.back()->addChild(painting);
+			data.push_back(painting->GetData());
+		}
+		for (const auto& row : children)
+			addChild(row);
 	}
 
-}
+	const model::Painting& PaintingView::GetSelected() const
+	{
+		if (selected)
+			return selected->GetData();
 
-lhs::Model::Painting const* ui::PaintingView::getSelected() const
-{
-	if (_selected)
-		return _selected->getData();
-
-	return _data.at(RandomHelper::random_int<int>(0, _data.size() - 1));
+		// If the selected is nullptr, return a random one.
+		CCASSERT(!data.empty(), "data must not empty.");
+		return data.at(RandomHelper::random_int<int>(0, data.size() - 1));
+	}
 }

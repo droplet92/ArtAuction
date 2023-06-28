@@ -1,41 +1,30 @@
 #include "PlayerManager.h"
+using namespace lhs::model;
 
 #include <algorithm>
 
 
-namespace lhs::Manager
+namespace lhs::manager
 {
-    PlayerManager& PlayerManager::Instance()
+    PlayerManager& PlayerManager::Instance() noexcept
     {
-		static PlayerManager* manager = nullptr;
-
-		if (!manager)
-			manager = new PlayerManager;
-		return *manager;
+		static PlayerManager manager{};
+		return manager;
     }
 
-	// local version
-	void PlayerManager::AddPlayer(Player* player)
-	{
-		static size_t autoIncrementId = 0;
-
-		player->SetId(autoIncrementId++);
-		players.push_back(player);
-	}
-	
-	Player* PlayerManager::GetPlayer(size_t id)
+	Player* PlayerManager::GetPlayer(uint32_t id)
 	{
 		auto player = std::ranges::find_if(players, [id](auto player)
 			{
-				return player->GetId() == id;
+				return player.GetId() == id;
 			});
-
 		return (player != std::ranges::end(players))
-			? *player
-			: nullptr;
+			? &*player	// found
+			: nullptr;	// not found
 	}
 
-	std::vector<lhs::Player*> PlayerManager::GetRoomPlayers(size_t roomId)
+	// singleplay implementation
+	std::vector<Player*> PlayerManager::GetRoomPlayers(uint32_t roomId)
 	{
 		return
 		{
@@ -44,5 +33,12 @@ namespace lhs::Manager
 			GetPlayer(2),
 			GetPlayer(3)
 		};
+	}
+
+	// singleplay implementation
+	void PlayerManager::AddPlayer(std::string_view name)
+	{
+		static size_t autoIncrementId = 0;
+		players.push_back({ autoIncrementId++, name.data()});
 	}
 }

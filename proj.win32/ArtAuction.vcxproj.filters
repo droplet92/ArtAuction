@@ -46,14 +46,8 @@
     <ClCompile Include="..\Classes\Manager\NetworkGameManager.cpp">
       <Filter>Source Files\Classes\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Player\Player.cpp">
-      <Filter>Source Files\Classes\Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Manager\PlayerManager.cpp">
       <Filter>Source Files\Classes\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Utility.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(ProjectDir)..\Classes\AppDelegate.cpp">
       <Filter>Source Files</Filter>
@@ -64,14 +58,53 @@
     <ClCompile Include="$(ProjectDir)..\cocos2d\cocos\precheader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Widget\Jukebox.cpp">
-      <Filter>Source Files\Classes\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\EventCheckingAction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Scene\ReputationScene.cpp">
       <Filter>Source Files\Classes\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Manager\DbManager.cpp">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\RoomTitle.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\NameplateList.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\ChatBox.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\AlignedVBox.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\SpeechBubble.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\InformationBoard.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\BidBoard.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\Character.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Widget\CharacterState.cpp">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Model\Player.cpp">
+      <Filter>Source Files\Classes\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\EventCheckingAction.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ScriptSequenceGenerator.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Utility.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Jukebox.cpp">
+      <Filter>Source Files\Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,17 +162,11 @@
     <ClInclude Include="..\Classes\Manager\SingleGameManager.h">
       <Filter>Source Files\Classes\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Player\Player.h">
-      <Filter>Source Files\Classes\Player</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Manager\PlayerManager.h">
       <Filter>Source Files\Classes\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Model\Painting.h">
       <Filter>Source Files\Classes\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Utility.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="$(ProjectDir)..\Classes\AppDelegate.h">
       <Filter>Source Files</Filter>
@@ -150,14 +177,53 @@
     <ClInclude Include="$(ProjectDir)\resource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Widget\Jukebox.h">
-      <Filter>Source Files\Classes\Widget</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\EventCheckingAction.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Scene\ReputationScene.h">
       <Filter>Source Files\Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Manager\DbManager.h">
+      <Filter>Source Files\Classes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\RoomTitle.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\NameplateList.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\ChatBox.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\AlignedVBox.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\SpeechBubble.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\InformationBoard.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\BidBoard.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\Character.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Widget\CharacterState.h">
+      <Filter>Source Files\Classes\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Model\Player.h">
+      <Filter>Source Files\Classes\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EventCheckingAction.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ScriptSequenceGenerator.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Utility.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Jukebox.h">
+      <Filter>Source Files\Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +281,6 @@
     <Filter Include="Source Files\Classes\Manager">
       <UniqueIdentifier>{080dd82c-273e-4f31-a5ba-b0f0a2aee78f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Classes\Player">
-      <UniqueIdentifier>{0fe1d210-12e2-410a-b97a-30c9dd266894}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Classes\Model">
       <UniqueIdentifier>{158d2b77-d067-4252-a318-645796dae4e4}</UniqueIdentifier>
     </Filter>
@@ -271,155 +334,155 @@
     <Image Include="..\Resources\backgrounds\15.jpg">
       <Filter>Resources\backgrounds</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bKarina (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bMars (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bPope Francis Wears BALENCIAGA (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bSpace Opera Theator (2022).jpg">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bA Game Character (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bA Woman (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bChaos (2022).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bFrozen Clover (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bGotoh Hitori (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\AI\AI%3bHaerin (2023).png">
-      <Filter>Resources\paintings\AI</Filter>
-    </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Parasol (1777).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\The Parasol (1777).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Third of May 1808 (1814).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\The Third of May 1808 (1814).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bWitches%27 Flight (1798).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\Witches%27 Flight (1798).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bWitches%27 Sabbath (1798).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\Witches%27 Sabbath (1798).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bAutumn (1786).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\Autumn (1786).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bMajas on a Balcony (1814).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\Majas on a Balcony (1814).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bSaturn devouring His Son (1823).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\Saturn devouring His Son (1823).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Clothed Maja (1805).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\The Clothed Maja (1805).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Colossus (1808).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\The Colossus (1808).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Francisco de Goya\Francisco de Goya%3bThe Dog (1823).jpg">
+    <Image Include="..\Resources\paintings\Francisco de Goya\The Dog (1823).jpg">
       <Filter>Resources\paintings\Francisco de Goya</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bThe Ghost of Oiwa (1837).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\The Ghost of Oiwa (1837).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bThe Great Wave off Kanagawa (1832).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\The Great Wave off Kanagawa (1832).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bThunderstorm Beneath the Summit (1832).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Thunderstorm Beneath the Summit (1832).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bTwo mice (1849).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Two mice (1849).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bCourtesan Asleep (Unknown).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Courtesan Asleep (Unknown).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bEjiri in the Suruga province (1832).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Ejiri in the Suruga province (1832).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bFuji from Goten-yama at Shinagawa on the Tokaido (1830).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Fuji from Goten-yama at Shinagawa on the Tokaido (1830).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bKajikazawa in Kai Province (1832).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Kajikazawa in Kai Province (1832).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bPoem by Minamoto no Muneyuki Ason (1837).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Poem by Minamoto no Muneyuki Ason (1837).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Katsushika Hokusai\Katsushika Hokusai%3bSazai Hall of the Temple of the Five Hundred Arhats (1830).jpg">
+    <Image Include="..\Resources\paintings\Katsushika Hokusai\Sazai Hall of the Temple of the Five Hundred Arhats (1830).jpg">
       <Filter>Resources\paintings\Katsushika Hokusai</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bThe Potato Eaters (1885).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\The Potato Eaters (1885).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bThe Starry Night (1889).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\The Starry Night (1889).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bWheat Field with Cypresses (1889).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Wheat Field with Cypresses (1889).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bWindmills on Montmartre (1886).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Windmills on Montmartre (1886).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bCourtesan (After Eisen) (1887).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Courtesan (After Eisen) (1887).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSelf-Portrait (1887).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Self-Portrait (1887).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSelf-Portrait with Bandaged Ear (1889).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Self-Portrait with Bandaged Ear (1889).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSkull of a Skeleton with Burning Cigarette (1886).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Skull of a Skeleton with Burning Cigarette (1886).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bStarry Night Over the Rhone (1888).jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Starry Night Over the Rhone (1888).jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Vincent van Gogh\Vincent van Gogh%3bSunflowers.jpg">
+    <Image Include="..\Resources\paintings\Vincent van Gogh\Sunflowers.jpg">
       <Filter>Resources\paintings\Vincent van Gogh</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSmall Worlds I (1922).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Small Worlds I (1922).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSmall Worlds II (1922).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Small Worlds II (1922).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSquares with Concentric (1913).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Squares with Concentric (1913).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bThe Cow (1910).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\The Cow (1910).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bComposition VII (1913).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Composition VII (1913).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bCouple on Horseback (1907).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Couple on Horseback (1907).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bCrusaders (1903).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Crusaders (1903).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bLa Forme Blanche (1939).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\La Forme Blanche (1939).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bMurnau with Church I (1910).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Murnau with Church I (1910).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
     </Image>
-    <Image Include="..\Resources\paintings\Wassily Kandinsky\Wassily Kandinsky%3bSeveral Circles (1926).jpg">
+    <Image Include="..\Resources\paintings\Wassily Kandinsky\Several Circles (1926).jpg">
       <Filter>Resources\paintings\Wassily Kandinsky</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Karina (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Mars (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Pope Francis Wears BALENCIAGA (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Space Opera Theator (2022).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\A Game Character (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\A Woman (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Chaos (2022).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Frozen Clover (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Gotoh Hitori (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
+    </Image>
+    <Image Include="..\Resources\paintings\AI\Haerin (2023).jpg">
+      <Filter>Resources\paintings\AI</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

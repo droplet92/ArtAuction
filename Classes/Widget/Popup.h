@@ -1,30 +1,31 @@
 #pragma once
-#include <ui/UIButton.h>
-#include <ui/UILayout.h>
-#include <ui/UIListView.h>
+#include <ui/uibutton.h>
+#include <ui/uilayout.h>
+#include <ui/uilistview.h>
 
-NS_CC_BEGIN
-namespace ui
+
+namespace lhs::widget
 {
-    class Popup : public Layout
+    class Popup : public cocos2d::ui::Layout
     {
-        DECLARE_CLASS_GUI_INFO
-
     public:
         Popup();
 
-        ~Popup() override;
+        ~Popup() final = default;
 
-        static Popup* create(const Vec2& scale = Vec2::ONE, bool canCancel = true);
+        CREATE_FUNC(Popup);
 
-        bool init(const Vec2& scale, bool canCancel);
+        bool init() final;
 
-        void addContent(Widget* widget);
+        void EnableCancel() noexcept;
+
+        void SetScale(cocos2d::Vec2 scale) noexcept;
+
+        void AddContent(cocos2d::ui::Widget* widget) noexcept;
 
     private:
-        ListView* contents;
-        Button* buttonOk;
-        Button* buttonCancel;
+        cocos2d::ui::ListView* contents;
+        cocos2d::ui::Button* buttonOk;
+        cocos2d::ui::Button* buttonCancel;
     };
 }
-NS_CC_END

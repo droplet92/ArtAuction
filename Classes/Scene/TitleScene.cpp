@@ -2,117 +2,68 @@
 #include "PlayMenuScene.h"
 
 #include <AudioEngine.h>
-
-#include <Manager/SingleGameManager.h>
-
 USING_NS_CC;
 
+#include <Utility.h>
+using namespace lhs;
+
+
+bool ChangeScene()
+{
+    auto scene = PlayMenu::createScene();
+    auto transition = TransitionSlideInB::create(.3f, scene);
+    Director::getInstance()->replaceScene(transition);
+    return true;
+};
 
 Scene* Title::createScene()
 {
     return Title::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
-static void problemLoading(const char* filename)
-{
-    printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
-}
-
-// on "init" you need to initialize your instance
 bool Title::init()
 {
-    //////////////////////////////
-    // 1. super init first
     if (!Scene::init())
         return false;
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    // 1. Initialize constants
+    //
+    const auto origin = Director::getInstance()->getVisibleOrigin();
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    //AudioEngine::preload("audios/bgm1.mp3");
-    //AudioEngine::play2d("audios/bgm1.mp3", true);
+    // 2. Create and initialize items
+    //
+    auto background = Utility::CreateWithFile<Sprite>("backgrounds/1.jpg");
+    background->setPosition(origin + visibleSize / 2);
 
-    /////////////////////////////
-    // 2. add your codes below...
+    auto title = Utility::CreateWithFile<Sprite>("backgrounds/GameTitle.png");
+    title->setPosition(origin + visibleSize / 2);
 
-    auto sprite = Sprite::create("backgrounds/1.jpg");
-    if (sprite == nullptr)
+    auto message = Utility::CreateWithFile<Label>("Press to Start", lhs::FONT_SIZE_LARGE);
+    message->setPosition(origin + Vec2{ visibleSize.width / 2, message->getContentSize().height * 2 });
+    message->enableOutline(Color4B::BLACK, 3);
+
+    // 3. Add items to scene
+    //
+    addChild(background, -1);
+    addChild(title);
+    addChild(message);
+
+    // 4. Add event listeners
+    //
+    auto mouseEventListener = EventListenerMouse::create();
+    mouseEventListener->onMouseDown = [](auto)
     {
-        problemLoading("'backgrounds/1.jpg'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition({ visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y });
-
-        addChild(sprite);
-    }
-
-    auto title = Sprite::create("backgrounds/GameTitle.png");
-    if (title == nullptr)
-    {
-        problemLoading("'backgrounds/GameTitle.png'");
-    }
-    else
-    {
-        title->setPosition({ origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2 });
-
-        addChild(title);
-    }
-
-
-    auto message = Label::createWithTTF("Press to Start", "fonts/Dovemayo_gothic.ttf", 40);
-    if (message == nullptr)
-    {
-        problemLoading("'fonts/Dovemayo_gothic.ttf'");
-    }
-    else
-    {
-        message->setPosition({ origin.x + visibleSize.width / 2, origin.y + message->getContentSize().height * 2 });
-        //message->enableShadow();
-        message->enableOutline(Color4B::BLACK, 3);
-
-        addChild(message);
-    }
-
-    auto director = Director::getInstance();
-    auto mouse_listener = EventListenerMouse::create();
-    auto keyboard_listener = EventListenerKeyboard::create();
-
-    mouse_listener->onMouseDown = [](auto _)
-    {
-        auto scene = PlayMenu::createScene();
-        Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
-        return true;
+        return ChangeScene();
     };
-    keyboard_listener->onKeyReleased = [](auto _, auto c)
+    auto keyboardEventListener = EventListenerKeyboard::create();
+    keyboardEventListener->onKeyReleased = [](auto, auto)
     {
-        auto scene = PlayMenu::createScene();
-        Director::getInstance()->replaceScene(TransitionSlideInB::create(0.3, scene));
-        return true;
+        return ChangeScene();
     };
-
-    auto dispatcher = director->getEventDispatcher();
-
-    dispatcher->addEventListenerWithSceneGraphPriority(mouse_listener, this);
-    dispatcher->addEventListenerWithSceneGraphPriority(keyboard_listener, this);
-
-    lhs::Manager::SingleGameManager::Instance().Init();
+    auto dispatcher = Director::getInstance()->getEventDispatcher();
+    dispatcher->addEventListenerWithSceneGraphPriority(mouseEventListener, this);
+    dispatcher->addEventListenerWithSceneGraphPriority(keyboardEventListener, this);
 
     return true;
-}
-
-
-void Title::menuCloseCallback(Ref* pSender)
-{
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    AudioEngine::end();
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
 }

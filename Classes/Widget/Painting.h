@@ -1,33 +1,36 @@
 #pragma once
 #include <cocos2d.h>
-#include <ui/CocosGUI.h>
+#include <ui/UILayout.h>
+#include <ui/UIImageView.h>
 
 #include <Model/Painting.h>
 
-NS_CC_BEGIN
-namespace ui
+
+namespace lhs::widget
 {
-    class Painting : public Layout
+    class Painting : public cocos2d::ui::Layout
     {
     public:
         Painting();
-        ~Painting() override;
 
-        static Painting* create(lhs::Model::Painting const* data);
+        ~Painting() final = default;
 
-        bool init(lhs::Model::Painting const* data);
+        CREATE_FUNC(Painting);
 
-        float getBottomPadding() const;
+        bool init() final;
 
         void setScale(float scale) override;
 
-        inline lhs::Model::Painting const* getData() const { return data; }
+        float GetBottomPadding() const noexcept;
 
-        inline void setColor(const Color3B& color) { image->setColor(color); }
+        const model::Painting& GetData() const noexcept;
+
+        void SetImage(const model::Painting& data);
+
+        void SetColor(const cocos2d::Color3B& color) noexcept;
 
     private:
-        ImageView* image;
-        lhs::Model::Painting const* data;
+        cocos2d::ui::ImageView* image;  // image display widget
+        model::Painting data;
     };
 }
-NS_CC_END

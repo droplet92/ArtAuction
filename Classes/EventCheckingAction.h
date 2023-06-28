@@ -2,16 +2,27 @@
 #include <cocos2d.h>
 
 
-class EventCheckingAction : public cocos2d::ActionInterval
+namespace lhs
 {
-public:
-    static EventCheckingAction* create(float duration, std::function<void()> eventCallback);
+    /**
+    * The Action that acts as an event listener
+    * 
+    * When the bid is completed, it calls the eventCallback.
+    * Observer pattern used
+    */
+    class BidCompleteCheckingAction : public cocos2d::ActionInterval
+    {
+    public:
+        static BidCompleteCheckingAction* create(float duration, std::function<void()> observer);
 
-    void update(float time) override;
+        /**
+        * Check if the bid is completed.
+        * 
+        * This function works within the cocos2d-x lifecycle.
+        */
+        void update(float) override;
 
-private:
-
-    void setEventCallback(std::function<void()> eventCallback);
-
-    std::function<void()> eventCallback;
-};
+    private:
+        std::function<void()> observer; // bid complete event subscriber
+    };
+}

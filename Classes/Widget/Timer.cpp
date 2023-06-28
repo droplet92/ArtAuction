@@ -1,92 +1,87 @@
 #include "Timer.h"
+USING_NS_CC;
 
-NS_CC_BEGIN
-namespace ui
+#include <Utility.h>
+
+
+namespace lhs::widget
 {
-    Timer::Timer(int remainTime)
-        : _time(nullptr)
-        , _timer(nullptr)
-        , _remainTime(remainTime)
+    Timer::Timer()
+        : timer(nullptr)
+        , timeLabel(nullptr)
+        , alarm({})
+        , remainTime(0.f)
     {
         setTouchEnabled(true);
     }
 
-	Timer::~Timer()
-	{
-	}
-
-    Timer* Timer::create(int time)
-    {
-        auto timer = new (std::nothrow) Timer{ static_cast<int>(time) };
-        if (timer && timer->init())
-        {
-            timer->autorelease();
-            return timer;
-        }
-        CC_SAFE_DELETE(timer);
-        return nullptr;
-    }
-
     bool Timer::init()
     {
-        if (!Widget::init())
+        if (!ui::Layout::init())
             return false;
 
-        auto timerSprite = Sprite::createWithSpriteFrameName("Timer.png");
+        timeLabel = Utility::CreateWithFile<Label>("", FONT_SIZE_LARGE);
+        timeLabel->setTextColor(Color4B::BLACK);
 
-        if (!timerSprite)
-            return false;
-
+        auto timerSprite = Utility::CreateWithSprite<Sprite>("Timer.png");
         timerSprite->setContentSize(timerSprite->getContentSize() / 2);
 
-        _time = Label::createWithTTF(std::to_string(_remainTime), "fonts/Dovemayo_gothic.ttf", 60);
-        _timer = ProgressTimer::create(timerSprite);
+        timer = ProgressTimer::create(timerSprite);
+        timer->setType(ProgressTimer::Type::RADIAL);
+        timer->setReverseDirection(true);
 
-        _time->setTextColor(Color4B::BLACK);
-        _timer->setType(ProgressTimer::Type::RADIAL);
-        _timer->setReverseDirection(true);
-
-        auto timerBaseSprite = Sprite::createWithSpriteFrameName("TimerBase.png");
+        auto timerBaseSprite = Utility::CreateWithSprite<Sprite>("TimerBase.png");
         timerBaseSprite->setContentSize(timerBaseSprite->getContentSize() / 2);
 
         addChild(timerBaseSprite);
-        addChild(_timer);
-        addChild(_time);
+        addChild(timer);
+        addChild(timeLabel);
 
         return true;
     }
 
-    void Timer::setAlarm(const TimerAlarm& alarm)
+    void Timer::SetRemainTime(float time)
     {
-        _alarm = alarm;
+        remainTime = time;
+        auto timeString = std::to_string(static_cast<int>(time));   // truncate
+        timeLabel->setString(timeString);
     }
 
-    void Timer::start()
+    void Timer::SetAlarm(const TimerAlarm& alarm) noexcept
     {
-        _timer->runAction(ProgressTo::create(_remainTime, 100));
-        _timer->schedule([&](float dt) { return this->scheduler(dt); }, 1.f, _remainTime, 0, "updateTime");
+        this->alarm = alarm;
     }
 
-    void Timer::reset(int time)
+    void Timer::Start() noexcept
     {
-        _remainTime = time;
-
-        _timer->stopAllActions();
-        _timer->unscheduleAllCallbacks();
-
-        _time->setString(std::to_string(time));
-        _timer->setPercentage(0);
-        _timer->runAction(ProgressTo::create(_remainTime, 0));
+        auto progress = ProgressTo::create(remainTime, 100.f);
+        timer->runAction(progress);
+        timer->schedule([=](float) { return scheduler(); }, 1.f, remainTime, 0.f, "updateTime");
     }
 
-    void Timer::scheduler(float dt)
+    void Timer::Reset(float time)
     {
-        if (!_remainTime)
+        // stop countdown
+        timer->stopAllActions();
+        timer->unscheduleAllCallbacks();
+
+        // reset Label
+        SetRemainTime(time);
+
+        // reset ProgressTimer
+        timer->setPercentage(0);
+        timer->runAction(ProgressTo::create(remainTime, 0.f));
+    }
+
+    void Timer::scheduler()
+    {
+        // done
+        if (!remainTime) [[unlikely]]
         {
-            _alarm();
+            if (alarm) alarm();
             return;
         }
-        _time->setString(std::to_string(--_remainTime));
+        auto timeString = std::to_string(static_cast<int>(--remainTime));   // truncate
+        timeLabel->setString(timeString);
     }
 }
-NS_CC_END

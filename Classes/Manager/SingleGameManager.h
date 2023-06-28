@@ -1,10 +1,17 @@
 #pragma once
-#include <Manager/GameManager.h>
 #include <functional>
 
+#include <Manager/GameManager.h>
 
-namespace lhs::Manager
+
+namespace lhs::manager
 {
+	/**
+	* The single game manager
+	*
+	* A Singleplay game implementation of the GameManager.
+	* The Singleton pattern is used.
+	*/
 	class SingleGameManager : public GameManager
 	{
 	public:
@@ -14,76 +21,76 @@ namespace lhs::Manager
 
 		void Init() final;
 
-		void SetNumberOfPlayers(size_t nPlayers) final;
+		bool IsBidUpdated() const final;
 
-		void MoveToNextRound() final;
+		bool IsRoundEnd() const final;
+
+		bool HasAllUserSubmitted() const final;
 
 		std::pair<int, std::u8string> GetCurrentRound() const final;
 
-		std::vector<std::vector<Model::Painting*>> GetPaintings(size_t nPlayers) const final;
+		std::vector<std::string> GetPainters() const final;
 
-		void SubmitPainting(Model::Painting const* painting) final;
+		std::vector<std::vector<model::Painting>> GetPaintings(uint32_t nPlayers) const final;
 
-		Model::Painting const* GetSubmission() const final;
+		const model::Painting& GetSubmission() const final;
 
-		Model::Painting const* GetSelectionForAuction() final;
+		std::map<std::string, uint32_t> GetReputation() const final;
 
-		std::set<std::string> GetPainters() const final;
-
-		std::unordered_map<std::string, size_t> GetReputation() const final;
-
-		void Bid(const std::pair<int, int>& bid) final;
+		model::Painting GetSelectionForAuction() final;
 
 		std::vector<std::pair<int, int>> GetBids() const final;
-
-		bool IsBidUpdated() const final;
 
 		std::pair<int, int> GetLastBid() const final;
 
 		std::pair<int, int> GetWinningBid() final;
 
-		bool HasAllUserSubmitted() const final;
+		void SetNumberOfPlayers(uint32_t nPlayers) final;
 
-		inline bool IsRoundEnd() const final { return selections.empty(); }
+		void SubmitPainting(const model::Painting& painting) final;
 
-		//
-		inline void AddNewBidEventListener(std::function<void(const std::pair<int, int>&)> listener) { newBidEventListener = listener; }
+		void Bid(const std::pair<int, int>& bid) final;
 
-		void AddWinningBid(const std::string& painter, int winningBid);
+		void MoveToNextRound() final;
+
+		void AddNewBidEventListener(std::function<void(const std::pair<int, int>&)> listener) noexcept;
+
+		void AddWinningBid(std::string_view painter, int winningBid);
 
 		void UpdateReputation();
 
-		size_t GetRealTimeNftPrice();
+		uint32_t GetRealTimeNftPrice();
 
 	private:
 		SingleGameManager();
 
 		std::pair<int, int> GetClosedWinningBid();
 
-		static size_t const MAX_USER_COUNT;
+	private:
+		static uint32_t const MAX_USER_COUNT;
 
-		size_t nPlayers;
+		uint32_t nPlayers;
 
 		std::vector<std::u8string> rounds;
 
-		std::vector<Model::Painting const*> selections;
+		std::vector<model::Painting> selections;
 
-		Model::Painting const* submission;
+		std::optional<model::Painting> submission;
 
-		std::vector<Model::Painting*> paintings;
+		std::vector<model::Painting> paintings;
 
-		std::set<std::string> painters;
+		std::vector<std::string> painters;
 
-		std::unordered_map<std::string, size_t> reputation;
+		std::map<std::string, uint32_t> reputation;
 
 		std::vector<std::pair<int, int>> bids;
 
 		int prevBidsCount;
 
-		//
 		std::function<void(const std::pair<int, int>&)> newBidEventListener;
 
-		// painter, golds
+		// total price of the sold paintings by painter at a round
+		// the list of the pair of (painter, price)
 		std::vector<std::pair<std::string, int>> winningBids;
 	};
 }

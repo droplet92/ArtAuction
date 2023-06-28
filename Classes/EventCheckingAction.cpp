@@ -1,24 +1,23 @@
 #include "EventCheckingAction.h"
+
 #include <Manager/SingleGameManager.h>
+using namespace lhs::manager;
 
 
-EventCheckingAction* EventCheckingAction::create(float duration, std::function<void()> eventCallback)
+namespace lhs
 {
-    EventCheckingAction* action = new EventCheckingAction();
-    action->initWithDuration(duration);
-    action->setEventCallback(eventCallback);
-    action->autorelease();
-    return action;
-}
+    BidCompleteCheckingAction* BidCompleteCheckingAction::create(float duration, std::function<void()> observer)
+    {
+        BidCompleteCheckingAction* action = new BidCompleteCheckingAction();
+        action->initWithDuration(duration);
+        action->observer = observer;
+        action->autorelease();
+        return action;
+    }
 
-void EventCheckingAction::update(float time)
-{
-    // 리팩토링할 때 isDone() 호출하는 대신 Action 쪽에서 처리할 것
-    if (lhs::Manager::SingleGameManager::Instance().IsBidUpdated() || isDone())
-        eventCallback();
-}
-
-void EventCheckingAction::setEventCallback(std::function<void()> eventCallback)
-{
-    this->eventCallback = eventCallback;
+    void BidCompleteCheckingAction::update(float)
+    {
+        if (SingleGameManager::Instance().IsBidUpdated() || isDone())
+            observer(); // nofity
+    }
 }

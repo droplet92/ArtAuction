@@ -1,10 +1,13 @@
 #pragma once
 #include <cocos2d.h>
+#include <Model/Painting.h>
 
 
 class Auction : public cocos2d::Scene
 {
 public:
+    Auction();
+
     ~Auction() final = default;
 
     static cocos2d::Scene* createScene();
@@ -14,6 +17,12 @@ public:
 
     bool init() final;
 
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+private:
+    std::vector<cocos2d::Action*> gamePlayActions;
+    std::vector<std::pair<int, int>> bids;
+    int minBid;
+    lhs::model::Painting selection;
+    std::string winnerMessage;
+    std::string startMessage;
+    std::string bidMessage;
 };
