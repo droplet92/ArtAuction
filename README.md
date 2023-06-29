@@ -7,7 +7,7 @@ Art Auction, inspirated by "Modern Art", is a game that trade modern paintings a
 - C++20
 - Sqlite3
 
-## Setup Project
+## How to Build the Project
 1. Clone this repository
 ```powershell
 git clone https://github.com/droplet92/ArtAuction
