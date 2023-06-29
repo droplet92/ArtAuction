@@ -19,30 +19,30 @@ const std::unordered_map<std::u8string, std::vector<std::u8string>> scriptMap =
 {
     { u8"Open Bidding",
         {
-            u8"Each player offers a price publicly.",
+            u8"Each player publicly offers a price.",
             u8"When the time expires, the last player with the highest bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
     { u8"Closed Bidding",
         {
-            u8"Each player offers a price privately.",
+            u8"Each player privately offers a price.",
             u8"When the time expires, the first player with the highest bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
     { u8"Fixed Price",
         {
-            u8"Each player offers a price publicly.",
-            u8"The first player to write a bid wins.",
+            u8"Each player publicly offers a price.",
+            u8"The first player to place a bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
     { u8"NFT Open Bidding",
         {
-            u8"Each player offers a price publicly.",
-            u8"When the time expires, the last player with the highest bid wins.",
-            u8"Purchased artwork is immediately sold at market price (randomized).",
+            u8"Each player publicly offers a price.",
+            u8"When the time expires, the player with the highest bid wins.",
+            u8"The purchased artwork is immediately sold at market price (randomized).",
         }
     },
     //{ u8"°ø°³ ÀÔÂû",
@@ -88,7 +88,7 @@ std::vector<std::u8string> GetScript(const std::u8string& roundType)
     return
     {
         u8"This round is a(n) " + roundType + u8" trade.",
-            u8"It lasts 30 seconds per artwork.",
+            u8"It goes on 30 seconds per artwork.",
             lines.at(0),
             lines.at(1),
             lines.at(2),

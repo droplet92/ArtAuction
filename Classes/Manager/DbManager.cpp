@@ -29,9 +29,9 @@ namespace lhs::manager
 		painting.painter = value[1];
 
 #ifdef _DEBUG
-		painting.path = std::format("../Resources/paintings/{}/{}.jpg", painting.painter, painting.title);
+		painting.path = std::filesystem::canonical(std::format("../Resources/paintings/{}/{}.jpg", painting.painter, painting.title));
 #else
-		painting.path = std::format("./Resources/paintings/{}/{}.jpg", painting.painter, painting.title);
+		painting.path = std::filesystem::canonical(std::format("./Resources/paintings/{}/{}.jpg", painting.painter, painting.title));
 #endif
 		result->push_back(painting);
 		return 0;
@@ -51,6 +51,9 @@ namespace lhs::manager
 		: db(nullptr)
 		, errorMessage{}
 	{
+		// zero-fill the errorMessage
+		std::memset(errorMessage, 0, sizeof errorMessage);
+
 		if (sqlite3_open(dbPath, &db) != SQLITE_OK)
 			Utility::Abort("sqlite3_open failed.");
 	}
@@ -80,8 +83,10 @@ namespace lhs::manager
 		std::vector<Painting> result{};
 
 		if (!Execute(sql, GetPaintingsCallback, &result))
+		{
+			cocos2d::log("%s", GetErrorMessage().data());
 			result.clear();
-
+		}
 		return result;
 	}
 
@@ -91,8 +96,10 @@ namespace lhs::manager
 		std::vector<std::string> result{};
 
 		if (!Execute(sql, GetPaintersCallback, &result))
+		{
+			cocos2d::log("%s", GetErrorMessage().data());
 			result.clear();
-
+		}
 		return result;
 	}
 
