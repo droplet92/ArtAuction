@@ -43,9 +43,13 @@ if(NOT DEFINED BUILD_ENGINE_DONE) # to test ArtAuction into root project
     add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 endif()
 
+# set C++20 project
+set(CMAKE_CXX_STANDARD 20)
+
 # record sources, headers, resources...
-set(GAME_SOURCE)
-set(GAME_HEADER)
+# add cross-platforms source files and header files
+file(GLOB_RECURSE GAME_SOURCE "Classes/*.cpp" "Classes/**/*.cpp")
+file(GLOB_RECURSE GAME_HEADER "Classes/*.h" "Classes/**/*.h")
 
 set(GAME_RES_FOLDER
     "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
@@ -53,16 +57,6 @@ set(GAME_RES_FOLDER
 if(APPLE OR WINDOWS)
     cocos_mark_multi_resources(common_res_files RES_TO "Resources" FOLDERS ${GAME_RES_FOLDER})
 endif()
-
-# add cross-platforms source files and header files 
-list(APPEND GAME_SOURCE
-     Classes/AppDelegate.cpp
-     Classes/HelloWorldScene.cpp
-     )
-list(APPEND GAME_HEADER
-     Classes/AppDelegate.h
-     Classes/HelloWorldScene.h
-     )
 
 if(ANDROID)
     # change APP_NAME to the share library name for Android, it's value depend on AndroidManifest.xml
@@ -130,9 +124,11 @@ else()
 endif()
 
 target_link_libraries(${APP_NAME} cocos2d)
+target_link_libraries(${APP_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/lib/sqlite3/sqlite-dll-win32-x86-3350500/sqlite3.lib")
 target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
+        PRIVATE lib/sqlite3/sqlite-amalgamation-3350500/
 )
 
 # mark app resources
@@ -157,3 +153,6 @@ if(LINUX OR WINDOWS)
     cocos_get_resource_path(APP_RES_DIR ${APP_NAME})
     cocos_copy_target_res(${APP_NAME} LINK_TO ${APP_RES_DIR} FOLDERS ${GAME_RES_FOLDER})
 endif()
+
+# set the startup project
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${APP_NAME})
