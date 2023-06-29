@@ -1,7 +1,7 @@
 # ArtAuction
 Art Auction, inspirated by "Modern Art", is a game that trade modern paintings and make your gallery the best. 
 
-## Develop Environment
+## Development Environment
 - cocos2d-x v4
 - Visual Studio 2022
 - C++20
