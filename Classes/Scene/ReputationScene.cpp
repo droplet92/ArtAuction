@@ -57,7 +57,6 @@ bool Reputation::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    // 평판 업데이트
     SingleGameManager::Instance().UpdateReputation();
 
     const auto [nextRound, _] = SingleGameManager::Instance().GetCurrentRound();

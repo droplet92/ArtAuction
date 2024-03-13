@@ -147,7 +147,7 @@ bool Auction::init()
     for (size_t i = 0; i < characters.size(); i++)
         addChild(characters[i]);
 
-    //if ((roundType == u8"°ø°³ ÀÔÂû") || (roundType == u8"NFT °ø°³ ÀÔÂû"))
+    //if ((roundType == u8"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½") || (roundType == u8"NFT ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"))
     if ((roundType == u8"Open Bidding") || (roundType == u8"NFT Open Bidding") || (roundType == u8"Fixed Price"))
     {
         SingleGameManager::Instance().AddNewBidEventListener([=](const std::pair<int, int>& newBid)
@@ -170,16 +170,16 @@ bool Auction::init()
         &startMessage,
         &bidMessage,
         new std::string{ Utility::ConvertToAscii(u8"We start\nthe bidding!") },
-        //new std::string{ Utility::ConvertToAscii(u8"½ÃÀÛÇÕ´Ï´Ù!") },
+        //new std::string{ Utility::ConvertToAscii(u8"ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½!") },
     };
     auto getDataAction = CallFunc::create([=]()
         {
             selection = SingleGameManager::Instance().GetSelectionForAuction();
             startMessage = std::format("This is by\n{}", selection.painter);
-            //*startMessage = (*selection)->painter + Utility::ConvertToAscii(u8"\nÀÇ ÀÛÇ°ÀÔ´Ï´Ù.");
+            //*startMessage = (*selection)->painter + Utility::ConvertToAscii(u8"\nï¿½ï¿½ ï¿½ï¿½Ç°ï¿½Ô´Ï´ï¿½.");
             minBid = (roundType == u8"Fixed Price") ? 10 : 1;
             bidMessage = std::format("Please bid\nat least {}", minBid);
-            //*bidMessage = std::to_string(*minBid) + Utility::ConvertToAscii(u8" °ñµå ÀÌ»ó\nÁ¦½ÃÇØÁÖ¼¼¿ä.");
+            //*bidMessage = std::to_string(*minBid) + Utility::ConvertToAscii(u8" ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½\nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.");
 
             const auto data = player->GetInformations();
             galleryBoard->SetInformation(data);
@@ -208,7 +208,7 @@ bool Auction::init()
         return Sequence::create(delayAction, showText, delayAction, nullptr);
     };
 
-    // 1. °æ¸Å ¼Ò°³
+    // 1. Introducing
     auto guideSequence = createMessageAction(messages.at(0));
     for (size_t i = 1; i < messages.size(); i++)
     {
@@ -216,7 +216,7 @@ bool Auction::init()
         guideSequence = Sequence::create(guideSequence, messageAction, nullptr);
     }
 
-    // 2. °æ¸Å ÁøÇà
+    // 2. Auction
     auto uiUpdateAction = CallFunc::create([=]()
         {
             bidBoard->setEnabled(true);
@@ -277,7 +277,7 @@ bool Auction::init()
             for (size_t i = 6; i < gamePlayActions.size(); i++)
                 round = Sequence::create(round, gamePlayActions.at(i), nullptr);
 
-            // ¿øÀÎºÒ¸í
+            // ï¿½ï¿½ï¿½ÎºÒ¸ï¿½
             if (roundType == u8"Fixed Price")
             {
                 if (SingleGameManager::Instance().IsRoundEnd())
@@ -301,7 +301,7 @@ bool Auction::init()
             unscheduleAllCallbacks();
         });
 
-    // 3. °á°ú ¹ßÇ¥
+    // 3. Show result
     //
     auto showBidSequence = Sequence::create(dummyAction, nullptr);
     auto showAction = Sequence::create(FadeIn::create(1.f), nullptr);
@@ -334,9 +334,9 @@ bool Auction::init()
 
             // Update Result
             //
-            //ss << Utility::ConvertToUtf8(winner->GetName()) << u8" ´ÔÀÌ" << std::endl;
-            //ss << Utility::ConvertToUtf8(std::to_string(gold)) << u8"°ñµå¿¡" << std::endl;
-            //ss << u8"³«ÂûµÆ½À´Ï´Ù!";
+            //ss << Utility::ConvertToUtf8(winner->GetName()) << u8" ï¿½ï¿½ï¿½ï¿½" << std::endl;
+            //ss << Utility::ConvertToUtf8(std::to_string(gold)) << u8"ï¿½ï¿½å¿¡" << std::endl;
+            //ss << u8"ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½Ï´ï¿½!";
             cocos2d::log("%s winner: [id %u] bid %u", Utility::ConvertToAscii(roundType).c_str(), winner->GetId(), gold);
             winnerMessage = std::format("{} has\nwon your bid\nfor {} gold!", winner->GetName(), gold);
             winner->AddGold(-gold);
