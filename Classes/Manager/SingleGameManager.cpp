@@ -97,10 +97,8 @@ namespace lhs::manager
 
 	const Painting& SingleGameManager::GetSubmission() const
 	{
-		if (submission)
-			return submission.value();
-
-		// TODO: Handle exception
+		CCASSERT(submission, "a painting must be submitted.");
+		return submission.value();
 	}
 
 	std::map<std::string, uint32_t> SingleGameManager::GetReputation() const
