@@ -147,6 +147,11 @@ if(APPLE)
     #set_xcode_property(${APP_NAME} DEVELOPMENT_TEAM "GRLXXXX2K9")
 elseif(WINDOWS)
     cocos_copy_target_dll(${APP_NAME})
+    add_custom_command(TARGET ${APP_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/lib/sqlite3/sqlite-dll-win32-x86-3350500/sqlite3.dll"
+            "$<TARGET_FILE_DIR:${APP_NAME}>/sqlite3.dll"
+        )
 endif()
 
 if(LINUX OR WINDOWS)
