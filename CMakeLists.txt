@@ -131,6 +131,11 @@ target_include_directories(${APP_NAME}
         PRIVATE lib/sqlite3/sqlite-amalgamation-3350500/
 )
 
+if(MSVC)
+    # Read sources as UTF-8 instead of the system code page.
+    target_compile_options(${APP_NAME} PRIVATE /utf-8)
+endif()
+
 # mark app resources
 setup_cocos_app_config(${APP_NAME})
 if(APPLE)
