@@ -10,12 +10,6 @@ using namespace lhs::model;
 
 namespace lhs::manager
 {
-#ifdef _DEBUG
-	constexpr auto dbPath = R"(../gamedata.db)";
-#else
-	constexpr auto dbPath = R"(./gamedata.db)";
-#endif
-
 	// Callback for read painting data from the db
 	static int GetPaintingsCallback(void* data, int, char** value, char** column)
 	{
@@ -28,11 +22,9 @@ namespace lhs::manager
 		painting.title = value[0];
 		painting.painter = value[1];
 
-#ifdef _DEBUG
-		painting.path = std::filesystem::canonical(std::format("../Resources/paintings/{}/{}.jpg", painting.painter, painting.title));
-#else
-		painting.path = std::filesystem::canonical(std::format("./Resources/paintings/{}/{}.jpg", painting.painter, painting.title));
-#endif
+		painting.path = cocos2d::FileUtils::getInstance()->fullPathForFilename(std::format("paintings/{}/{}.jpg", painting.painter, painting.title));
+		CCASSERT(!painting.path.empty(), "painting image must exist.");
+
 		result->push_back(painting);
 		return 0;
 	}
@@ -54,7 +46,14 @@ namespace lhs::manager
 		// zero-fill the errorMessage
 		std::memset(errorMessage, 0, sizeof errorMessage);
 
-		if (sqlite3_open(dbPath, &db) != SQLITE_OK)
+		// Resolve against the resource root so it doesn't depend on the working directory.
+		const auto dbPath = cocos2d::FileUtils::getInstance()->fullPathForFilename("gamedata.db");
+
+		if (dbPath.empty())
+			Utility::Abort("gamedata.db not found.");
+
+		// Open read-only so a wrong path fails instead of creating an empty database.
+		if (sqlite3_open_v2(dbPath.c_str(), &db, SQLITE_OPEN_READONLY, nullptr) != SQLITE_OK)
 			Utility::Abort("sqlite3_open failed.");
 	}
 
