@@ -41,11 +41,8 @@ namespace lhs::manager
 
 	DbManager::DbManager()
 		: db(nullptr)
-		, errorMessage{}
+		, errorMessage(nullptr)
 	{
-		// zero-fill the errorMessage
-		std::memset(errorMessage, 0, sizeof errorMessage);
-
 		// Resolve against the resource root so it doesn't depend on the working directory.
 		const auto dbPath = cocos2d::FileUtils::getInstance()->fullPathForFilename("gamedata.db");
 
@@ -59,6 +56,8 @@ namespace lhs::manager
 
 	DbManager::~DbManager()
 	{
+		sqlite3_free(errorMessage);
+
 		if (sqlite3_close(db) != SQLITE_OK)
 			Utility::Abort("sqlite3_close failed.");
 	}
@@ -71,7 +70,7 @@ namespace lhs::manager
 
 	std::string_view DbManager::GetErrorMessage() const noexcept
 	{
-		return (strlen(errorMessage) > 0)
+		return errorMessage
 			? errorMessage			// If sqlite execution failed, then return errorMessage
 			: sqlite3_errmsg(db);	// else, return sqlite database error message
 	}
@@ -104,7 +103,10 @@ namespace lhs::manager
 
 	bool DbManager::Execute(std::string_view sql, int(*callback)(void*, int, char**, char**), void* data)
 	{
-		std::memset(errorMessage, 0, sizeof errorMessage);	// zero-fill the errorMessage
-		return (sqlite3_exec(db, sql.data(), callback, data, reinterpret_cast<char**>(&errorMessage)) == SQLITE_OK);
+		// Release the previous message; sqlite3_exec sets it again only on failure.
+		sqlite3_free(errorMessage);
+		errorMessage = nullptr;
+
+		return (sqlite3_exec(db, sql.data(), callback, data, &errorMessage) == SQLITE_OK);
 	}
 }
