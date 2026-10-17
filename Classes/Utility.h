@@ -1,10 +1,12 @@
 #pragma once
 #include <concepts>
 #include <string_view>
+#include <type_traits>
 
 #include <cocos2d.h>
 #include <ui/UIButton.h>
 #include <ui/UIListView.h>
+#include <ui/UITextField.h>
 
 #include "Widget/Character.h"
 
@@ -122,7 +124,11 @@ namespace lhs
 
             borrow->setString(message.data());
             borrow->setFontName(fontName.data());
-            borrow->setFontSize(fontSize);
+            // TextField::setFontSize takes an int; the other text widgets take a float.
+            if constexpr (std::is_same_v<T, cocos2d::ui::TextField>)
+                borrow->setFontSize(static_cast<int>(fontSize));
+            else
+                borrow->setFontSize(fontSize);
             return borrow;
         }
 

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <format>
 #include <ranges>
+#include <utility>
 
 #include <ccRandom.h>
 #include <ui/CocosGUI.h>
@@ -229,7 +230,7 @@ bool Auction::init()
         {
             auto joinOpenBid = [=](int playerId)
             {
-                if (players[playerId]->GetGold() <= minBid) return;
+                if (std::cmp_less_equal(players[playerId]->GetGold(), minBid)) return;
                 if (!RandomHelper::random_int(0, 1)) return;
                 SingleGameManager::Instance().Bid({ playerId, minBid });
             };
@@ -242,7 +243,7 @@ bool Auction::init()
             };
             auto joinFixedPrice = [=](int playerId)
             {
-                if (players[playerId]->GetGold() <= minBid) return;
+                if (std::cmp_less_equal(players[playerId]->GetGold(), minBid)) return;
                 if (!RandomHelper::random_int(0, 1)) return;
                 SingleGameManager::Instance().Bid({ playerId, minBid });
             };

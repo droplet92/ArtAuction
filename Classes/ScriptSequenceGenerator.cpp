@@ -22,11 +22,11 @@ namespace lhs
         const auto visibleSize = Director::getInstance()->getVisibleSize();
         auto scriptSequence = Utility::Create<Sequence>(dummyAction, nullptr);
 
-        for (int i = 0; i < script.size(); ++i)
+        for (size_t i = 0; i < script.size(); ++i)
         {
             // Constants for position y of label
-            const float yTotal = (script.size() + 1) * 2;
-            const float yPortion = (script.size() - i) * 2 - 1;
+            const auto yTotal = static_cast<float>((script.size() + 1) * 2);
+            const auto yPortion = static_cast<float>((script.size() - i) * 2 - 1);
             const auto yScale = yPortion / yTotal;
 
             auto text = Utility::ConvertToAscii(script[i]);
