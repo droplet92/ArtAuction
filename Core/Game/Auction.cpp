@@ -16,12 +16,12 @@ namespace lhs::game
 	{
 	}
 
-	uint32_t Auction::GetMinimumBid() const noexcept
+	Gold Auction::GetMinimumBid() const noexcept
 	{
 		return minimumBid;
 	}
 
-	bool Auction::Place(const std::pair<int, int>& bid)
+	bool Auction::Place(const Bid& bid)
 	{
 		// inhibit consecutive duplicated bids
 		if (!bids.empty() && bid == bids.back())
@@ -31,7 +31,7 @@ namespace lhs::game
 
 		// Bids are visible in every round but the closed one, so the next bid has to outbid this one.
 		if (type != RoundType::ClosedBidding)
-			minimumBid = bid.second + 1;
+			minimumBid = bid.amount + 1;
 
 		return true;
 	}
@@ -41,22 +41,22 @@ namespace lhs::game
 		return (type == RoundType::FixedPrice) && !bids.empty();
 	}
 
-	std::vector<std::pair<int, int>> Auction::GetBids() const
+	std::vector<Bid> Auction::GetBids() const
 	{
 		auto view = bids | std::views::reverse;
 		return { view.begin(), view.end() };
 	}
 
-	std::pair<int, int> Auction::GetLastBid(Random& random) const
+	Bid Auction::GetLastBid(Random& random) const
 	{
 		// If not all players have placed bids, a random player will be selected.
 		assert(nPlayers > 1 && "nPlayers must be greater than 1.");
 		return bids.empty()
-			? std::make_pair(RandomInt(random, 0, static_cast<int>(nPlayers) - 1), 0)
+			? Bid{ static_cast<PlayerId>(RandomInt(random, 0, static_cast<int>(nPlayers) - 1)), 0 }
 			: bids.back();
 	}
 
-	std::pair<int, int> Auction::GetWinningBid(Random& random)
+	Bid Auction::GetWinningBid(Random& random)
 	{
 		if (type == RoundType::ClosedBidding)
 			return GetClosedWinningBid(random);
@@ -66,29 +66,29 @@ namespace lhs::game
 		return winningBid;
 	}
 
-	std::pair<int, int> Auction::GetClosedWinningBid(Random& random)
+	Bid Auction::GetClosedWinningBid(Random& random)
 	{
 		// If not all players have placed bids, a random player will be selected.
 		assert(nPlayers > 1 && "nPlayers must be greater than 1.");
-		auto winningBid = std::make_pair(RandomInt(random, 0, static_cast<int>(nPlayers) - 1), 0);
+		auto winningBid = Bid{ static_cast<PlayerId>(RandomInt(random, 0, static_cast<int>(nPlayers) - 1)), 0 };
 
 		while (!bids.empty())
 		{
 			auto bid = bids.back();
 
-			std::erase_if(bids, [=](auto pair)
+			std::erase_if(bids, [=](auto other)
 				{
-					return (pair.first == bid.first);
+					return (other.bidder == bid.bidder);
 				});
 
-			if (bid.second > winningBid.second)
+			if (bid.amount > winningBid.amount)
 				winningBid = bid;
 		}
 		return winningBid;
 	}
 
-	uint32_t RollNftPrice(Random& random)
+	Gold RollNftPrice(Random& random)
 	{
-		return static_cast<uint32_t>(RandomInt(random, 0, 30));
+		return static_cast<Gold>(RandomInt(random, 0, 30));
 	}
 }

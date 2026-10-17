@@ -16,6 +16,12 @@ using namespace lhs::model;
 
 namespace lhs::manager
 {
+	// The manager's interface still passes bids as (player id, amount) pairs.
+	static std::pair<int, int> ToPair(const model::Bid& bid)
+	{
+		return { static_cast<int>(bid.bidder), static_cast<int>(bid.amount) };
+	}
+
 	uint32_t const SingleGameManager::MAX_USER_COUNT = 5;
 
 	SingleGameManager::SingleGameManager()
@@ -127,19 +133,23 @@ namespace lhs::manager
 
 	std::vector<std::pair<int, int>> SingleGameManager::GetBids() const
 	{
-		return auction ? auction->GetBids() : std::vector<std::pair<int, int>>{};
+		if (!auction)
+			return {};
+
+		auto view = auction->GetBids() | std::views::transform(ToPair);
+		return { view.begin(), view.end() };
 	}
 
 	std::pair<int, int> SingleGameManager::GetLastBid() const
 	{
 		CCASSERT(auction, "an auction must be running.");
-		return auction->GetLastBid(random);
+		return ToPair(auction->GetLastBid(random));
 	}
 
 	std::pair<int, int> SingleGameManager::GetWinningBid()
 	{
 		CCASSERT(auction, "an auction must be running.");
-		return auction->GetWinningBid(random);
+		return ToPair(auction->GetWinningBid(random));
 	}
 
 	void SingleGameManager::SetNumberOfPlayers(uint32_t nPlayers)
@@ -157,7 +167,7 @@ namespace lhs::manager
 	{
 		cocos2d::log("[Id %d] bid %d", bid.first, bid.second);
 
-		if (!auction || !auction->Place(bid))
+		if (!auction || !auction->Place({ static_cast<PlayerId>(bid.first), static_cast<Gold>(bid.second) }))
 			return;
 
 		if (newBidEventListener)
