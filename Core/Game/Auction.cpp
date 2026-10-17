@@ -50,6 +50,7 @@ namespace lhs::game
 	Bid Auction::GetLastBid(Random& random) const
 	{
 		// If not all players have placed bids, a random player will be selected.
+		// TODO: An unbid painting goes to a random player for nothing. Decide whether it should stay unsold.
 		assert(nPlayers > 1 && "nPlayers must be greater than 1.");
 		return bids.empty()
 			? Bid{ static_cast<PlayerId>(RandomInt(random, 0, static_cast<int>(nPlayers) - 1)), 0 }
@@ -69,6 +70,9 @@ namespace lhs::game
 	Bid Auction::GetClosedWinningBid(Random& random)
 	{
 		// If not all players have placed bids, a random player will be selected.
+		// TODO: Only each player's latest bid counts, so bidding again with less lowers the offer.
+		// TODO: On a tie the player whose latest bid came later wins, while the round explanation
+		// says the earliest one does.
 		assert(nPlayers > 1 && "nPlayers must be greater than 1.");
 		auto winningBid = Bid{ static_cast<PlayerId>(RandomInt(random, 0, static_cast<int>(nPlayers) - 1)), 0 };
 
