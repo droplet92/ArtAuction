@@ -6,33 +6,11 @@
 #include <vector>
 
 #include <Game/Game.h>
+#include "TestGames.h"
 using namespace lhs::game;
 using namespace lhs::model;
+using namespace lhs::test;
 
-
-namespace
-{
-	// 5 painters with 10 paintings each, like the game data
-	Catalog MakeCatalog()
-	{
-		Catalog catalog;
-
-		for (int p = 0; p < 5; ++p)
-		{
-			auto painter = "Painter " + std::to_string(p);
-			catalog.painters.push_back(painter);
-
-			for (int i = 0; i < 10; ++i)
-				catalog.paintings.push_back({ {}, painter + " #" + std::to_string(i), painter });
-		}
-		return catalog;
-	}
-
-	Game MakeGame(uint32_t seed = 1)
-	{
-		return Game{ MakeCatalog(), { "You", "Andrew", "Benjamin", "Catherine" }, Random{ seed } };
-	}
-}
 
 TEST(GameTest, WaitsInTheLobbyUntilStarted)
 {
@@ -132,13 +110,7 @@ namespace
 		game.Start();
 		game.Update(6.f);
 		return game;
-	}
-
-	Painting FirstPainting(const Game& game, PlayerId player)
-	{
-		return game.View().players.at(player).GetPaintings().front();
-	}
-}
+	}}
 
 TEST(GameTest, SubmittingMovesThePaintingOutOfTheGallery)
 {
@@ -192,36 +164,6 @@ TEST(GameTest, SubmitsARandomPaintingForThoseWhoRunOutOfTime)
 		EXPECT_EQ(game.View().players.at(id).GetPaintings().size(), 9u);
 	}
 	EXPECT_FLOAT_EQ(game.View().timeLeft, 3.f);
-}
-
-namespace
-{
-	// Start a game whose first round is of the given type.
-	Game MakeGameOfRound(RoundType type)
-	{
-		for (uint32_t seed = 1;; ++seed)
-		{
-			auto game = MakeGame(seed);
-			game.Start();
-
-			if (game.View().roundType == type)
-				return game;
-		}
-	}
-
-	// Play to the bidding of the first auction.
-	Game MakeGameInBidding(RoundType type)
-	{
-		auto game = MakeGameOfRound(type);
-		game.Update(6.f);
-
-		for (PlayerId id = 0; id < 4; ++id)
-			game.Submit(id, FirstPainting(game, id));
-
-		game.Update(3.f);
-		game.Update(6.f);
-		return game;
-	}
 }
 
 TEST(GameTest, PresentsASubmittedPaintingForSixSecondsBeforeBidding)
