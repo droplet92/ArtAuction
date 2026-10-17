@@ -158,6 +158,11 @@ bool Auction::init()
                 bidder->ShowBid(bid);
             });
     }
+    else
+    {
+        // Closed bids stay hidden. Drop the listener a previous round's (already destroyed) scene registered.
+        SingleGameManager::Instance().AddNewBidEventListener(nullptr);
+    }
 
     // Begin Sequence
     //
