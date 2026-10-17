@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include <variant>
 
 #include <Game/GameView.h>
@@ -16,5 +17,11 @@ namespace lhs::game
 		model::PlayerId player;
 	};
 
-	using GameEvent = std::variant<PhaseChanged, PaintingSubmitted>;
+	struct BidPlaced
+	{
+		model::PlayerId bidder;
+		std::optional<model::Gold> amount;	// empty in a closed bidding round
+	};
+
+	using GameEvent = std::variant<PhaseChanged, PaintingSubmitted, BidPlaced>;
 }

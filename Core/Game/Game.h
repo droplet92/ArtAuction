@@ -1,7 +1,9 @@
 #pragma once
+#include <optional>
 #include <string>
 #include <vector>
 
+#include <Game/Auction.h>
 #include <Game/GameEvent.h>
 #include <Game/GameView.h>
 #include <Game/Random.h>
@@ -25,6 +27,18 @@ namespace lhs::game
 		float roundIntro = 6.f;			// three lines of the round explanation, 2 seconds each
 		float submission = 31.f;		// the gallery's 30 second countdown, which fires a second after reaching 0
 		float submissionReveal = 3.f;	// the submitted painting is shown until the next 3 second check
+		float presenting = 6.f;			// three lines of the dealer, 2 seconds each
+		float bidding = 32.f;			// the 30 second countdown and 2 more seconds
+		float reveal = 2.f;				// the dealer announces the winner
+		float closedReveal = 9.f;		// opening the closed bids one by one takes 7 more seconds
+		float roundSettlement = 11.f;	// the reputation of 5 painters, 2 seconds each, and 1 more second
+	};
+
+	enum class BidError
+	{
+		NotBidding,		// The auction is not taking bids now.
+		BelowMinimum,
+		NotEnoughGold,
 	};
 
 	/**
@@ -45,6 +59,9 @@ namespace lhs::game
 		// Return false if the player has already submitted or does not own the painting.
 		bool Submit(model::PlayerId player, const model::Painting& painting);
 
+		// Bid for the painting on the easel. A bid that repeats the previous one is ignored.
+		std::optional<BidError> PlaceBid(const model::Bid& bid);
+
 		// Let the time pass by dt seconds.
 		void Update(float dt);
 
@@ -64,6 +81,11 @@ namespace lhs::game
 
 		void SubmitForTheLate();
 
+		// Put a random painting among the submissions on the easel.
+		void OpenNextAuction();
+
+		void CloseAuction();
+
 	private:
 		static constexpr int PAINTINGS_PER_PLAYER = 10;
 
@@ -78,6 +100,10 @@ namespace lhs::game
 		GameView view;
 
 		std::vector<model::RoundType> rounds;	// the round types in the order they are played
+
+		std::vector<model::Painting> selections;	// the submitted paintings not auctioned yet in this round
+
+		std::optional<Auction> auction;	// the auction of the painting on the easel
 
 		Reputation reputation;
 

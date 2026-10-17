@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <set>
 #include <string>
 #include <vector>
@@ -191,4 +192,136 @@ TEST(GameTest, SubmitsARandomPaintingForThoseWhoRunOutOfTime)
 		EXPECT_EQ(game.View().players.at(id).GetPaintings().size(), 9u);
 	}
 	EXPECT_FLOAT_EQ(game.View().timeLeft, 3.f);
+}
+
+namespace
+{
+	// Start a game whose first round is of the given type.
+	Game MakeGameOfRound(RoundType type)
+	{
+		for (uint32_t seed = 1;; ++seed)
+		{
+			auto game = MakeGame(seed);
+			game.Start();
+
+			if (game.View().roundType == type)
+				return game;
+		}
+	}
+
+	// Play to the bidding of the first auction.
+	Game MakeGameInBidding(RoundType type)
+	{
+		auto game = MakeGameOfRound(type);
+		game.Update(6.f);
+
+		for (PlayerId id = 0; id < 4; ++id)
+			game.Submit(id, FirstPainting(game, id));
+
+		game.Update(3.f);
+		game.Update(6.f);
+		return game;
+	}
+}
+
+TEST(GameTest, PresentsASubmittedPaintingForSixSecondsBeforeBidding)
+{
+	auto game = MakeGameOfRound(RoundType::OpenBidding);
+	game.Update(6.f);
+
+	std::vector<Painting> submitted;
+	for (PlayerId id = 0; id < 4; ++id)
+	{
+		submitted.push_back(FirstPainting(game, id));
+		game.Submit(id, submitted.back());
+	}
+	game.Update(3.f);
+
+	EXPECT_EQ(game.View().phase, Phase::Presenting);
+	ASSERT_TRUE(game.View().painting);
+	EXPECT_NE(std::ranges::find(submitted, *game.View().painting), submitted.end());
+	EXPECT_EQ(game.PlaceBid({ 0, 5 }), BidError::NotBidding);
+
+	game.Update(6.f);
+	EXPECT_EQ(game.View().phase, Phase::Bidding);
+	EXPECT_FLOAT_EQ(game.View().timeLeft, 32.f);
+}
+
+TEST(GameTest, ChecksABidAgainstTheMinimumAndTheBiddersGold)
+{
+	auto game = MakeGameInBidding(RoundType::OpenBidding);
+
+	EXPECT_EQ(game.PlaceBid({ 0, 0 }), BidError::BelowMinimum);
+	EXPECT_EQ(game.PlaceBid({ 0, 101 }), BidError::NotEnoughGold);
+	EXPECT_EQ(game.PlaceBid({ 0, 100 }), std::nullopt);
+	EXPECT_EQ(game.View().minimumBid, 101u);
+}
+
+TEST(GameTest, HidesTheAmountOfClosedBids)
+{
+	auto open = MakeGameInBidding(RoundType::OpenBidding);
+	auto closed = MakeGameInBidding(RoundType::ClosedBidding);
+
+	open.PlaceBid({ 2, 7 });
+	closed.PlaceBid({ 2, 7 });
+
+	const auto openBids = TakeEventsOf<BidPlaced>(open);
+	const auto closedBids = TakeEventsOf<BidPlaced>(closed);
+	ASSERT_EQ(openBids.size(), 1u);
+	EXPECT_EQ(openBids[0].bidder, 2u);
+	EXPECT_EQ(openBids[0].amount, 7u);
+	ASSERT_EQ(closedBids.size(), 1u);
+	EXPECT_EQ(closedBids[0].amount, std::nullopt);
+}
+
+TEST(GameTest, ClosesAfterThirtyTwoSecondsOfBidding)
+{
+	auto game = MakeGameInBidding(RoundType::OpenBidding);
+
+	game.Update(31.5f);
+	EXPECT_EQ(game.View().phase, Phase::Bidding);
+
+	game.Update(.5f);
+	EXPECT_EQ(game.View().phase, Phase::Closed);
+	EXPECT_EQ(game.PlaceBid({ 0, 5 }), BidError::NotBidding);
+}
+
+TEST(GameTest, ClosesAFixedPriceAuctionAtTheFirstBid)
+{
+	auto game = MakeGameInBidding(RoundType::FixedPrice);
+
+	EXPECT_EQ(game.View().minimumBid, 10u);
+	game.PlaceBid({ 3, 10 });
+	EXPECT_EQ(game.View().phase, Phase::Closed);
+	EXPECT_FLOAT_EQ(game.View().timeLeft, 2.f);
+}
+
+TEST(GameTest, TakesLongerToRevealClosedBids)
+{
+	auto game = MakeGameInBidding(RoundType::ClosedBidding);
+	game.Update(32.f);
+
+	EXPECT_EQ(game.View().phase, Phase::Closed);
+	EXPECT_FLOAT_EQ(game.View().timeLeft, 9.f);
+}
+
+TEST(GameTest, AuctionsEverySubmissionOnceBeforeTheRoundSettles)
+{
+	auto game = MakeGameInBidding(RoundType::OpenBidding);
+
+	std::vector<std::string> auctioned{ game.View().painting->title };
+	for (int i = 0; i < 3; ++i)
+	{
+		game.Update(32.f);	// bidding
+		game.Update(2.f);	// reveal
+		EXPECT_EQ(game.View().phase, Phase::Presenting);
+		auctioned.push_back(game.View().painting->title);
+		game.Update(6.f);
+	}
+	game.Update(32.f);
+	game.Update(2.f);
+
+	EXPECT_EQ(game.View().phase, Phase::RoundSettlement);
+	std::ranges::sort(auctioned);
+	EXPECT_EQ(std::ranges::adjacent_find(auctioned), auctioned.end());
 }

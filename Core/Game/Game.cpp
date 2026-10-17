@@ -78,6 +78,30 @@ namespace lhs::game
 		return true;
 	}
 
+	std::optional<BidError> Game::PlaceBid(const Bid& bid)
+	{
+		if (view.phase != Phase::Bidding)
+			return BidError::NotBidding;
+
+		// (minimum bid) <= offer <= (bidder's gold)
+		if (bid.amount < view.minimumBid)
+			return BidError::BelowMinimum;
+		if (bid.amount > view.players.at(bid.bidder).GetGold())
+			return BidError::NotEnoughGold;
+
+		if (!auction->Place(bid))
+			return std::nullopt;
+
+		view.minimumBid = auction->GetMinimumBid();
+
+		const bool hidden = (view.roundType == RoundType::ClosedBidding);
+		events.push_back(BidPlaced{ bid.bidder, hidden ? std::nullopt : std::optional{ bid.amount } });
+
+		if (auction->IsClosedEarly())
+			CloseAuction();
+		return std::nullopt;
+	}
+
 	void Game::Update(float dt)
 	{
 		if (view.timeLeft <= 0.f)
@@ -128,7 +152,24 @@ namespace lhs::game
 			{
 				SubmitForTheLate();
 				view.timeLeft = timings.submissionReveal;
+				break;
 			}
+			for (const auto& submission : view.submissions)
+				selections.push_back(submission.value());
+
+			OpenNextAuction();
+			break;
+		case Phase::Presenting:
+			Enter(Phase::Bidding, timings.bidding);
+			break;
+		case Phase::Bidding:
+			CloseAuction();
+			break;
+		case Phase::Closed:
+			if (selections.empty())
+				Enter(Phase::RoundSettlement, timings.roundSettlement);
+			else
+				OpenNextAuction();
 			break;
 		default:
 			break;
@@ -158,5 +199,24 @@ namespace lhs::game
 			assert(!gallery.empty() && "a player must have a painting to submit.");
 			Submit(id, gallery.at(RandomInt(random, 0, static_cast<int>(gallery.size()) - 1)));
 		}
+	}
+
+	void Game::OpenNextAuction()
+	{
+		assert(!selections.empty() && "selections must not empty.");
+		auto idx = RandomInt(random, 0, static_cast<int>(selections.size()) - 1);
+
+		view.painting = selections.at(idx);
+		selections.erase(selections.begin() + idx);
+
+		auction.emplace(view.roundType, static_cast<uint32_t>(view.players.size()));
+		view.minimumBid = auction->GetMinimumBid();
+		Enter(Phase::Presenting, timings.presenting);
+	}
+
+	void Game::CloseAuction()
+	{
+		const bool closedBidding = (view.roundType == RoundType::ClosedBidding);
+		Enter(Phase::Closed, closedBidding ? timings.closedReveal : timings.reveal);
 	}
 }

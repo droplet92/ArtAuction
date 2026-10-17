@@ -16,6 +16,9 @@ namespace lhs::game
 		Lobby,
 		RoundIntro,			// the rules of the round are explained
 		Submission,			// each player picks a painting to auction
+		Presenting,			// the dealer introduces the painting on the easel
+		Bidding,			// the players bid for it
+		Closed,				// the winner is announced
 		RoundSettlement,	// the painters' reputation is updated
 		GameOver,			// the galleries are sold and ranked
 	};
@@ -33,5 +36,7 @@ namespace lhs::game
 		std::vector<std::string> painters;
 		std::map<std::string, uint32_t> reputation;					// painter-(points) table
 		std::vector<std::optional<model::Painting>> submissions;	// this round's paintings, indexed by the player id
+		std::optional<model::Painting> painting;					// the painting being auctioned
+		model::Gold minimumBid = 0;									// the lowest amount a new bid may offer
 	};
 }
