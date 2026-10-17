@@ -2,3 +2,7 @@
 	path = cocos2d
 	url = https://github.com/cocos2d/cocos2d-x.git
 	shallow = true
+[submodule "lib/googletest"]
+	path = lib/googletest
+	url = https://github.com/google/googletest.git
+	shallow = true

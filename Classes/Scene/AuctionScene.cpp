@@ -185,7 +185,7 @@ bool Auction::init()
             minBid = (roundType == RoundType::FixedPrice) ? 10 : 1;
             bidMessage = std::format("Please bid\nat least {}", minBid);
 
-            const auto data = player->GetInformations();
+            const auto data = player->GetInformations(SingleGameManager::Instance().GetPainters());
             galleryBoard->SetInformation(data);
 
             artInfo->SetTitle(selection.painter);

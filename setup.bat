@@ -1,8 +1,8 @@
 rem Resolve every path below against the repository root, wherever this is run from.
 cd /d "%~dp0"
 
-rem Fetch only the engine. Its own nested submodules are not needed and use the retired git:// protocol.
-git submodule update --init --depth 1 cocos2d || exit /b 1
+rem Fetch the engine and GoogleTest without their own nested submodules; the engine's use the retired git:// protocol.
+git submodule update --init --depth 1 cocos2d lib/googletest || exit /b 1
 
 rem cocos2d-x keeps its third-party libraries outside its repository. Its download-deps.py
 rem needs distutils, which Python 3.12 removed, so fetch the version named in
