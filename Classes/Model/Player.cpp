@@ -1,12 +1,8 @@
 #include "Player.h"
 
 #include <algorithm>
+#include <cassert>
 #include <ranges>
-
-#include <cocos2d.h>
-
-#include <Manager/SingleGameManager.h>
-using namespace lhs::manager;
 
 
 namespace lhs::model
@@ -46,19 +42,18 @@ namespace lhs::model
 		return painting;
 	}
 
-	std::map<std::string, uint32_t> Player::GetInformations() const
+	std::map<std::string, uint32_t> Player::GetInformations(const std::vector<std::string>& painters) const
 	{
 		// painter-(player's number of paintings)
 		std::map<std::string, uint32_t> information;
 
 		// initialize the information keys(painters)
-		auto category = SingleGameManager::Instance().GetPainters();
 		auto view = paintings
 			| std::views::transform([](auto model)
 				{
 					return model.painter;
 				});
-		for (const auto& painter : category)
+		for (const auto& painter : painters)
 			information.emplace(painter, 0);
 
 		// count the paintings
@@ -81,7 +76,7 @@ namespace lhs::model
 
 	void Player::SubtractGold(uint32_t amount) noexcept
 	{
-		CCASSERT(amount <= gold, "a player cannot pay more gold than they have.");
+		assert(amount <= gold && "a player cannot pay more gold than they have.");
 		gold -= amount;
 	}
 

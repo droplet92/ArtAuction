@@ -1,5 +1,9 @@
 #pragma once
+#include <cstdint>
 #include <map>
+#include <string>
+#include <string_view>
+#include <vector>
 
 #include <Model/Painting.h>
 
@@ -24,8 +28,8 @@ namespace lhs::model
 		// Return idx-th painting and erase it.
 		[[nodiscard]] Painting GetPainting(size_t idx);
 
-		// Return the player's painter-(number of paintings) table.
-		std::map<std::string, uint32_t> GetInformations() const;
+		// Return the player's painter-(number of paintings) table, listing every given painter.
+		std::map<std::string, uint32_t> GetInformations(const std::vector<std::string>& painters) const;
 
 		void SetPaintings(const std::vector<Painting>& paintings) noexcept;
 
