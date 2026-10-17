@@ -31,6 +31,8 @@ namespace lhs::model
 
 		void AddGold(uint32_t amount) noexcept;
 
+		void SubtractGold(uint32_t amount) noexcept;
+
 		void AddPainting(const Painting& painting);
 
 		void RemovePainting(const Painting& target);

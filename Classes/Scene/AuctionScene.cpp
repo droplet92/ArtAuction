@@ -339,7 +339,7 @@ bool Auction::init()
             //ss << u8"�����ƽ��ϴ�!";
             cocos2d::log("%s winner: [id %u] bid %u", Utility::ConvertToAscii(roundType).c_str(), winner->GetId(), gold);
             winnerMessage = std::format("{} has\nwon your bid\nfor {} gold!", winner->GetName(), gold);
-            winner->AddGold(-gold);
+            winner->SubtractGold(gold);
 
             if (roundType == u8"NFT Open Bidding")
                 winner->AddGold(SingleGameManager::Instance().GetRealTimeNftPrice());
