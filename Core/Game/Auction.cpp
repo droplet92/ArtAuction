@@ -12,7 +12,13 @@ namespace lhs::game
 	Auction::Auction(RoundType type, uint32_t nPlayers)
 		: type(type)
 		, nPlayers(nPlayers)
+		, minimumBid((type == RoundType::FixedPrice) ? 10 : 1)
 	{
+	}
+
+	uint32_t Auction::GetMinimumBid() const noexcept
+	{
+		return minimumBid;
 	}
 
 	bool Auction::Place(const std::pair<int, int>& bid)
@@ -22,6 +28,11 @@ namespace lhs::game
 			return false;
 
 		bids.push_back(bid);
+
+		// Bids are visible in every round but the closed one, so the next bid has to outbid this one.
+		if (type != RoundType::ClosedBidding)
+			minimumBid = bid.second + 1;
+
 		return true;
 	}
 

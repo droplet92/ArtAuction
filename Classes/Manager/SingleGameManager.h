@@ -56,6 +56,9 @@ namespace lhs::manager
 
 		void MoveToNextRound() final;
 
+		// The lowest amount a new bid may offer in the current auction.
+		uint32_t GetMinimumBid() const;
+
 		void AddNewBidEventListener(std::function<void(const std::pair<int, int>&)> listener) noexcept;
 
 		void AddWinningBid(std::string_view painter, int winningBid);

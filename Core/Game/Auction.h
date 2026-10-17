@@ -20,6 +20,9 @@ namespace lhs::game
 	public:
 		Auction(model::RoundType type, uint32_t nPlayers);
 
+		// The lowest amount a new bid may offer.
+		uint32_t GetMinimumBid() const noexcept;
+
 		// Record a bid. A bid that repeats the previous one exactly is ignored and returns false.
 		bool Place(const std::pair<int, int>& bid);
 
@@ -38,6 +41,8 @@ namespace lhs::game
 		model::RoundType type;
 
 		uint32_t nPlayers;
+
+		uint32_t minimumBid;
 
 		std::vector<std::pair<int, int>> bids;
 	};

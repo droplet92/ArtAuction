@@ -179,6 +179,12 @@ namespace lhs::manager
 		}
 	}
 
+	uint32_t SingleGameManager::GetMinimumBid() const
+	{
+		CCASSERT(auction, "an auction must be running.");
+		return auction->GetMinimumBid();
+	}
+
 	void SingleGameManager::AddNewBidEventListener(std::function<void(const std::pair<int, int>&)> listener) noexcept
 	{
 		newBidEventListener = listener;

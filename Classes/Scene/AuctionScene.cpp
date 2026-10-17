@@ -155,7 +155,7 @@ bool Auction::init()
                 const auto& [bidderId, bid] = newBid;
                 auto bidder = characters[bidderId];
 
-                minBid = bid + 1;
+                minBid = SingleGameManager::Instance().GetMinimumBid();
                 bidder->ShowBid(bid);
             });
     }
@@ -182,7 +182,7 @@ bool Auction::init()
         {
             selection = SingleGameManager::Instance().GetSelectionForAuction();
             startMessage = std::format("This is by\n{}", selection.painter);
-            minBid = (roundType == RoundType::FixedPrice) ? 10 : 1;
+            minBid = SingleGameManager::Instance().GetMinimumBid();
             bidMessage = std::format("Please bid\nat least {}", minBid);
 
             const auto data = player->GetInformations(SingleGameManager::Instance().GetPainters());
