@@ -38,7 +38,12 @@ namespace lhs::manager
 	// singleplay implementation
 	void PlayerManager::AddPlayer(std::string_view name)
 	{
-		static size_t autoIncrementId = 0;
-		players.push_back({ autoIncrementId++, name.data()});
+		players.push_back({ nextId++, name.data()});
+	}
+
+	void PlayerManager::ClearPlayers() noexcept
+	{
+		players.clear();
+		nextId = 0;
 	}
 }

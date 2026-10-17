@@ -23,9 +23,14 @@ namespace lhs::manager
 
 		void AddPlayer(std::string_view name);
 
+		// Remove all players and restart the IDs from 0.
+		void ClearPlayers() noexcept;
+
 	private:
 		PlayerManager() = default;
 
 		std::vector<model::Player> players;
+
+		uint32_t nextId = 0;
 	};
 }

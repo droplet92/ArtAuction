@@ -39,6 +39,14 @@ namespace lhs::manager
 		paintings = DbManager::Instance().GetPaintings();
 		painters = DbManager::Instance().GetPainters();
 
+		// Reset the state left over from a previous game.
+		rounds.clear();
+		selections.clear();
+		submission.reset();
+		bids.clear();
+		reputation.clear();
+		winningBids.clear();
+
 		for (const auto& painter : painters)
 		{
 			reputation.emplace(painter, 0);
