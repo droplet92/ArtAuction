@@ -10,8 +10,6 @@ using namespace lhs::model;
 #include <set>
 
 #include <cocos2d.h>
-#include <ccRandom.h>
-USING_NS_CC;
 
 #include <Manager/DbManager.h>
 
@@ -22,6 +20,7 @@ namespace lhs::manager
 
 	SingleGameManager::SingleGameManager()
 		: nPlayers(0)
+		, random(std::random_device{}())
 		, prevBidsCount(0)
 		, newBidEventListener({})
 	{
@@ -94,7 +93,7 @@ namespace lhs::manager
 			for (int i = 0; i < 10; i++)
 			{
 				CCASSERT(!copy.empty(), "copy must not empty.");
-				auto select = copy.at(RandomHelper::random_int<int>(0, copy.size() - 1));
+				auto select = copy.at(game::RandomInt(random, 0, static_cast<int>(copy.size()) - 1));
 
 				std::erase(copy, select);
 				forGallery.push_back(select);
@@ -118,7 +117,7 @@ namespace lhs::manager
 	Painting SingleGameManager::GetSelectionForAuction()
 	{
 		CCASSERT(!selections.empty(), "selections must not empty.");
-		auto idx = RandomHelper::random_int<int>(0, selections.size() - 1);
+		auto idx = game::RandomInt(random, 0, static_cast<int>(selections.size()) - 1);
 		auto selection = selections.at(idx);
 		
 		selections.erase(selections.begin() + idx);
@@ -136,7 +135,7 @@ namespace lhs::manager
 		// If not all players have placed bids, a random player will be selected.
 		CCASSERT(nPlayers > 1, "nPlayers must be greater than 1.");
 		return bids.empty()
-			? std::make_pair(cocos2d::RandomHelper::random_int<int>(0, nPlayers - 1), 0)
+			? std::make_pair(game::RandomInt(random, 0, static_cast<int>(nPlayers) - 1), 0)
 			: bids.back();
 	}
 
@@ -184,11 +183,9 @@ namespace lhs::manager
 
 		if (rounds.empty())
 		{
-			std::random_device rd;
-			std::mt19937 generator(rd());
 			rounds = { RoundType::OpenBidding, RoundType::ClosedBidding, RoundType::FixedPrice, RoundType::NftOpenBidding };
 
-			std::ranges::shuffle(rounds, generator);
+			std::ranges::shuffle(rounds, random);
 		}
 	}
 
@@ -245,7 +242,7 @@ namespace lhs::manager
 
 	uint32_t SingleGameManager::GetRealTimeNftPrice()
 	{
-		uint32_t price = RandomHelper::random_int(0, 30);
+		uint32_t price = game::RandomInt(random, 0, 30);
 
 		cocos2d::log("sold at %d", price);
 		return price;
@@ -255,7 +252,7 @@ namespace lhs::manager
 	{
 		// If not all players have placed bids, a random player will be selected.
 		CCASSERT(nPlayers > 1, "nPlayers must be greater than 1.");
-		auto winningBid = std::make_pair(RandomHelper::random_int<int>(0, nPlayers - 1), 0);
+		auto winningBid = std::make_pair(game::RandomInt(random, 0, static_cast<int>(nPlayers) - 1), 0);
 
 		while (!bids.empty())
 		{

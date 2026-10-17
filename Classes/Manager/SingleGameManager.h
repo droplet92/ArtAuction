@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 
+#include <Game/Random.h>
 #include <Manager/GameManager.h>
 
 
@@ -84,6 +85,8 @@ namespace lhs::manager
 		std::map<std::string, uint32_t> reputation;
 
 		std::vector<std::pair<int, int>> bids;
+
+		mutable game::Random random;
 
 		int prevBidsCount;
 
