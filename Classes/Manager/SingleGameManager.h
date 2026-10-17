@@ -4,6 +4,7 @@
 
 #include <Game/Auction.h>
 #include <Game/Random.h>
+#include <Game/Reputation.h>
 #include <Manager/GameManager.h>
 
 
@@ -85,7 +86,7 @@ namespace lhs::manager
 
 		std::vector<std::string> painters;
 
-		std::map<std::string, uint32_t> reputation;
+		game::Reputation reputation;
 
 		// the auction of the painting on the easel
 		std::optional<game::Auction> auction;
@@ -95,9 +96,5 @@ namespace lhs::manager
 		int prevBidsCount;
 
 		std::function<void(const std::pair<int, int>&)> newBidEventListener;
-
-		// total price of the sold paintings by painter at a round
-		// the list of the pair of (painter, price)
-		std::vector<std::pair<std::string, int>> winningBids;
 	};
 }
