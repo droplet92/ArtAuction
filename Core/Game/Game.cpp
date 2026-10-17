@@ -48,6 +48,7 @@ namespace lhs::game
 
 		reputation = Reputation{ catalog.painters };
 		view.reputation = reputation.Get();
+		view.ranking.clear();
 
 		// Every round type is played once, in a random order.
 		rounds = { RoundType::OpenBidding, RoundType::ClosedBidding, RoundType::FixedPrice, RoundType::NftOpenBidding };
@@ -167,9 +168,21 @@ namespace lhs::game
 			break;
 		case Phase::Closed:
 			if (selections.empty())
-				Enter(Phase::RoundSettlement, timings.roundSettlement);
+				SettleRound();
 			else
 				OpenNextAuction();
+			break;
+		case Phase::RoundSettlement:
+			if (std::cmp_less(view.round, rounds.size()))
+			{
+				++view.round;
+				view.roundType = rounds.at(view.round - 1);
+				Enter(Phase::RoundIntro, timings.roundIntro);
+			}
+			else
+			{
+				EndGame();
+			}
 			break;
 		default:
 			break;
@@ -239,5 +252,32 @@ namespace lhs::game
 
 		const bool closedBidding = (view.roundType == RoundType::ClosedBidding);
 		Enter(Phase::Closed, closedBidding ? timings.closedReveal : timings.reveal);
+	}
+
+	void Game::SettleRound()
+	{
+		auction.reset();
+		view.painting.reset();
+
+		reputation.Update();
+		view.reputation = reputation.Get();
+		Enter(Phase::RoundSettlement, timings.roundSettlement);
+	}
+
+	void Game::EndGame()
+	{
+		view.ranking.clear();
+
+		for (auto& player : view.players)
+		{
+			player.SellAll(view.reputation);
+			view.ranking.push_back(player.GetId());
+		}
+
+		std::ranges::stable_sort(view.ranking, [&](PlayerId lhs, PlayerId rhs)
+			{
+				return view.players.at(lhs).GetGold() > view.players.at(rhs).GetGold();
+			});
+		Enter(Phase::GameOver);
 	}
 }

@@ -38,5 +38,6 @@ namespace lhs::game
 		std::vector<std::optional<model::Painting>> submissions;	// this round's paintings, indexed by the player id
 		std::optional<model::Painting> painting;					// the painting being auctioned
 		model::Gold minimumBid = 0;									// the lowest amount a new bid may offer
+		std::vector<model::PlayerId> ranking;						// from the richest, when the game is over
 	};
 }

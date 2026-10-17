@@ -379,3 +379,118 @@ TEST(GameTest, AnAuctionWithoutBidsGoesToSomeoneForNothing)
 	EXPECT_LT(result.winningBid.bidder, 4u);
 	EXPECT_EQ(game.View().players.at(result.winningBid.bidder).GetGold(), 100u);
 }
+
+namespace
+{
+	// Play the auctions of the round without anyone bidding, up to the round settlement.
+	void PlayAuctionsWithoutBids(Game& game)
+	{
+		while (game.View().phase != Phase::RoundSettlement)
+			game.Update(.5f);
+	}
+
+	// Play a round from its explanation to the next one, with everyone submitting their first painting.
+	void PlayRound(Game& game)
+	{
+		game.Update(6.f);
+		for (PlayerId id = 0; id < 4; ++id)
+			game.Submit(id, FirstPainting(game, id));
+
+		PlayAuctionsWithoutBids(game);
+		game.Update(11.f);
+	}
+}
+
+TEST(GameTest, RanksThePaintersAfterTheLastAuctionOfTheRound)
+{
+	auto game = MakeGameInBidding(RoundType::OpenBidding);
+	const auto painter = game.View().painting->painter;
+
+	game.PlaceBid({ 0, 5 });
+	PlayAuctionsWithoutBids(game);
+
+	EXPECT_EQ(game.View().reputation.at(painter), 10u);
+	EXPECT_FALSE(game.View().painting);
+	EXPECT_FLOAT_EQ(game.View().timeLeft, 11.f);
+}
+
+TEST(GameTest, PlaysEveryRoundTypeOnceAndRanksThePlayers)
+{
+	auto game = MakeGame();
+	game.Start();
+
+	std::set<RoundType> played;
+	for (int round = 1; round <= 4; ++round)
+	{
+		EXPECT_EQ(game.View().phase, Phase::RoundIntro);
+		EXPECT_EQ(game.View().round, round);
+		played.insert(game.View().roundType);
+		PlayRound(game);
+	}
+
+	EXPECT_EQ(played.size(), 4u);
+	ASSERT_EQ(game.View().phase, Phase::GameOver);
+
+	const auto& view = game.View();
+	ASSERT_EQ(view.ranking.size(), 4u);
+	for (size_t i = 1; i < view.ranking.size(); ++i)
+		EXPECT_GE(view.players.at(view.ranking[i - 1]).GetGold(), view.players.at(view.ranking[i]).GetGold());
+	for (const auto& player : view.players)
+		EXPECT_TRUE(player.GetPaintings().empty());
+}
+
+TEST(GameTest, SellsTheGalleriesAtTheReputationWhenTheGameEnds)
+{
+	auto game = MakeGame();
+	game.Start();
+	for (int round = 1; round <= 3; ++round)
+		PlayRound(game);
+
+	// Play the last round up to its settlement, where the final reputation is known.
+	// One painting is sold so that its painter earns points.
+	game.Update(6.f);
+	for (PlayerId id = 0; id < 4; ++id)
+		game.Submit(id, FirstPainting(game, id));
+	while (game.View().phase != Phase::Bidding)
+		game.Update(.5f);
+
+	const auto painter = game.View().painting->painter;
+	game.PlaceBid({ 0, game.View().minimumBid });
+	PlayAuctionsWithoutBids(game);
+	EXPECT_GE(game.View().reputation.at(painter), 10u);
+
+	std::vector<uint32_t> expected;
+	for (const auto& player : game.View().players)
+	{
+		auto gold = player.GetGold();
+		for (const auto& painting : player.GetPaintings())
+			gold += game.View().reputation.at(painting.painter);
+		expected.push_back(gold);
+	}
+
+	game.Update(11.f);
+	ASSERT_EQ(game.View().phase, Phase::GameOver);
+	for (PlayerId id = 0; id < 4; ++id)
+		EXPECT_EQ(game.View().players.at(id).GetGold(), expected.at(id));
+}
+
+TEST(GameTest, AFinishedGameStartsOver)
+{
+	auto game = MakeGame();
+	game.Start();
+	for (int round = 1; round <= 4; ++round)
+		PlayRound(game);
+	ASSERT_EQ(game.View().phase, Phase::GameOver);
+
+	game.Start();
+	EXPECT_EQ(game.View().phase, Phase::RoundIntro);
+	EXPECT_EQ(game.View().round, 1);
+	EXPECT_TRUE(game.View().ranking.empty());
+	for (const auto& player : game.View().players)
+	{
+		EXPECT_EQ(player.GetGold(), 100u);
+		EXPECT_EQ(player.GetPaintings().size(), 10u);
+	}
+	for (const auto& [_, points] : game.View().reputation)
+		EXPECT_EQ(points, 0u);
+}

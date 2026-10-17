@@ -86,6 +86,11 @@ namespace lhs::game
 
 		void CloseAuction();
 
+		void SettleRound();
+
+		// Sell every gallery at the painters' reputation and rank the players.
+		void EndGame();
+
 	private:
 		static constexpr int PAINTINGS_PER_PLAYER = 10;
 
