@@ -325,3 +325,57 @@ TEST(GameTest, AuctionsEverySubmissionOnceBeforeTheRoundSettles)
 	std::ranges::sort(auctioned);
 	EXPECT_EQ(std::ranges::adjacent_find(auctioned), auctioned.end());
 }
+
+TEST(GameTest, TheWinnerPaysAndTakesThePainting)
+{
+	auto game = MakeGameInBidding(RoundType::OpenBidding);
+	const auto painting = *game.View().painting;
+
+	game.PlaceBid({ 1, 5 });
+	game.PlaceBid({ 2, 8 });
+	game.Update(32.f);
+
+	const auto results = TakeEventsOf<AuctionClosed>(game);
+	ASSERT_EQ(results.size(), 1u);
+	const auto& result = results.front();
+	EXPECT_EQ(result.winningBid, (Bid{ 2, 8 }));
+	EXPECT_EQ(result.painting, painting);
+	EXPECT_EQ(result.nftPrice, std::nullopt);
+	EXPECT_EQ(result.bids, (std::vector<Bid>{ { 2, 8 }, { 1, 5 } }));
+
+	const auto& winner = game.View().players.at(2);
+	EXPECT_EQ(winner.GetGold(), 92u);
+	const auto gallery = winner.GetPaintings();
+	EXPECT_NE(std::ranges::find(gallery, painting), gallery.end());
+	EXPECT_EQ(game.View().players.at(1).GetGold(), 100u);
+}
+
+TEST(GameTest, TheWinnerOfAnNftSellsItAtOnce)
+{
+	auto game = MakeGameInBidding(RoundType::NftOpenBidding);
+	const auto galleryBefore = game.View().players.at(3).GetPaintings().size();
+
+	game.PlaceBid({ 3, 20 });
+	game.Update(32.f);
+
+	const auto results = TakeEventsOf<AuctionClosed>(game);
+	ASSERT_EQ(results.size(), 1u);
+	const auto& result = results.front();
+	ASSERT_TRUE(result.nftPrice);
+	EXPECT_LE(*result.nftPrice, 30u);
+	EXPECT_EQ(game.View().players.at(3).GetGold(), 100u - 20u + *result.nftPrice);
+	EXPECT_EQ(game.View().players.at(3).GetPaintings().size(), galleryBefore);
+}
+
+TEST(GameTest, AnAuctionWithoutBidsGoesToSomeoneForNothing)
+{
+	auto game = MakeGameInBidding(RoundType::OpenBidding);
+	game.Update(32.f);
+
+	const auto results = TakeEventsOf<AuctionClosed>(game);
+	ASSERT_EQ(results.size(), 1u);
+	const auto& result = results.front();
+	EXPECT_EQ(result.winningBid.amount, 0u);
+	EXPECT_LT(result.winningBid.bidder, 4u);
+	EXPECT_EQ(game.View().players.at(result.winningBid.bidder).GetGold(), 100u);
+}

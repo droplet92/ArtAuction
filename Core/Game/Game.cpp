@@ -216,6 +216,27 @@ namespace lhs::game
 
 	void Game::CloseAuction()
 	{
+		AuctionClosed result{};
+		result.bids = auction->GetBids();
+		result.winningBid = auction->GetWinningBid(random);
+		result.painting = view.painting.value();
+
+		// The winner pays and takes the painting, or sells the NFT at once.
+		auto& winner = view.players.at(result.winningBid.bidder);
+		winner.SubtractGold(result.winningBid.amount);
+
+		if (view.roundType == RoundType::NftOpenBidding)
+		{
+			result.nftPrice = RollNftPrice(random);
+			winner.AddGold(*result.nftPrice);
+		}
+		else
+		{
+			winner.AddPainting(result.painting);
+		}
+		reputation.AddWinningBid(result.painting.painter, result.winningBid.amount);
+		events.push_back(result);
+
 		const bool closedBidding = (view.roundType == RoundType::ClosedBidding);
 		Enter(Phase::Closed, closedBidding ? timings.closedReveal : timings.reveal);
 	}
