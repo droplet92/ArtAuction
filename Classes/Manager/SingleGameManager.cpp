@@ -2,9 +2,12 @@
 using namespace lhs::model;
 
 #include <algorithm>
+#include <array>
+#include <functional>
 #include <optional>
 #include <random>
 #include <ranges>
+#include <set>
 
 #include <cocos2d.h>
 #include <ccRandom.h>
@@ -203,26 +206,29 @@ namespace lhs::manager
 
 	void SingleGameManager::UpdateReputation()
 	{
-		// Sort the winning bids in ascending order.
+		// Sort the winning bids in descending order.
 		auto goldView = winningBids
 			| std::views::transform([](auto& bid) { return bid.second; });
 
-		std::set<int> s{ goldView.begin(), goldView.end() };
-		
+		std::set<int, std::greater<>> s{ goldView.begin(), goldView.end() };
+
+		// Painters with no sales gain no reputation.
+		s.erase(0);
+
 		// Update the painters' reputation.
-		// Increase by 1, 3, 7, and 10 in ascending order of sales amount.
-		std::vector<int> v = { 10, 7, 3, 0 };
-		
-		for (const auto& target : s)
+		// Increase by 10, 7, and 3 in descending order of sales amount; lower ranks gain nothing.
+		constexpr std::array bonuses = { 10, 7, 3 };
+
+		for (size_t rank = 0; const auto& target : s | std::views::take(bonuses.size()))
 		{
 			auto view = winningBids
 				| std::views::filter([&](const auto& src) { return (src.second == target); })
 				| std::views::transform([](const auto& src) { return src.first; });
 
 			for (const auto& painter : view)
-				reputation.at(painter) +=  v.back();
+				reputation.at(painter) += bonuses.at(rank);
 
-			v.pop_back();
+			++rank;
 		}
 
 		// Reset winningBids
