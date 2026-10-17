@@ -1,6 +1,10 @@
 #pragma once
 #include <functional>
+#include <optional>
 
+#include <Game/Auction.h>
+#include <Game/Random.h>
+#include <Game/Reputation.h>
 #include <Manager/GameManager.h>
 
 
@@ -53,6 +57,9 @@ namespace lhs::manager
 
 		void MoveToNextRound() final;
 
+		// The lowest amount a new bid may offer in the current auction.
+		uint32_t GetMinimumBid() const;
+
 		void AddNewBidEventListener(std::function<void(const std::pair<int, int>&)> listener) noexcept;
 
 		void AddWinningBid(std::string_view painter, int winningBid);
@@ -63,8 +70,6 @@ namespace lhs::manager
 
 	private:
 		SingleGameManager();
-
-		std::pair<int, int> GetClosedWinningBid();
 
 	private:
 		static uint32_t const MAX_USER_COUNT;
@@ -81,16 +86,15 @@ namespace lhs::manager
 
 		std::vector<std::string> painters;
 
-		std::map<std::string, uint32_t> reputation;
+		game::Reputation reputation;
 
-		std::vector<std::pair<int, int>> bids;
+		// the auction of the painting on the easel
+		std::optional<game::Auction> auction;
+
+		mutable game::Random random;
 
 		int prevBidsCount;
 
 		std::function<void(const std::pair<int, int>&)> newBidEventListener;
-
-		// total price of the sold paintings by painter at a round
-		// the list of the pair of (painter, price)
-		std::vector<std::pair<std::string, int>> winningBids;
 	};
 }

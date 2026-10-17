@@ -2,26 +2,29 @@
 using namespace lhs::model;
 
 #include <algorithm>
-#include <array>
 #include <functional>
 #include <optional>
 #include <random>
 #include <ranges>
-#include <set>
 
 #include <cocos2d.h>
-#include <ccRandom.h>
-USING_NS_CC;
 
 #include <Manager/DbManager.h>
 
 
 namespace lhs::manager
 {
+	// The manager's interface still passes bids as (player id, amount) pairs.
+	static std::pair<int, int> ToPair(const model::Bid& bid)
+	{
+		return { static_cast<int>(bid.bidder), static_cast<int>(bid.amount) };
+	}
+
 	uint32_t const SingleGameManager::MAX_USER_COUNT = 5;
 
 	SingleGameManager::SingleGameManager()
 		: nPlayers(0)
+		, random(std::random_device{}())
 		, prevBidsCount(0)
 		, newBidEventListener({})
 	{
@@ -43,22 +46,13 @@ namespace lhs::manager
 		rounds.clear();
 		selections.clear();
 		submission.reset();
-		bids.clear();
-		reputation.clear();
-		winningBids.clear();
-
-		for (const auto& painter : painters)
-		{
-			reputation.emplace(painter, 0);
-			winningBids.push_back({ painter, 0 });
-		}
+		auction.reset();
+		reputation = game::Reputation{ painters };
 	}
 
 	bool SingleGameManager::IsBidUpdated() const
 	{
-		auto [_, round] = GetCurrentRound();
-
-		return (round == RoundType::FixedPrice) ? !bids.empty() : false;
+		return auction && auction->IsClosedEarly();
 	}
 
 	bool SingleGameManager::IsRoundEnd() const
@@ -94,7 +88,7 @@ namespace lhs::manager
 			for (int i = 0; i < 10; i++)
 			{
 				CCASSERT(!copy.empty(), "copy must not empty.");
-				auto select = copy.at(RandomHelper::random_int<int>(0, copy.size() - 1));
+				auto select = copy.at(game::RandomInt(random, 0, static_cast<int>(copy.size()) - 1));
 
 				std::erase(copy, select);
 				forGallery.push_back(select);
@@ -112,44 +106,41 @@ namespace lhs::manager
 
 	std::map<std::string, uint32_t> SingleGameManager::GetReputation() const
 	{
-		return reputation;
+		return reputation.Get();
 	}
 
 	Painting SingleGameManager::GetSelectionForAuction()
 	{
 		CCASSERT(!selections.empty(), "selections must not empty.");
-		auto idx = RandomHelper::random_int<int>(0, selections.size() - 1);
+		auto idx = game::RandomInt(random, 0, static_cast<int>(selections.size()) - 1);
 		auto selection = selections.at(idx);
 		
 		selections.erase(selections.begin() + idx);
+
+		// The painting goes on the easel, and its auction opens.
+		auction.emplace(GetCurrentRound().second, nPlayers);
 		return selection;
 	}
 
 	std::vector<std::pair<int, int>> SingleGameManager::GetBids() const
 	{
-		auto view = bids | std::views::reverse;
+		if (!auction)
+			return {};
+
+		auto view = auction->GetBids() | std::views::transform(ToPair);
 		return { view.begin(), view.end() };
 	}
 
 	std::pair<int, int> SingleGameManager::GetLastBid() const
 	{
-		// If not all players have placed bids, a random player will be selected.
-		CCASSERT(nPlayers > 1, "nPlayers must be greater than 1.");
-		return bids.empty()
-			? std::make_pair(cocos2d::RandomHelper::random_int<int>(0, nPlayers - 1), 0)
-			: bids.back();
+		CCASSERT(auction, "an auction must be running.");
+		return ToPair(auction->GetLastBid(random));
 	}
 
 	std::pair<int, int> SingleGameManager::GetWinningBid()
 	{
-		auto [_, round] = GetCurrentRound();
-
-		if (round == RoundType::ClosedBidding)
-			return GetClosedWinningBid();
-
-		auto winningBid = GetLastBid();
-		bids.clear();
-		return winningBid;
+		CCASSERT(auction, "an auction must be running.");
+		return ToPair(auction->GetWinningBid(random));
 	}
 
 	void SingleGameManager::SetNumberOfPlayers(uint32_t nPlayers)
@@ -167,11 +158,8 @@ namespace lhs::manager
 	{
 		cocos2d::log("[Id %d] bid %d", bid.first, bid.second);
 
-		// inhibit consecutive duplicated bids
-		if (!bids.empty() && bid == bids.back())
+		if (!auction || !auction->Place({ static_cast<PlayerId>(bid.first), static_cast<Gold>(bid.second) }))
 			return;
-
-		bids.push_back(bid);
 
 		if (newBidEventListener)
 			newBidEventListener(bid);
@@ -184,12 +172,16 @@ namespace lhs::manager
 
 		if (rounds.empty())
 		{
-			std::random_device rd;
-			std::mt19937 generator(rd());
 			rounds = { RoundType::OpenBidding, RoundType::ClosedBidding, RoundType::FixedPrice, RoundType::NftOpenBidding };
 
-			std::ranges::shuffle(rounds, generator);
+			std::ranges::shuffle(rounds, random);
 		}
+	}
+
+	uint32_t SingleGameManager::GetMinimumBid() const
+	{
+		CCASSERT(auction, "an auction must be running.");
+		return auction->GetMinimumBid();
 	}
 
 	void SingleGameManager::AddNewBidEventListener(std::function<void(const std::pair<int, int>&)> listener) noexcept
@@ -199,76 +191,19 @@ namespace lhs::manager
 
 	void SingleGameManager::AddWinningBid(std::string_view painter, int winningBid)
 	{
-		// Find the painter of the sold painting.
-		auto r = std::find_if(winningBids.begin(), winningBids.end(), [&](auto source)
-			{
-				return (source.first == painter.data());
-			});
-		if (r == winningBids.end())
-			return;
-
-		// Add the bidding price.
-		r->second += winningBid;
+		reputation.AddWinningBid(painter, winningBid);
 	}
 
 	void SingleGameManager::UpdateReputation()
 	{
-		// Sort the winning bids in descending order.
-		auto goldView = winningBids
-			| std::views::transform([](auto& bid) { return bid.second; });
-
-		std::set<int, std::greater<>> s{ goldView.begin(), goldView.end() };
-
-		// Painters with no sales gain no reputation.
-		s.erase(0);
-
-		// Update the painters' reputation.
-		// Increase by 10, 7, and 3 in descending order of sales amount; lower ranks gain nothing.
-		constexpr std::array bonuses = { 10, 7, 3 };
-
-		for (size_t rank = 0; const auto& target : s | std::views::take(bonuses.size()))
-		{
-			auto view = winningBids
-				| std::views::filter([&](const auto& src) { return (src.second == target); })
-				| std::views::transform([](const auto& src) { return src.first; });
-
-			for (const auto& painter : view)
-				reputation.at(painter) += bonuses.at(rank);
-
-			++rank;
-		}
-
-		// Reset winningBids
-		for (auto& [_, value] : winningBids)
-			value = 0;
+		reputation.Update();
 	}
 
 	uint32_t SingleGameManager::GetRealTimeNftPrice()
 	{
-		uint32_t price = RandomHelper::random_int(0, 30);
+		uint32_t price = game::RollNftPrice(random);
 
 		cocos2d::log("sold at %d", price);
 		return price;
-	}
-
-	std::pair<int, int> SingleGameManager::GetClosedWinningBid()
-	{
-		// If not all players have placed bids, a random player will be selected.
-		CCASSERT(nPlayers > 1, "nPlayers must be greater than 1.");
-		auto winningBid = std::make_pair(RandomHelper::random_int<int>(0, nPlayers - 1), 0);
-
-		while (!bids.empty())
-		{
-			auto bid = bids.back();
-
-			std::erase_if(bids, [=](auto pair)
-				{
-					return (pair.first == bid.first);
-				});
-
-			if (bid.second > winningBid.second)
-				winningBid = bid;
-		}
-		return winningBid;
 	}
 }
