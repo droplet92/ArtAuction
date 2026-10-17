@@ -165,11 +165,13 @@ bool Auction::init()
     auto dummyAction = CallFunc::create({});
     auto delayAction = DelayTime::create(1.f);
 
+    openingMessage = Utility::ConvertToAscii(u8"We start\nthe bidding!");
+
     auto messages = std::vector<std::string*>
     {
         &startMessage,
         &bidMessage,
-        new std::string{ Utility::ConvertToAscii(u8"We start\nthe bidding!") },
+        &openingMessage,
         //new std::string{ Utility::ConvertToAscii(u8"�����մϴ�!") },
     };
     auto getDataAction = CallFunc::create([=]()
