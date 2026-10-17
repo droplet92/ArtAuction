@@ -20,5 +20,7 @@ cd ArtAuction
 ```powershell
 ./setup.bat
 ```
+It checks out the cocos2d-x 4.0 submodule, downloads the engine's third-party libraries, and generates the Visual Studio solution. It needs Git, CMake, and Windows 10 or later for `curl` and `tar`.
+Clone without `--recurse-submodules`: cocos2d-x's own nested submodules use the retired `git://` protocol and are not needed.
 4. Move to win32-build directory and open ArtAuction.sln
 5. Done!
