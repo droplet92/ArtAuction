@@ -46,6 +46,15 @@ endif()
 # set C++20 project
 set(CMAKE_CXX_STANDARD 20)
 
+# Game rules and state, kept free of cocos2d so tests and a server can link them.
+file(GLOB_RECURSE CORE_SOURCE CONFIGURE_DEPENDS "Core/*.cpp")
+file(GLOB_RECURSE CORE_HEADER CONFIGURE_DEPENDS "Core/*.h")
+add_library(ArtAuctionCore STATIC ${CORE_SOURCE} ${CORE_HEADER})
+target_include_directories(ArtAuctionCore PUBLIC Core)
+if(MSVC)
+    target_compile_options(ArtAuctionCore PRIVATE /utf-8)
+endif()
+
 # record sources, headers, resources...
 # add cross-platforms source files and header files
 file(GLOB_RECURSE GAME_SOURCE "Classes/*.cpp" "Classes/**/*.cpp")
@@ -123,7 +132,7 @@ else()
     target_link_libraries(${APP_NAME} -Wl,--whole-archive cpp_android_spec -Wl,--no-whole-archive)
 endif()
 
-target_link_libraries(${APP_NAME} cocos2d)
+target_link_libraries(${APP_NAME} cocos2d ArtAuctionCore)
 target_link_libraries(${APP_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/lib/sqlite3/sqlite-dll-win32-x86-3350500/sqlite3.lib")
 target_include_directories(${APP_NAME}
         PRIVATE Classes
