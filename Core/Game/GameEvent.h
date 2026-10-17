@@ -11,5 +11,10 @@ namespace lhs::game
 		Phase phase;
 	};
 
-	using GameEvent = std::variant<PhaseChanged>;
+	struct PaintingSubmitted
+	{
+		model::PlayerId player;
+	};
+
+	using GameEvent = std::variant<PhaseChanged, PaintingSubmitted>;
 }

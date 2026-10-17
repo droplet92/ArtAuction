@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <ranges>
 #include <utility>
 
 using namespace lhs::model;
@@ -57,6 +58,26 @@ namespace lhs::game
 		Enter(Phase::RoundIntro, timings.roundIntro);
 	}
 
+	bool Game::Submit(PlayerId player, const Painting& painting)
+	{
+		if (view.phase != Phase::Submission || view.submissions.at(player))
+			return false;
+
+		auto& owner = view.players.at(player);
+		const auto gallery = owner.GetPaintings();
+		if (std::ranges::find(gallery, painting) == gallery.end())
+			return false;
+
+		owner.RemovePainting(painting);
+		view.submissions.at(player) = painting;
+		events.push_back(PaintingSubmitted{ player });
+
+		// Show the submissions for a moment, then begin the auctions.
+		if (HasAllSubmitted())
+			view.timeLeft = timings.submissionReveal;
+		return true;
+	}
+
 	void Game::Update(float dt)
 	{
 		if (view.timeLeft <= 0.f)
@@ -100,10 +121,42 @@ namespace lhs::game
 		switch (view.phase)
 		{
 		case Phase::RoundIntro:
-			Enter(Phase::Submission);
+			BeginSubmission();
+			break;
+		case Phase::Submission:
+			if (!HasAllSubmitted())
+			{
+				SubmitForTheLate();
+				view.timeLeft = timings.submissionReveal;
+			}
 			break;
 		default:
 			break;
+		}
+	}
+
+	void Game::BeginSubmission()
+	{
+		view.submissions.assign(view.players.size(), std::nullopt);
+		Enter(Phase::Submission, timings.submission);
+	}
+
+	bool Game::HasAllSubmitted() const
+	{
+		return std::ranges::all_of(view.submissions, [](const auto& submission) { return submission.has_value(); });
+	}
+
+	void Game::SubmitForTheLate()
+	{
+		// TODO: A player who runs out of time puts up a random painting. Decide whether this is intended.
+		for (PlayerId id = 0; id < view.players.size(); ++id)
+		{
+			if (view.submissions.at(id))
+				continue;
+
+			const auto gallery = view.players.at(id).GetPaintings();
+			assert(!gallery.empty() && "a player must have a painting to submit.");
+			Submit(id, gallery.at(RandomInt(random, 0, static_cast<int>(gallery.size()) - 1)));
 		}
 	}
 }

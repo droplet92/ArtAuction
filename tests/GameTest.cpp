@@ -98,10 +98,10 @@ TEST(GameTest, ExplainsTheFirstRoundForSixSeconds)
 	EXPECT_EQ(game.View().round, 1);
 	EXPECT_EQ(game.View().phase, Phase::RoundIntro);
 
-	game.Update(5.9f);
+	game.Update(5.5f);
 	EXPECT_EQ(game.View().phase, Phase::RoundIntro);
 
-	game.Update(.1f);
+	game.Update(.5f);
 	EXPECT_EQ(game.View().phase, Phase::Submission);
 
 	std::vector<Phase> phases;
@@ -120,4 +120,75 @@ TEST(GameTest, TheSameSeedDealsTheSameGame)
 
 	EXPECT_EQ(first.View().roundType, second.View().roundType);
 	EXPECT_EQ(first.View().players[0].GetPaintings(), second.View().players[0].GetPaintings());
+}
+
+namespace
+{
+	// Start a game and skip the round explanation.
+	Game MakeGameInSubmission(uint32_t seed = 1)
+	{
+		auto game = MakeGame(seed);
+		game.Start();
+		game.Update(6.f);
+		return game;
+	}
+
+	Painting FirstPainting(const Game& game, PlayerId player)
+	{
+		return game.View().players.at(player).GetPaintings().front();
+	}
+}
+
+TEST(GameTest, SubmittingMovesThePaintingOutOfTheGallery)
+{
+	auto game = MakeGameInSubmission();
+	const auto painting = FirstPainting(game, 0);
+
+	EXPECT_TRUE(game.Submit(0, painting));
+	EXPECT_EQ(game.View().submissions.at(0), painting);
+	EXPECT_EQ(game.View().players.at(0).GetPaintings().size(), 9u);
+}
+
+TEST(GameTest, RejectsASecondSubmissionAndPaintingsFromOtherGalleries)
+{
+	auto game = MakeGameInSubmission();
+
+	EXPECT_FALSE(game.Submit(0, FirstPainting(game, 1)));
+	EXPECT_TRUE(game.Submit(0, FirstPainting(game, 0)));
+	EXPECT_FALSE(game.Submit(0, FirstPainting(game, 0)));
+}
+
+TEST(GameTest, RejectsSubmissionsOutsideTheSubmissionPhase)
+{
+	auto game = MakeGame();
+	game.Start();
+
+	EXPECT_FALSE(game.Submit(0, FirstPainting(game, 0)));
+}
+
+TEST(GameTest, ShowsTheSubmissionsForThreeSecondsAfterTheLastOne)
+{
+	auto game = MakeGameInSubmission();
+
+	for (PlayerId id = 0; id < 4; ++id)
+		game.Submit(id, FirstPainting(game, id));
+
+	EXPECT_FLOAT_EQ(game.View().timeLeft, 3.f);
+}
+
+TEST(GameTest, SubmitsARandomPaintingForThoseWhoRunOutOfTime)
+{
+	auto game = MakeGameInSubmission();
+	game.Submit(1, FirstPainting(game, 1));
+
+	game.Update(30.5f);
+	EXPECT_FALSE(game.View().submissions.at(0));
+
+	game.Update(.5f);
+	for (PlayerId id = 0; id < 4; ++id)
+	{
+		EXPECT_TRUE(game.View().submissions.at(id));
+		EXPECT_EQ(game.View().players.at(id).GetPaintings().size(), 9u);
+	}
+	EXPECT_FLOAT_EQ(game.View().timeLeft, 3.f);
 }

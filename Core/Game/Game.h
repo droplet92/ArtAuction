@@ -22,7 +22,9 @@ namespace lhs::game
 	// How long each phase lasts, in seconds. The defaults are the lengths of the current scenes.
 	struct Timings
 	{
-		float roundIntro = 6.f;	// three lines of the round explanation, 2 seconds each
+		float roundIntro = 6.f;			// three lines of the round explanation, 2 seconds each
+		float submission = 31.f;		// the gallery's 30 second countdown, which fires a second after reaching 0
+		float submissionReveal = 3.f;	// the submitted painting is shown until the next 3 second check
 	};
 
 	/**
@@ -39,6 +41,10 @@ namespace lhs::game
 		// Deal the galleries and begin the first round. A finished game starts over.
 		void Start();
 
+		// Put up a painting from the player's gallery for this round's auctions.
+		// Return false if the player has already submitted or does not own the painting.
+		bool Submit(model::PlayerId player, const model::Painting& painting);
+
 		// Let the time pass by dt seconds.
 		void Update(float dt);
 
@@ -51,6 +57,12 @@ namespace lhs::game
 		void Enter(Phase phase, float duration = 0.f);
 
 		void OnTimeOut();
+
+		void BeginSubmission();
+
+		bool HasAllSubmitted() const;
+
+		void SubmitForTheLate();
 
 	private:
 		static constexpr int PAINTINGS_PER_PLAYER = 10;

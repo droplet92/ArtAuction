@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -25,11 +26,12 @@ namespace lhs::game
 	struct GameView
 	{
 		Phase phase = Phase::Lobby;
-		float timeLeft = 0.f;						// seconds until the phase ends by itself
-		int round = 0;								// from 1 to the number of rounds
+		float timeLeft = 0.f;										// seconds until the phase ends by itself
+		int round = 0;												// from 1 to the number of rounds
 		model::RoundType roundType = model::RoundType::OpenBidding;
-		std::vector<model::Player> players;			// indexed by the player id
+		std::vector<model::Player> players;							// indexed by the player id
 		std::vector<std::string> painters;
-		std::map<std::string, uint32_t> reputation;	// painter-(points) table
+		std::map<std::string, uint32_t> reputation;					// painter-(points) table
+		std::vector<std::optional<model::Painting>> submissions;	// this round's paintings, indexed by the player id
 	};
 }
