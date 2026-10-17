@@ -36,6 +36,11 @@ namespace lhs::game
 		return true;
 	}
 
+	bool Auction::IsClosedEarly() const noexcept
+	{
+		return (type == RoundType::FixedPrice) && !bids.empty();
+	}
+
 	std::vector<std::pair<int, int>> Auction::GetBids() const
 	{
 		auto view = bids | std::views::reverse;

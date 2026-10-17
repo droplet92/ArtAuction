@@ -26,6 +26,9 @@ namespace lhs::game
 		// Record a bid. A bid that repeats the previous one exactly is ignored and returns false.
 		bool Place(const std::pair<int, int>& bid);
 
+		// A fixed-price auction ends at its first bid.
+		bool IsClosedEarly() const noexcept;
+
 		// Return the bids from the latest to the earliest.
 		std::vector<std::pair<int, int>> GetBids() const;
 

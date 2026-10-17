@@ -55,9 +55,7 @@ namespace lhs::manager
 
 	bool SingleGameManager::IsBidUpdated() const
 	{
-		auto [_, round] = GetCurrentRound();
-
-		return (round == RoundType::FixedPrice) ? (auction && !auction->GetBids().empty()) : false;
+		return auction && auction->IsClosedEarly();
 	}
 
 	bool SingleGameManager::IsRoundEnd() const
