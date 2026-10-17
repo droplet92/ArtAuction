@@ -134,6 +134,14 @@ target_include_directories(${APP_NAME}
 if(MSVC)
     # Read sources as UTF-8 instead of the system code page.
     target_compile_options(${APP_NAME} PRIVATE /utf-8)
+
+    # The prebuilt cocos2d-x third-party libraries ship without PDBs (LNK4099), and some were
+    # built against the static or release CRT (LNK4098). Link them all against this build's CRT.
+    target_link_options(${APP_NAME} PRIVATE
+        /IGNORE:4099
+        /NODEFAULTLIB:LIBCMT
+        $<$<CONFIG:Debug>:/NODEFAULTLIB:MSVCRT>
+        )
 endif()
 
 # mark app resources

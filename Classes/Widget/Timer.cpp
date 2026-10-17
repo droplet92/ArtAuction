@@ -56,7 +56,7 @@ namespace lhs::widget
     {
         auto progress = ProgressTo::create(remainTime, 100.f);
         timer->runAction(progress);
-        timer->schedule([=](float) { return scheduler(); }, 1.f, remainTime, 0.f, "updateTime");
+        timer->schedule([=](float) { return scheduler(); }, 1.f, static_cast<unsigned int>(remainTime), 0.f, "updateTime");
     }
 
     void Timer::Reset(float time)

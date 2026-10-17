@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <ranges>
 
+#include <cocos2d.h>
+
 #include <Manager/SingleGameManager.h>
 using namespace lhs::manager;
 
@@ -79,6 +81,7 @@ namespace lhs::model
 
 	void Player::SubtractGold(uint32_t amount) noexcept
 	{
+		CCASSERT(amount <= gold, "a player cannot pay more gold than they have.");
 		gold -= amount;
 	}
 

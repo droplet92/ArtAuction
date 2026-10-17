@@ -1,6 +1,7 @@
 #include "BidBoard.h"
 
 #include <format>
+#include <utility>
 
 #include <AudioEngine.h>
 USING_NS_CC;
@@ -97,7 +98,7 @@ namespace lhs::widget
                     {
                         alert("Check your offer.");
                     }
-                    else if (offer > bidder->GetGold())
+                    else if (std::cmp_greater(offer, bidder->GetGold()))
                     {
                         alert("Not enough gold.");
                     }

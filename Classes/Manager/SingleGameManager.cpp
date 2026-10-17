@@ -73,6 +73,7 @@ namespace lhs::manager
 
 	std::pair<int, RoundType> SingleGameManager::GetCurrentRound() const
 	{
+		CCASSERT(!rounds.empty(), "MoveToNextRound must be called before the first round.");
 		return { 5 - rounds.size(), rounds.back() };
 	}
 
