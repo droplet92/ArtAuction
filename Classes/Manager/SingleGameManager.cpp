@@ -47,8 +47,7 @@ namespace lhs::manager
 	{
 		auto [_, round] = GetCurrentRound();
 
-		return (round == u8"Fixed Price") ? !bids.empty() : false;
-		//return (round == u8"Á¤Âû") ? !bids.empty() : false;
+		return (round == RoundType::FixedPrice) ? !bids.empty() : false;
 	}
 
 	bool SingleGameManager::IsRoundEnd() const
@@ -61,7 +60,7 @@ namespace lhs::manager
 		return (selections.size() == nPlayers);
 	}
 
-	std::pair<int, std::u8string> SingleGameManager::GetCurrentRound() const
+	std::pair<int, RoundType> SingleGameManager::GetCurrentRound() const
 	{
 		return { 5 - rounds.size(), rounds.back() };
 	}
@@ -135,8 +134,7 @@ namespace lhs::manager
 	{
 		auto [_, round] = GetCurrentRound();
 
-		if (round == u8"Closed Bidding")
-			//if (round == u8"ºñ°ø°³ ÀÔÂû")
+		if (round == RoundType::ClosedBidding)
 			return GetClosedWinningBid();
 
 		auto winningBid = GetLastBid();
@@ -178,8 +176,7 @@ namespace lhs::manager
 		{
 			std::random_device rd;
 			std::mt19937 generator(rd());
-			rounds = { u8"Open Bidding", u8"Closed Bidding", u8"Fixed Price", u8"NFT Open Bidding" };
-			//rounds = { u8"°ø°³ ÀÔÂû", u8"ºñ°ø°³ ÀÔÂû", u8"Á¤Âû", u8"NFT °ø°³ ÀÔÂû" };
+			rounds = { RoundType::OpenBidding, RoundType::ClosedBidding, RoundType::FixedPrice, RoundType::NftOpenBidding };
 
 			std::ranges::shuffle(rounds, generator);
 		}

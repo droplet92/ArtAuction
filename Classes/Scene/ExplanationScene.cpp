@@ -13,32 +13,33 @@ using namespace ui;
 #include <Manager/SingleGameManager.h>
 using namespace lhs;
 using namespace lhs::manager;
+using namespace lhs::model;
 
 
-const std::unordered_map<std::u8string, std::vector<std::u8string>> scriptMap =
+const std::unordered_map<RoundType, std::vector<std::u8string>> scriptMap =
 {
-    { u8"Open Bidding",
+    { RoundType::OpenBidding,
         {
             u8"Each player publicly offers a price.",
             u8"When the time expires, the last player with the highest bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
-    { u8"Closed Bidding",
+    { RoundType::ClosedBidding,
         {
             u8"Each player privately offers a price.",
             u8"When the time expires, the first player with the highest bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
-    { u8"Fixed Price",
+    { RoundType::FixedPrice,
         {
             u8"Each player publicly offers a price.",
             u8"The first player to place a bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
-    { u8"NFT Open Bidding",
+    { RoundType::NftOpenBidding,
         {
             u8"Each player publicly offers a price.",
             u8"When the time expires, the player with the highest bid wins.",
@@ -82,12 +83,12 @@ static void ChangeScene()
     Director::getInstance()->replaceScene(transition);
 };
 
-std::vector<std::u8string> GetScript(const std::u8string& roundType)
+std::vector<std::u8string> GetScript(RoundType roundType)
 {
     const auto& lines = scriptMap.at(roundType);
     return
     {
-        u8"This round is a(n) " + roundType + u8" trade.",
+        u8"This round is a(n) " + std::u8string{ ToString(roundType) } + u8" trade.",
             u8"It goes on 30 seconds per artwork.",
             lines.at(0),
             lines.at(1),

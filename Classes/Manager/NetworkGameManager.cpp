@@ -31,7 +31,7 @@ namespace lhs::manager
 		return false;
 	}
 
-	std::pair<int, std::u8string>  NetworkGameManager::GetCurrentRound() const
+	std::pair<int, model::RoundType> NetworkGameManager::GetCurrentRound() const
 	{
 		return {};
 	}

@@ -148,7 +148,7 @@ bool Auction::init()
         addChild(characters[i]);
 
     //if ((roundType == u8"���� ����") || (roundType == u8"NFT ���� ����"))
-    if ((roundType == u8"Open Bidding") || (roundType == u8"NFT Open Bidding") || (roundType == u8"Fixed Price"))
+    if ((roundType == RoundType::OpenBidding) || (roundType == RoundType::NftOpenBidding) || (roundType == RoundType::FixedPrice))
     {
         SingleGameManager::Instance().AddNewBidEventListener([=](const std::pair<int, int>& newBid)
             {
@@ -179,7 +179,7 @@ bool Auction::init()
             selection = SingleGameManager::Instance().GetSelectionForAuction();
             startMessage = std::format("This is by\n{}", selection.painter);
             //*startMessage = (*selection)->painter + Utility::ConvertToAscii(u8"\n�� ��ǰ�Դϴ�.");
-            minBid = (roundType == u8"Fixed Price") ? 10 : 1;
+            minBid = (roundType == RoundType::FixedPrice) ? 10 : 1;
             bidMessage = std::format("Please bid\nat least {}", minBid);
             //*bidMessage = std::to_string(*minBid) + Utility::ConvertToAscii(u8" ��� �̻�\n�������ּ���.");
 
@@ -245,25 +245,25 @@ bool Auction::init()
                 if (!RandomHelper::random_int(0, 1)) return;
                 SingleGameManager::Instance().Bid({ playerId, minBid });
             };
-            if (roundType == u8"Open Bidding")
+            if (roundType == RoundType::OpenBidding)
             {
                 schedule([=](float t) { joinOpenBid(1); }, 3.f, 9, 0, "open1");
                 schedule([=](float t) { joinOpenBid(2); }, 5.f, 3, 1, "open2");
                 schedule([=](float t) { joinOpenBid(3); }, 7.f, 2, 0, "open3");
             }
-            else if (roundType == u8"Closed Bidding")
+            else if (roundType == RoundType::ClosedBidding)
             {
                 scheduleOnce([=](float t) { joinClosedBid(1); }, 3, "closed1");
                 scheduleOnce([=](float t) { joinClosedBid(2); }, 10, "closed2");
                 scheduleOnce([=](float t) { joinClosedBid(3); }, 14, "closed3");
             }
-            else if (roundType == u8"Fixed Price")
+            else if (roundType == RoundType::FixedPrice)
             {
                 schedule([=](float t) { joinFixedPrice(1); }, 5, 3, 1, "fixed1");
                 scheduleOnce([=](float t) { joinFixedPrice(2); }, 10, "fixed2");
                 scheduleOnce([=](float t) { joinFixedPrice(3); }, 15, "fixed3");
             }
-            else if (roundType == u8"NFT Open Bidding")
+            else if (roundType == RoundType::NftOpenBidding)
             {
                 schedule([=](float t) { joinOpenBid(1); }, 3.f, 9, 0, "nft1");
                 schedule([=](float t) { joinOpenBid(2); }, 5.f, 3, 1, "nft2");
@@ -280,7 +280,7 @@ bool Auction::init()
                 round = Sequence::create(round, gamePlayActions.at(i), nullptr);
 
             // ���κҸ�
-            if (roundType == u8"Fixed Price")
+            if (roundType == RoundType::FixedPrice)
             {
                 if (SingleGameManager::Instance().IsRoundEnd())
                 {
@@ -314,7 +314,7 @@ bool Auction::init()
             bids = SingleGameManager::Instance().GetBids();
             timer->Reset(playtime);
         });
-    if (roundType == u8"Closed Bidding")
+    if (roundType == RoundType::ClosedBidding)
     {
         for (size_t i = 0; i < characters.size(); i++)
         {
@@ -339,11 +339,11 @@ bool Auction::init()
             //ss << Utility::ConvertToUtf8(winner->GetName()) << u8" ����" << std::endl;
             //ss << Utility::ConvertToUtf8(std::to_string(gold)) << u8"��忡" << std::endl;
             //ss << u8"�����ƽ��ϴ�!";
-            cocos2d::log("%s winner: [id %u] bid %u", Utility::ConvertToAscii(roundType).c_str(), winner->GetId(), gold);
+            cocos2d::log("%s winner: [id %u] bid %u", Utility::ConvertToAscii(ToString(roundType)).c_str(), winner->GetId(), gold);
             winnerMessage = std::format("{} has\nwon your bid\nfor {} gold!", winner->GetName(), gold);
             winner->SubtractGold(gold);
 
-            if (roundType == u8"NFT Open Bidding")
+            if (roundType == RoundType::NftOpenBidding)
                 winner->AddGold(SingleGameManager::Instance().GetRealTimeNftPrice());
             else
                 winner->AddPainting(selection);
@@ -358,7 +358,7 @@ bool Auction::init()
     // End Sequence
     auto uiCleanupAction = CallFunc::create([=]()
         {
-            if (roundType != u8"Fixed Price")
+            if (roundType != RoundType::FixedPrice)
             {
                 stopAllActions();
                 auto round = Sequence::create(dummyAction, nullptr);
