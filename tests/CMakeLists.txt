@@ -7,6 +7,7 @@ add_executable(ArtAuctionCoreTests
     PlayerTest.cpp
     ReputationTest.cpp
     TestGames.h
+    WholeGameTest.cpp
     )
 target_link_libraries(ArtAuctionCoreTests PRIVATE ArtAuctionCore GTest::gtest_main)
 
