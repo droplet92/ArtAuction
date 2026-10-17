@@ -1,6 +1,8 @@
 #pragma once
 #include <functional>
+#include <optional>
 
+#include <Game/Auction.h>
 #include <Game/Random.h>
 #include <Manager/GameManager.h>
 
@@ -65,8 +67,6 @@ namespace lhs::manager
 	private:
 		SingleGameManager();
 
-		std::pair<int, int> GetClosedWinningBid();
-
 	private:
 		static uint32_t const MAX_USER_COUNT;
 
@@ -84,7 +84,8 @@ namespace lhs::manager
 
 		std::map<std::string, uint32_t> reputation;
 
-		std::vector<std::pair<int, int>> bids;
+		// the auction of the painting on the easel
+		std::optional<game::Auction> auction;
 
 		mutable game::Random random;
 
