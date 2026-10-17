@@ -1,3 +1,6 @@
+rem Resolve every path below against the repository root, wherever this is run from.
+cd /d "%~dp0"
+
 rem Fetch only the engine. Its own nested submodules are not needed and use the retired git:// protocol.
 git submodule update --init cocos2d || exit /b 1
 
