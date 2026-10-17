@@ -183,3 +183,16 @@ endif()
 
 # set the startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${APP_NAME})
+
+# Unit tests for the game core. They run on the build machine, so skip them when cross-compiling for mobile.
+option(ARTAUCTION_BUILD_TESTS "Build the ArtAuctionCore unit tests" ON)
+if(ARTAUCTION_BUILD_TESTS AND NOT ANDROID AND NOT IOS)
+    enable_testing()
+
+    # Link GoogleTest against the DLL CRT like the rest of the build.
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+    add_subdirectory(lib/googletest EXCLUDE_FROM_ALL)
+
+    add_subdirectory(tests)
+endif()
