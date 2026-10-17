@@ -2,6 +2,7 @@
 #include <map>
 
 #include <Model/Painting.h>
+#include <Model/RoundType.h>
 
 
 namespace lhs::manager
@@ -24,7 +25,7 @@ namespace lhs::manager
 
 		virtual bool HasAllUserSubmitted() const = 0;
 
-		virtual std::pair<int, std::u8string> GetCurrentRound() const = 0;
+		virtual std::pair<int, model::RoundType> GetCurrentRound() const = 0;
 
 		virtual std::vector<std::string> GetPainters() const = 0;
 

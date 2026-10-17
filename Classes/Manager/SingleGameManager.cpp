@@ -2,9 +2,12 @@
 using namespace lhs::model;
 
 #include <algorithm>
+#include <array>
+#include <functional>
 #include <optional>
 #include <random>
 #include <ranges>
+#include <set>
 
 #include <cocos2d.h>
 #include <ccRandom.h>
@@ -36,6 +39,14 @@ namespace lhs::manager
 		paintings = DbManager::Instance().GetPaintings();
 		painters = DbManager::Instance().GetPainters();
 
+		// Reset the state left over from a previous game.
+		rounds.clear();
+		selections.clear();
+		submission.reset();
+		bids.clear();
+		reputation.clear();
+		winningBids.clear();
+
 		for (const auto& painter : painters)
 		{
 			reputation.emplace(painter, 0);
@@ -47,8 +58,7 @@ namespace lhs::manager
 	{
 		auto [_, round] = GetCurrentRound();
 
-		return (round == u8"Fixed Price") ? !bids.empty() : false;
-		//return (round == u8"Á¤Âû") ? !bids.empty() : false;
+		return (round == RoundType::FixedPrice) ? !bids.empty() : false;
 	}
 
 	bool SingleGameManager::IsRoundEnd() const
@@ -61,7 +71,7 @@ namespace lhs::manager
 		return (selections.size() == nPlayers);
 	}
 
-	std::pair<int, std::u8string> SingleGameManager::GetCurrentRound() const
+	std::pair<int, RoundType> SingleGameManager::GetCurrentRound() const
 	{
 		return { 5 - rounds.size(), rounds.back() };
 	}
@@ -95,10 +105,8 @@ namespace lhs::manager
 
 	const Painting& SingleGameManager::GetSubmission() const
 	{
-		if (submission)
-			return submission.value();
-
-		// TODO: Handle exception
+		CCASSERT(submission, "a painting must be submitted.");
+		return submission.value();
 	}
 
 	std::map<std::string, uint32_t> SingleGameManager::GetReputation() const
@@ -135,8 +143,7 @@ namespace lhs::manager
 	{
 		auto [_, round] = GetCurrentRound();
 
-		if (round == u8"Closed Bidding")
-			//if (round == u8"ºñ°ø°³ ÀÔÂû")
+		if (round == RoundType::ClosedBidding)
 			return GetClosedWinningBid();
 
 		auto winningBid = GetLastBid();
@@ -178,8 +185,7 @@ namespace lhs::manager
 		{
 			std::random_device rd;
 			std::mt19937 generator(rd());
-			rounds = { u8"Open Bidding", u8"Closed Bidding", u8"Fixed Price", u8"NFT Open Bidding" };
-			//rounds = { u8"°ø°³ ÀÔÂû", u8"ºñ°ø°³ ÀÔÂû", u8"Á¤Âû", u8"NFT °ø°³ ÀÔÂû" };
+			rounds = { RoundType::OpenBidding, RoundType::ClosedBidding, RoundType::FixedPrice, RoundType::NftOpenBidding };
 
 			std::ranges::shuffle(rounds, generator);
 		}
@@ -206,26 +212,29 @@ namespace lhs::manager
 
 	void SingleGameManager::UpdateReputation()
 	{
-		// Sort the winning bids in ascending order.
+		// Sort the winning bids in descending order.
 		auto goldView = winningBids
 			| std::views::transform([](auto& bid) { return bid.second; });
 
-		std::set<int> s{ goldView.begin(), goldView.end() };
-		
+		std::set<int, std::greater<>> s{ goldView.begin(), goldView.end() };
+
+		// Painters with no sales gain no reputation.
+		s.erase(0);
+
 		// Update the painters' reputation.
-		// Increase by 1, 3, 7, and 10 in ascending order of sales amount.
-		std::vector<int> v = { 10, 7, 3, 0 };
-		
-		for (const auto& target : s)
+		// Increase by 10, 7, and 3 in descending order of sales amount; lower ranks gain nothing.
+		constexpr std::array bonuses = { 10, 7, 3 };
+
+		for (size_t rank = 0; const auto& target : s | std::views::take(bonuses.size()))
 		{
 			auto view = winningBids
 				| std::views::filter([&](const auto& src) { return (src.second == target); })
 				| std::views::transform([](const auto& src) { return src.first; });
 
 			for (const auto& painter : view)
-				reputation.at(painter) +=  v.back();
+				reputation.at(painter) += bonuses.at(rank);
 
-			v.pop_back();
+			++rank;
 		}
 
 		// Reset winningBids

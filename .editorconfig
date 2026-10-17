@@ -1,0 +1,8 @@
+root = true
+
+# Game sources are UTF-8 (compiled with /utf-8 on MSVC).
+[Classes/**.{cpp,h}]
+charset = utf-8
+
+[proj.win32/*.{cpp,h,rc}]
+charset = utf-8

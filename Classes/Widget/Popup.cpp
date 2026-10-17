@@ -38,7 +38,7 @@ namespace lhs::widget
         contents->setLeftPadding(20.f);
         contents->setTopPadding(20.f);
 
-        // ¼öÁ¤ÇÊ¿ä
+        // ìˆ˜ì •í•„ìš”
         auto onButtonPressed = [=](Ref* sender, auto type)
         {
             contents->removeChildByTag(0xDEADBEEF);

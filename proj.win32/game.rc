@@ -7,17 +7,17 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "winres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// «—±πæÓ(¥Î«—πŒ±π) resources
+// ÌïúÍµ≠Ïñ¥(ÎåÄÌïúÎØºÍµ≠) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
-#pragma code_page(949)
+#pragma code_page(65001)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""winres.h""\r\n"
     "\0"
 END
 
@@ -39,16 +39,16 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // «—±πæÓ(¥Î«—πŒ±π) resources
+#endif    // ÌïúÍµ≠Ïñ¥(ÎåÄÌïúÎØºÍµ≠) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// øµæÓ(πÃ±π) resources
+// ÏòÅÏñ¥(ÎØ∏Íµ≠) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
+#pragma code_page(65001)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ BEGIN
     END
 END
 
-#endif    // øµæÓ(πÃ±π) resources
+#endif    // ÏòÅÏñ¥(ÎØ∏Íµ≠) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

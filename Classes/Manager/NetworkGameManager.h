@@ -26,7 +26,7 @@ namespace lhs::manager
 
 		bool HasAllUserSubmitted() const final;
 
-		std::pair<int, std::u8string> GetCurrentRound() const final;
+		std::pair<int, model::RoundType> GetCurrentRound() const final;
 
 		std::vector<std::string> GetPainters() const;
 

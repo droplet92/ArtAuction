@@ -10,12 +10,6 @@ using namespace lhs::model;
 
 namespace lhs::manager
 {
-#ifdef _DEBUG
-	constexpr auto dbPath = R"(../gamedata.db)";
-#else
-	constexpr auto dbPath = R"(./gamedata.db)";
-#endif
-
 	// Callback for read painting data from the db
 	static int GetPaintingsCallback(void* data, int, char** value, char** column)
 	{
@@ -28,11 +22,9 @@ namespace lhs::manager
 		painting.title = value[0];
 		painting.painter = value[1];
 
-#ifdef _DEBUG
-		painting.path = std::filesystem::canonical(std::format("../Resources/paintings/{}/{}.jpg", painting.painter, painting.title));
-#else
-		painting.path = std::filesystem::canonical(std::format("./Resources/paintings/{}/{}.jpg", painting.painter, painting.title));
-#endif
+		painting.path = cocos2d::FileUtils::getInstance()->fullPathForFilename(std::format("paintings/{}/{}.jpg", painting.painter, painting.title));
+		CCASSERT(!painting.path.empty(), "painting image must exist.");
+
 		result->push_back(painting);
 		return 0;
 	}
@@ -49,17 +41,23 @@ namespace lhs::manager
 
 	DbManager::DbManager()
 		: db(nullptr)
-		, errorMessage{}
+		, errorMessage(nullptr)
 	{
-		// zero-fill the errorMessage
-		std::memset(errorMessage, 0, sizeof errorMessage);
+		// Resolve against the resource root so it doesn't depend on the working directory.
+		const auto dbPath = cocos2d::FileUtils::getInstance()->fullPathForFilename("gamedata.db");
 
-		if (sqlite3_open(dbPath, &db) != SQLITE_OK)
+		if (dbPath.empty())
+			Utility::Abort("gamedata.db not found.");
+
+		// Open read-only so a wrong path fails instead of creating an empty database.
+		if (sqlite3_open_v2(dbPath.c_str(), &db, SQLITE_OPEN_READONLY, nullptr) != SQLITE_OK)
 			Utility::Abort("sqlite3_open failed.");
 	}
 
 	DbManager::~DbManager()
 	{
+		sqlite3_free(errorMessage);
+
 		if (sqlite3_close(db) != SQLITE_OK)
 			Utility::Abort("sqlite3_close failed.");
 	}
@@ -72,7 +70,7 @@ namespace lhs::manager
 
 	std::string_view DbManager::GetErrorMessage() const noexcept
 	{
-		return (strlen(errorMessage) > 0)
+		return errorMessage
 			? errorMessage			// If sqlite execution failed, then return errorMessage
 			: sqlite3_errmsg(db);	// else, return sqlite database error message
 	}
@@ -105,7 +103,10 @@ namespace lhs::manager
 
 	bool DbManager::Execute(std::string_view sql, int(*callback)(void*, int, char**, char**), void* data)
 	{
-		std::memset(errorMessage, 0, sizeof errorMessage);	// zero-fill the errorMessage
-		return (sqlite3_exec(db, sql.data(), callback, data, reinterpret_cast<char**>(&errorMessage)) == SQLITE_OK);
+		// Release the previous message; sqlite3_exec sets it again only on failure.
+		sqlite3_free(errorMessage);
+		errorMessage = nullptr;
+
+		return (sqlite3_exec(db, sql.data(), callback, data, &errorMessage) == SQLITE_OK);
 	}
 }

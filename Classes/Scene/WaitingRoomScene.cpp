@@ -57,6 +57,10 @@ bool WaitingRoom::init()
     const auto origin = Director::getInstance()->getVisibleOrigin();
     const auto visibleSize = Director::getInstance()->getVisibleSize();
 
+    // Start a new game from a clean state.
+    SingleGameManager::Instance().Init();
+    PlayerManager::Instance().ClearPlayers();
+
     SingleGameManager::Instance().SetNumberOfPlayers(4);
     PlayerManager::Instance().AddPlayer("You");
     PlayerManager::Instance().AddPlayer("Andrew");

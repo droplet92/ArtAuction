@@ -25,4 +25,5 @@ private:
     std::string winnerMessage;
     std::string startMessage;
     std::string bidMessage;
+    std::string openingMessage;
 };

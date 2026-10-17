@@ -131,6 +131,11 @@ target_include_directories(${APP_NAME}
         PRIVATE lib/sqlite3/sqlite-amalgamation-3350500/
 )
 
+if(MSVC)
+    # Read sources as UTF-8 instead of the system code page.
+    target_compile_options(${APP_NAME} PRIVATE /utf-8)
+endif()
+
 # mark app resources
 setup_cocos_app_config(${APP_NAME})
 if(APPLE)
@@ -147,6 +152,11 @@ if(APPLE)
     #set_xcode_property(${APP_NAME} DEVELOPMENT_TEAM "GRLXXXX2K9")
 elseif(WINDOWS)
     cocos_copy_target_dll(${APP_NAME})
+    add_custom_command(TARGET ${APP_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/lib/sqlite3/sqlite-dll-win32-x86-3350500/sqlite3.dll"
+            "$<TARGET_FILE_DIR:${APP_NAME}>/sqlite3.dll"
+        )
 endif()
 
 if(LINUX OR WINDOWS)

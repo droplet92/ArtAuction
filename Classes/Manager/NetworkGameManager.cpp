@@ -31,7 +31,7 @@ namespace lhs::manager
 		return false;
 	}
 
-	std::pair<int, std::u8string>  NetworkGameManager::GetCurrentRound() const
+	std::pair<int, model::RoundType> NetworkGameManager::GetCurrentRound() const
 	{
 		return {};
 	}
@@ -48,7 +48,8 @@ namespace lhs::manager
 
 	const model::Painting& NetworkGameManager::GetSubmission() const
 	{
-		return {};
+		static const model::Painting empty{};
+		return empty;
 	}
 
 	std::map<std::string, uint32_t> NetworkGameManager::GetReputation() const

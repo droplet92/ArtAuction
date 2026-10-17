@@ -36,6 +36,6 @@ namespace lhs::manager
 
 	private:
 		sqlite3* db;
-		char errorMessage[BUFSIZ];
+		char* errorMessage;	// allocated by sqlite3_exec, released with sqlite3_free
 	};
 }

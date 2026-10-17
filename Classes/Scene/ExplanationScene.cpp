@@ -13,64 +13,65 @@ using namespace ui;
 #include <Manager/SingleGameManager.h>
 using namespace lhs;
 using namespace lhs::manager;
+using namespace lhs::model;
 
 
-const std::unordered_map<std::u8string, std::vector<std::u8string>> scriptMap =
+const std::unordered_map<RoundType, std::vector<std::u8string>> scriptMap =
 {
-    { u8"Open Bidding",
+    { RoundType::OpenBidding,
         {
             u8"Each player publicly offers a price.",
             u8"When the time expires, the last player with the highest bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
-    { u8"Closed Bidding",
+    { RoundType::ClosedBidding,
         {
             u8"Each player privately offers a price.",
             u8"When the time expires, the first player with the highest bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
-    { u8"Fixed Price",
+    { RoundType::FixedPrice,
         {
             u8"Each player publicly offers a price.",
             u8"The first player to place a bid wins.",
             u8"The purchased artwork is added to their gallery.",
         }
     },
-    { u8"NFT Open Bidding",
+    { RoundType::NftOpenBidding,
         {
             u8"Each player publicly offers a price.",
             u8"When the time expires, the player with the highest bid wins.",
             u8"The purchased artwork is immediately sold at market price (randomized).",
         }
     },
-    //{ u8"°ø°³ ÀÔÂû",
+    //{ u8"ê³µê°œ ì…ì°°",
     //    {
-    //        u8"°¢ ÇÃ·¹ÀÌ¾î´Â °ø°³·Î °¡°İÀ» Á¦½ÃÇÕ´Ï´Ù.",
-    //        u8"½Ã°£ÀÌ ¸¸·áµÇ¸é °¡Àå ¸¶Áö¸·¿¡ ÃÖ°í¾×À» ÀÛ¼ºÇß´ø ÇÃ·¹ÀÌ¾î°¡ ³«ÂûÇÕ´Ï´Ù.",
-    //        u8"±¸¸ÅÇÑ ÀÛÇ°Àº ÀÚ½ÅÀÇ °¶·¯¸®¿¡ Ãß°¡µË´Ï´Ù.",
+    //        u8"ê° í”Œë ˆì´ì–´ëŠ” ê³µê°œë¡œ ê°€ê²©ì„ ì œì‹œí•©ë‹ˆë‹¤.",
+    //        u8"ì‹œê°„ì´ ë§Œë£Œë˜ë©´ ê°€ì¥ ë§ˆì§€ë§‰ì— ìµœê³ ì•¡ì„ ì‘ì„±í–ˆë˜ í”Œë ˆì´ì–´ê°€ ë‚™ì°°í•©ë‹ˆë‹¤.",
+    //        u8"êµ¬ë§¤í•œ ì‘í’ˆì€ ìì‹ ì˜ ê°¤ëŸ¬ë¦¬ì— ì¶”ê°€ë©ë‹ˆë‹¤.",
     //    }
     //},
-    //{ u8"ºñ°ø°³ ÀÔÂû",
+    //{ u8"ë¹„ê³µê°œ ì…ì°°",
     //    {
-    //        u8"°¢ ÇÃ·¹ÀÌ¾î´Â ºñ°ø°³·Î °¡°İÀ» Á¦½ÃÇÕ´Ï´Ù.",
-    //        u8"½Ã°£ÀÌ ¸¸·áµÇ¸é °¡Àå ¸ÕÀú ÃÖ°í¾×À» ÀÛ¼ºÇß´ø ÇÃ·¹ÀÌ¾î°¡ ³«ÂûÇÕ´Ï´Ù.",
-    //        u8"±¸¸ÅÇÑ ÀÛÇ°Àº ÀÚ½ÅÀÇ °¶·¯¸®¿¡ Ãß°¡µË´Ï´Ù.",
+    //        u8"ê° í”Œë ˆì´ì–´ëŠ” ë¹„ê³µê°œë¡œ ê°€ê²©ì„ ì œì‹œí•©ë‹ˆë‹¤.",
+    //        u8"ì‹œê°„ì´ ë§Œë£Œë˜ë©´ ê°€ì¥ ë¨¼ì € ìµœê³ ì•¡ì„ ì‘ì„±í–ˆë˜ í”Œë ˆì´ì–´ê°€ ë‚™ì°°í•©ë‹ˆë‹¤.",
+    //        u8"êµ¬ë§¤í•œ ì‘í’ˆì€ ìì‹ ì˜ ê°¤ëŸ¬ë¦¬ì— ì¶”ê°€ë©ë‹ˆë‹¤.",
     //    }
     //},
-    //{ u8"Á¤Âû",
+    //{ u8"ì •ì°°",
     //    {
-    //        u8"°¢ ÇÃ·¹ÀÌ¾î´Â °ø°³·Î °¡°İÀ» Á¦½ÃÇÕ´Ï´Ù.",
-    //        u8"°¡Àå ¸ÕÀú Á¦½Ã ±İ¾×À» ÀÛ¼ºÇß´ø ÇÃ·¹ÀÌ¾î°¡ ³«ÂûÇÕ´Ï´Ù.",
-    //        u8"±¸¸ÅÇÑ ÀÛÇ°Àº ÀÚ½ÅÀÇ °¶·¯¸®¿¡ Ãß°¡µË´Ï´Ù.",
+    //        u8"ê° í”Œë ˆì´ì–´ëŠ” ê³µê°œë¡œ ê°€ê²©ì„ ì œì‹œí•©ë‹ˆë‹¤.",
+    //        u8"ê°€ì¥ ë¨¼ì € ì œì‹œ ê¸ˆì•¡ì„ ì‘ì„±í–ˆë˜ í”Œë ˆì´ì–´ê°€ ë‚™ì°°í•©ë‹ˆë‹¤.",
+    //        u8"êµ¬ë§¤í•œ ì‘í’ˆì€ ìì‹ ì˜ ê°¤ëŸ¬ë¦¬ì— ì¶”ê°€ë©ë‹ˆë‹¤.",
     //    }
     //},
-    //{ u8"NFT °ø°³ ÀÔÂû",
+    //{ u8"NFT ê³µê°œ ì…ì°°",
     //    {
-    //        u8"°¢ ÇÃ·¹ÀÌ¾î´Â °ø°³·Î °¡°İÀ» Á¦½ÃÇÕ´Ï´Ù.",
-    //        u8"½Ã°£ÀÌ ¸¸·áµÇ¸é °¡Àå ¸¶Áö¸·¿¡ ÃÖ°í¾×À» ÀÛ¼ºÇß´ø ÇÃ·¹ÀÌ¾î°¡ ³«ÂûÇÕ´Ï´Ù.",
-    //        u8"±¸¸ÅÇÑ ÀÛÇ°Àº Áï½Ã ½Ã¼¼°¡(·£´ı)¿¡ ÆÇ¸ÅµË´Ï´Ù.",
+    //        u8"ê° í”Œë ˆì´ì–´ëŠ” ê³µê°œë¡œ ê°€ê²©ì„ ì œì‹œí•©ë‹ˆë‹¤.",
+    //        u8"ì‹œê°„ì´ ë§Œë£Œë˜ë©´ ê°€ì¥ ë§ˆì§€ë§‰ì— ìµœê³ ì•¡ì„ ì‘ì„±í–ˆë˜ í”Œë ˆì´ì–´ê°€ ë‚™ì°°í•©ë‹ˆë‹¤.",
+    //        u8"êµ¬ë§¤í•œ ì‘í’ˆì€ ì¦‰ì‹œ ì‹œì„¸ê°€(ëœë¤)ì— íŒë§¤ë©ë‹ˆë‹¤.",
     //    }
     //},
 };
@@ -82,23 +83,23 @@ static void ChangeScene()
     Director::getInstance()->replaceScene(transition);
 };
 
-std::vector<std::u8string> GetScript(const std::u8string& roundType)
+std::vector<std::u8string> GetScript(RoundType roundType)
 {
     const auto& lines = scriptMap.at(roundType);
     return
     {
-        u8"This round is a(n) " + roundType + u8" trade.",
+        u8"This round is a(n) " + std::u8string{ ToString(roundType) } + u8" trade.",
             u8"It goes on 30 seconds per artwork.",
             lines.at(0),
             lines.at(1),
             lines.at(2),
             u8"The artist's reputation increases in order of the highest bidder."
-            //u8"ÀÌ¹ø ¶ó¿îµå´Â " + roundType + u8" °Å·¡ÀÔ´Ï´Ù.",
-            //u8"ÀÛÇ° ÇÏ³ª´ç 30ÃÊ°£ ÁøÇàµË´Ï´Ù.",
+            //u8"ì´ë²ˆ ë¼ìš´ë“œëŠ” " + roundType + u8" ê±°ë˜ì…ë‹ˆë‹¤.",
+            //u8"ì‘í’ˆ í•˜ë‚˜ë‹¹ 30ì´ˆê°„ ì§„í–‰ë©ë‹ˆë‹¤.",
             //lines.at(0),
             //lines.at(1),
             //lines.at(2),
-            //u8"°¡Àå ³ôÀº ±İ¾×ÀÌ °Å·¡µÈ ÀÛ°¡ ¼øÀ¸·Î ÀÛ°¡ÀÇ ÆòÆÇÀÌ »ó½ÂÇÕ´Ï´Ù."
+            //u8"ê°€ì¥ ë†’ì€ ê¸ˆì•¡ì´ ê±°ë˜ëœ ì‘ê°€ ìˆœìœ¼ë¡œ ì‘ê°€ì˜ í‰íŒì´ ìƒìŠ¹í•©ë‹ˆë‹¤."
     };
 }
 

@@ -77,6 +77,11 @@ namespace lhs::model
 		gold += amount;
 	}
 
+	void Player::SubtractGold(uint32_t amount) noexcept
+	{
+		gold -= amount;
+	}
+
 	void Player::AddPainting(const Painting& painting)
 	{
 		paintings.push_back(painting);
