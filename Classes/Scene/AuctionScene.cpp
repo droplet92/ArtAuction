@@ -147,7 +147,6 @@ bool Auction::init()
     for (size_t i = 0; i < characters.size(); i++)
         addChild(characters[i]);
 
-    //if ((roundType == u8"���� ����") || (roundType == u8"NFT ���� ����"))
     if ((roundType == RoundType::OpenBidding) || (roundType == RoundType::NftOpenBidding) || (roundType == RoundType::FixedPrice))
     {
         SingleGameManager::Instance().AddNewBidEventListener([=](const std::pair<int, int>& newBid)
@@ -172,16 +171,13 @@ bool Auction::init()
         &startMessage,
         &bidMessage,
         &openingMessage,
-        //new std::string{ Utility::ConvertToAscii(u8"�����մϴ�!") },
     };
     auto getDataAction = CallFunc::create([=]()
         {
             selection = SingleGameManager::Instance().GetSelectionForAuction();
             startMessage = std::format("This is by\n{}", selection.painter);
-            //*startMessage = (*selection)->painter + Utility::ConvertToAscii(u8"\n�� ��ǰ�Դϴ�.");
             minBid = (roundType == RoundType::FixedPrice) ? 10 : 1;
             bidMessage = std::format("Please bid\nat least {}", minBid);
-            //*bidMessage = std::to_string(*minBid) + Utility::ConvertToAscii(u8" ��� �̻�\n�������ּ���.");
 
             const auto data = player->GetInformations();
             galleryBoard->SetInformation(data);
@@ -279,7 +275,6 @@ bool Auction::init()
             for (size_t i = 6; i < gamePlayActions.size(); i++)
                 round = Sequence::create(round, gamePlayActions.at(i), nullptr);
 
-            // ���κҸ�
             if (roundType == RoundType::FixedPrice)
             {
                 if (SingleGameManager::Instance().IsRoundEnd())
@@ -336,9 +331,6 @@ bool Auction::init()
 
             // Update Result
             //
-            //ss << Utility::ConvertToUtf8(winner->GetName()) << u8" ����" << std::endl;
-            //ss << Utility::ConvertToUtf8(std::to_string(gold)) << u8"��忡" << std::endl;
-            //ss << u8"�����ƽ��ϴ�!";
             cocos2d::log("%s winner: [id %u] bid %u", Utility::ConvertToAscii(ToString(roundType)).c_str(), winner->GetId(), gold);
             winnerMessage = std::format("{} has\nwon your bid\nfor {} gold!", winner->GetName(), gold);
             winner->SubtractGold(gold);
