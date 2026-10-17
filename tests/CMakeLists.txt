@@ -3,6 +3,7 @@ add_executable(ArtAuctionCoreTests
     AiPlayerTest.cpp
     AuctionTest.cpp
     GameTest.cpp
+    LocalSessionTest.cpp
     PlayerTest.cpp
     ReputationTest.cpp
     TestGames.h
