@@ -236,7 +236,7 @@ namespace lhs::manager
 
 	uint32_t SingleGameManager::GetRealTimeNftPrice()
 	{
-		uint32_t price = game::RandomInt(random, 0, 30);
+		uint32_t price = game::RollNftPrice(random);
 
 		cocos2d::log("sold at %d", price);
 		return price;

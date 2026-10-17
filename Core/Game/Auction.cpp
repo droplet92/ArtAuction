@@ -86,4 +86,9 @@ namespace lhs::game
 		}
 		return winningBid;
 	}
+
+	uint32_t RollNftPrice(Random& random)
+	{
+		return static_cast<uint32_t>(RandomInt(random, 0, 30));
+	}
 }

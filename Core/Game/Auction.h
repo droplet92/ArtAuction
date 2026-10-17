@@ -49,4 +49,7 @@ namespace lhs::game
 
 		std::vector<std::pair<int, int>> bids;
 	};
+
+	// Return the price an NFT sells for right after its auction.
+	uint32_t RollNftPrice(Random& random);
 }
