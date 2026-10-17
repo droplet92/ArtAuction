@@ -1,3 +1,6 @@
+rem Fetch only the engine. Its own nested submodules are not needed and use the retired git:// protocol.
+git submodule update --init cocos2d || exit /b 1
+
 rem cocos2d-x keeps its third-party libraries outside its repository. Its download-deps.py
 rem needs distutils, which Python 3.12 removed, so fetch the version named in
 rem cocos2d/external/config.json directly.
