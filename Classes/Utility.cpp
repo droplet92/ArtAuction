@@ -13,11 +13,11 @@ namespace lhs
 
     std::string Utility::ConvertToAscii(std::u8string_view u8str) noexcept
 	{
-        return { reinterpret_cast<const char*>(u8str.data()) };
+        return { reinterpret_cast<const char*>(u8str.data()), u8str.size() };
 	}
 
     std::u8string Utility::ConvertToUtf8(std::string_view str) noexcept
     {
-        return { reinterpret_cast<const char8_t*>(str.data()) };
+        return { reinterpret_cast<const char8_t*>(str.data()), str.size() };
     }
 }
