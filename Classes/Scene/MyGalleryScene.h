@@ -5,12 +5,12 @@
 class MyGallery : public cocos2d::Scene
 {
 public:
-    ~MyGallery() final = default;
+	~MyGallery() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(MyGallery);
+	// implement the "static create()" method manually
+	CREATE_FUNC(MyGallery);
 
-    bool init() final;
+	bool init() final;
 };

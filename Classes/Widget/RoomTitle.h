@@ -4,20 +4,20 @@
 
 namespace lhs::widget
 {
-    class RoomTitle : public cocos2d::Sprite
-    {
-    public:
-        RoomTitle();
+	class RoomTitle : public cocos2d::Sprite
+	{
+	public:
+		RoomTitle();
 
-        virtual ~RoomTitle() = default;
+		virtual ~RoomTitle() = default;
 
-        CREATE_FUNC(RoomTitle);
-        
-        bool initWithSpriteFrameName(const std::string& filename) final;
+		CREATE_FUNC(RoomTitle);
+		
+		bool initWithSpriteFrameName(const std::string& filename) final;
 
-        void SetString(const std::string& title) noexcept;
+		void SetString(const std::string& title) noexcept;
 
-    private:
-        cocos2d::Label* titleLabel;
-    };
+	private:
+		cocos2d::Label* titleLabel;
+	};
 }

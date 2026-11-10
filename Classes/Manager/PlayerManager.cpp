@@ -6,11 +6,11 @@ using namespace lhs::model;
 
 namespace lhs::manager
 {
-    PlayerManager& PlayerManager::Instance() noexcept
-    {
+	PlayerManager& PlayerManager::Instance() noexcept
+	{
 		static PlayerManager manager{};
 		return manager;
-    }
+	}
 
 	Player* PlayerManager::GetPlayer(uint32_t id)
 	{

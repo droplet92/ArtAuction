@@ -10,32 +10,32 @@
 
 namespace lhs::widget
 {
-    class BidBoard : public cocos2d::ui::Layout
-    {
-    public:
-        BidBoard();
+	class BidBoard : public cocos2d::ui::Layout
+	{
+	public:
+		BidBoard();
 
-        virtual ~BidBoard() = default;
+		virtual ~BidBoard() = default;
 
-        CREATE_FUNC(BidBoard);
-        
-        bool init() final;
+		CREATE_FUNC(BidBoard);
+		
+		bool init() final;
 
-        void setEnabled(bool enabled) final;
+		void setEnabled(bool enabled) final;
 
-        void RegisterMinimumBid(int& minBid) noexcept;
+		void RegisterMinimumBid(int& minBid) noexcept;
 
-        void RegisterBidder(model::Player* bidder) noexcept;
+		void RegisterBidder(model::Player* bidder) noexcept;
 
-        void RegisterPopup(Popup* popup) noexcept;
+		void RegisterPopup(Popup* popup) noexcept;
 
-        void UpdateGold();
+		void UpdateGold();
 
-    private:
-        cocos2d::ui::TextField* bidField;
-        cocos2d::ui::Button* bidButton;
-        int* minBid;            // minimum bid
-        Popup* popup;           // alert popup
-        model::Player* bidder;  // player
-    };
+	private:
+		cocos2d::ui::TextField* bidField;
+		cocos2d::ui::Button* bidButton;
+		int* minBid;            // minimum bid
+		Popup* popup;           // alert popup
+		model::Player* bidder;  // player
+	};
 }

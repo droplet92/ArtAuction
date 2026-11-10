@@ -5,12 +5,12 @@
 class RankingResult : public cocos2d::Scene
 {
 public:
-    ~RankingResult() final = default;
+	~RankingResult() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(RankingResult);
+	// implement the "static create()" method manually
+	CREATE_FUNC(RankingResult);
 
-    bool init() final;
+	bool init() final;
 };

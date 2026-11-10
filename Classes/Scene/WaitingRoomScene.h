@@ -5,12 +5,12 @@
 class WaitingRoom : public cocos2d::Scene
 {
 public:
-    ~WaitingRoom() final = default;
+	~WaitingRoom() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(WaitingRoom);
+	// implement the "static create()" method manually
+	CREATE_FUNC(WaitingRoom);
 
-    bool init() final;
+	bool init() final;
 };

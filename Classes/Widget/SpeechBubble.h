@@ -6,23 +6,23 @@
 
 namespace lhs::widget
 {
-    class SpeechBubble : public cocos2d::ui::Scale9Sprite
-    {
-    public:
-        SpeechBubble();
+	class SpeechBubble : public cocos2d::ui::Scale9Sprite
+	{
+	public:
+		SpeechBubble();
 
-        virtual ~SpeechBubble() = default;
+		virtual ~SpeechBubble() = default;
 
-        CREATE_FUNC(SpeechBubble);
-        
-        bool initWithSpriteFrameName(const std::string& filename) final;
+		CREATE_FUNC(SpeechBubble);
+		
+		bool initWithSpriteFrameName(const std::string& filename) final;
 
-        void SetString(const std::string& words) noexcept;
+		void SetString(const std::string& words) noexcept;
 
-        void SetFixed(bool isFixed) noexcept;
+		void SetFixed(bool isFixed) noexcept;
 
-    private:
-        cocos2d::ui::Text* text;    // text to speech
-        bool isFixedSize;           // is fixed or scalable
-    };
+	private:
+		cocos2d::ui::Text* text;    // text to speech
+		bool isFixedSize;           // is fixed or scalable
+	};
 }

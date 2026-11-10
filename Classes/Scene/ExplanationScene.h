@@ -5,12 +5,12 @@
 class Explanation : public cocos2d::Scene
 {
 public:
-    ~Explanation() final = default;
+	~Explanation() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(Explanation);
+	// implement the "static create()" method manually
+	CREATE_FUNC(Explanation);
 
-    bool init() final;
+	bool init() final;
 };

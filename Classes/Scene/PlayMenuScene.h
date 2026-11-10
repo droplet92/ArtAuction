@@ -5,12 +5,12 @@
 class PlayMenu : public cocos2d::Scene
 {
 public:
-    ~PlayMenu() final = default;
+	~PlayMenu() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(PlayMenu);
+	// implement the "static create()" method manually
+	CREATE_FUNC(PlayMenu);
 
-    bool init() final;
+	bool init() final;
 };

@@ -7,42 +7,42 @@ using namespace ui;
 
 namespace lhs::widget
 {
-    SpeechBubble::SpeechBubble()
-        : text(nullptr)
-        , isFixedSize(false)
-    {
-    }
+	SpeechBubble::SpeechBubble()
+		: text(nullptr)
+		, isFixedSize(false)
+	{
+	}
 
-    bool SpeechBubble::initWithSpriteFrameName(const std::string& filename)
-    {
-        if (!Sprite::initWithSpriteFrameName(filename))
-            return false;
+	bool SpeechBubble::initWithSpriteFrameName(const std::string& filename)
+	{
+		if (!Sprite::initWithSpriteFrameName(filename))
+			return false;
 
-        // default size is image size of filename
-        setContentSize(getTextureRect().size);
+		// default size is image size of filename
+		setContentSize(getTextureRect().size);
 
-        text = Utility::CreateWithFile<Text>("");
-        text->setAnchorPoint({ .5f, .5f });
-        text->setTextColor(Color4B::BLACK);
+		text = Utility::CreateWithFile<Text>("");
+		text->setAnchorPoint({ .5f, .5f });
+		text->setTextColor(Color4B::BLACK);
 
-        addChild(text);
+		addChild(text);
 
-        return true;
-    }
+		return true;
+	}
 
-    void SpeechBubble::SetString(const std::string& words) noexcept
-    {
-        text->setString(words);
+	void SpeechBubble::SetString(const std::string& words) noexcept
+	{
+		text->setString(words);
 
-        // If scalable, fit content size to the text.
-        if (!isFixedSize)
-            setContentSize(text->getContentSize() + Size{ 20.f, 20.f });
+		// If scalable, fit content size to the text.
+		if (!isFixedSize)
+			setContentSize(text->getContentSize() + Size{ 20.f, 20.f });
 
-        text->setPosition(getContentSize() / 2);    // center alignment
-    }
+		text->setPosition(getContentSize() / 2);    // center alignment
+	}
 
-    void SpeechBubble::SetFixed(bool isFixed) noexcept
-    {
-        isFixedSize = isFixed;
-    }
+	void SpeechBubble::SetFixed(bool isFixed) noexcept
+	{
+		isFixedSize = isFixed;
+	}
 }
