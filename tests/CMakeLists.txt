@@ -1,6 +1,7 @@
 # Unit tests for ArtAuctionCore. Run them with `ctest -C Debug` from the build directory.
 add_executable(ArtAuctionCoreTests
     AuctionTest.cpp
+    GameTest.cpp
     PlayerTest.cpp
     ReputationTest.cpp
     )
