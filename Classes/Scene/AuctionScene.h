@@ -6,24 +6,24 @@
 class Auction : public cocos2d::Scene
 {
 public:
-    Auction();
+	Auction();
 
-    ~Auction() final = default;
+	~Auction() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(Auction);
+	// implement the "static create()" method manually
+	CREATE_FUNC(Auction);
 
-    bool init() final;
+	bool init() final;
 
 private:
-    std::vector<cocos2d::Action*> gamePlayActions;
-    std::vector<std::pair<int, int>> bids;
-    int minBid;
-    lhs::model::Painting selection;
-    std::string winnerMessage;
-    std::string startMessage;
-    std::string bidMessage;
-    std::string openingMessage;
+	std::vector<cocos2d::Action*> gamePlayActions;
+	std::vector<std::pair<int, int>> bids;
+	int minBid;
+	lhs::model::Painting selection;
+	std::string winnerMessage;
+	std::string startMessage;
+	std::string bidMessage;
+	std::string openingMessage;
 };

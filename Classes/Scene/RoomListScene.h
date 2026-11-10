@@ -5,12 +5,12 @@
 class RoomList : public cocos2d::Scene
 {
 public:
-    ~RoomList() final = default;
+	~RoomList() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(RoomList);
+	// implement the "static create()" method manually
+	CREATE_FUNC(RoomList);
 
-    bool init() final;
+	bool init() final;
 };

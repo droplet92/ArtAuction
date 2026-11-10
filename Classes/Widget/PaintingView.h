@@ -8,27 +8,27 @@
 
 namespace lhs::widget
 {
-    /**
-    * The table view of paintings
-    * 
-    * It shows paintings in a 5xN table format.
-    */
-    class PaintingView : public cocos2d::ui::VBox
-    {
-    public:
-        PaintingView();
+	/**
+	* The table view of paintings
+	* 
+	* It shows paintings in a 5xN table format.
+	*/
+	class PaintingView : public cocos2d::ui::VBox
+	{
+	public:
+		PaintingView();
 
-        ~PaintingView() final = default;
+		~PaintingView() final = default;
 
-        CREATE_FUNC(PaintingView);
+		CREATE_FUNC(PaintingView);
 
-        void AddPaintings(const std::vector<Painting*>& paintings);
+		void AddPaintings(const std::vector<Painting*>& paintings);
 
-        const model::Painting& GetSelected() const;
+		const model::Painting& GetSelected() const;
 
-    private:
-        std::vector<cocos2d::ui::HBox*> children;   // rows
-        std::vector<model::Painting> data;          // paintings
-        Painting* selected;     // selected painting by player
-    };
+	private:
+		std::vector<cocos2d::ui::HBox*> children;   // rows
+		std::vector<model::Painting> data;          // paintings
+		Painting* selected;     // selected painting by player
+	};
 }

@@ -3,24 +3,24 @@
 
 namespace lhs::widget
 {
-    NameplateList::NameplateList()
-        : popup(nullptr)
-    {
-    }
+	NameplateList::NameplateList()
+		: popup(nullptr)
+	{
+	}
 
-    bool NameplateList::init()
-    {
-        if (!ListView::init())
-            return false;
+	bool NameplateList::init()
+	{
+		if (!ListView::init())
+			return false;
 
-        setContentSize({ 437.5, 400 });
-        setScrollBarEnabled(false);
+		setContentSize({ 437.5, 400 });
+		setScrollBarEnabled(false);
 
-        return true;
-    }
+		return true;
+	}
 
-    void NameplateList::RegisterPopup(Popup* popup) noexcept
-    {
-        this->popup = popup;
-    }
+	void NameplateList::RegisterPopup(Popup* popup) noexcept
+	{
+		this->popup = popup;
+	}
 }

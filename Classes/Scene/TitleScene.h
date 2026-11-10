@@ -5,12 +5,12 @@
 class Title : public cocos2d::Scene
 {
 public:
-    ~Title() final = default;
+	~Title() final = default;
 
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(Title);
+	// implement the "static create()" method manually
+	CREATE_FUNC(Title);
 
-    bool init() final;
+	bool init() final;
 };
